@@ -12,3 +12,6 @@
 .pnp.*
 
 node_modules
+
+# caches
+.tsbuildinfo
