@@ -1,0 +1,21 @@
+{
+  "name": "asta-action",
+  "description": "Test your web application with Asta",
+  "version": "0.0.1",
+  "license": "SEE LICENSE in LICENSE.md",
+  "author": "Business Performance Systems, LLC",
+  "packageManager": "yarn@3.6.3",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "scripts": {
+    "build": "tsc",
+    "lint": "yarn dlx oxlint src"
+  },
+  "devDependencies": {
+    "@types/node": "^20.6.0",
+    "typescript": "^5.2.2"
+  }
+}
