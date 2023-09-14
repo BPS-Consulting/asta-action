@@ -33,6 +33,32 @@ export interface CreateAssetDto {
     parent: string
 }
 
+export interface TestResultStatisticsDto {
+    passed: number
+    failed: number
+    untested: number
+}
+
+export interface PerformanceStatisticsDto {
+    ttl: number
+    lcp: number
+    loadTime: number
+    fcp: number
+    tti: number
+    cls: number
+}
+
+export interface CoverageStatisticsDto {
+    variant: string
+    component: string
+    passed: number
+    failed: number
+    functionality?: TestResultStatisticsDto
+    resources?: TestResultStatisticsDto
+    accesibility?: TestResultStatisticsDto
+    performance?: PerformanceStatisticsDto
+}
+
 export type Coverage = object
 
 export interface ApplicationComponentDTO {
@@ -52,7 +78,7 @@ export interface Rule {
     /** The rule tested */
     rule: string
     /** The result for rule tested */
-    results: string
+    results: 'Passed' | 'Failed' | 'Unverified'
     /** The type of rule */
     type: string
     /** The run where the rule was tested */
@@ -62,16 +88,41 @@ export interface Rule {
     /** The time when the rule was tested */
     time: number
     /** The page where the rule was tested */
-    page: string
+    page?: string
+}
+
+export interface Action {
+    type:
+        | 'CustomAction'
+        | 'Click'
+        | 'Fill Form'
+        | 'Submit Form'
+        | 'Type'
+        | 'Visit'
+        | 'Select'
+        | 'Upload File'
+        | 'Wait'
+        | 'Smart'
+    run: string
+    entry: number
+    time: number
+    page?: string
 }
 
 export interface ComponentCoverage {
     /** The rules tested */
     rules: Rule[]
     /** The actions tested */
-    actions: string[]
-    /** The the performance results */
-    performance: object
+    actions: Action[]
+    performance: {
+        n: number
+        ttl: number
+        lcp: number
+        loadTime: number
+        fcp: number
+        tti: number
+        cls: number
+    }
     /** The component tested */
     component: string
 }
@@ -88,6 +139,7 @@ export interface CoverageResponseDto {
 export interface CreateTagDto {
     /**
      * The name of the tag
+     * @minLength 2
      * @example "Performance"
      */
     name: string
@@ -95,9 +147,10 @@ export interface CreateTagDto {
     parent: string
     /**
      * The type of the tag. custom, core, default
+     * @default "custom"
      * @example "custom"
      */
-    type: string
+    type?: object
 }
 
 export interface UpdateTagDto {
@@ -108,6 +161,18 @@ export interface UpdateTagDto {
     _id: string
     /** The name of the tag */
     name: string
+}
+
+export interface MetadataDTO {
+    count: number
+    offset: number
+    limit: number
+    hasMore: boolean
+}
+
+export interface TransformedApplicationResponse {
+    data: ApplicationResponse
+    metadata: MetadataDTO
 }
 
 export type ApplicationData = object
@@ -130,7 +195,7 @@ export interface ApplicationResponse {
      * User's email address
      * @example "joh-doe@gmail.com"
      */
-    role: number
+    role: 0 | 1 | 2 | 3 | 4
     /**
      * Entity Type
      * @example "application"
@@ -139,20 +204,26 @@ export interface ApplicationResponse {
     /** Application's data */
     data: ApplicationData
     /** Application's owners */
-    owners: string[]
+    owners: object[]
     /** Application's parent (Workspace) */
     parent: Workspace
 }
 
 export interface CreateApplicationDto {
-    /** The name of the application */
+    /**
+     * The name of the application
+     * @minLength 2
+     */
     name: string
     /** The id referencing the workspace */
     parentId: string
 }
 
 export interface UpdateApplicationDto {
-    /** The name of the application */
+    /**
+     * The name of the application
+     * @minLength 5
+     */
     name: string
 }
 
@@ -171,7 +242,7 @@ export interface PermissionResponse {
      * Role of the user for the resource
      * @example 4
      */
-    role: number
+    role: 0 | 1 | 2 | 3 | 4
 }
 
 export interface CreatePermissionDto {
@@ -193,12 +264,18 @@ export interface UpdatePermissionRoleDto {
 
 export interface GenerateDatasetDTO {
     requirementsDocumentId: string
-    /** @example "" */
-    options: object
+    options: {
+        name: string
+        category: 'valid' | 'invalid' | 'illegal' | 'minimum' | 'maximum' | 'empty'
+    }
 }
 
 export interface RequestWithUserDTO {
-    user: object
+    user: {
+        id: string
+        name: string
+        apiKey: string
+    }
 }
 
 export interface IssueDto {
@@ -210,6 +287,15 @@ export interface IssueDto {
     logs: string[]
     created_at?: string
     updated_at?: string
+}
+
+export interface RunLogDTO {
+    /** @example "" */
+    runId: string
+    /** @example "" */
+    runNumber: string
+    /** @example "" */
+    entries: string[]
 }
 
 export interface SummaryStatisticsDTO {
@@ -259,6 +345,20 @@ export interface RunMetadataDto {
     results: RunResultsDto
 }
 
+export interface ElementDTO {
+    /** @example "" */
+    attributes: object
+}
+
+export interface PositionDTO {
+    /** @example "" */
+    x: number
+    /** @example "" */
+    y: number
+    /** @example "" */
+    z: number
+}
+
 export interface DimensionsDTO {
     /** @example "" */
     w: number
@@ -275,6 +375,27 @@ export interface ItemDTO {
     data: object
 }
 
+export interface PageComponentDTO {
+    /** @example "" */
+    id: string
+    /** @example "" */
+    label: string
+    /** @example "" */
+    type: string
+    /** @example "" */
+    element: ElementDTO
+    /** @example "" */
+    components: PageComponentDTO
+    /** @example "" */
+    position: PositionDTO
+    /** @example "" */
+    dimensions: DimensionsDTO
+    /** @example "" */
+    content: object
+    /** @example "" */
+    item: ItemDTO
+}
+
 export interface PageDTO {
     /** @example "" */
     id: string
@@ -285,7 +406,7 @@ export interface PageDTO {
     /** @example "" */
     content: object
     /** @example "" */
-    components: string[]
+    components: PageComponentDTO[]
     /** @example "" */
     dimensions: DimensionsDTO
     /** @example "" */
@@ -300,15 +421,6 @@ export interface RemoveRunsResponseDTO {
     ok: boolean
     /** The ids of the removed runs */
     removedRuns: string[]
-}
-
-export interface RunLogDTO {
-    /** @example "" */
-    runId: string
-    /** @example "" */
-    runNumber: string
-    /** @example "" */
-    entries: string[]
 }
 
 export interface RunStatusDTO {
@@ -414,7 +526,25 @@ export interface StartRunRequestDTO {
     agentId: string
 }
 
-export type RunDocument = object
+export type ObjectId = object
+
+export interface RunDocument {
+    applicationId: ObjectId
+    parameters?: RunParametersDto
+    runNumber: number
+    startTime: string
+    endTime: string
+    status: string
+    initialWorkQueue: object
+    summaryStatistics: object
+    results: {
+        passed: number
+        failed: number
+        untested: number
+        partial: number
+    }
+    templateName: string
+}
 
 export type VariantData = object
 
@@ -436,7 +566,7 @@ export interface VariantResponse {
      * User's email address
      * @example "joh-doe@gmail.com"
      */
-    role: number
+    role: 0 | 1 | 2 | 3 | 4
     /**
      * Entity Type
      * @example "variant"
@@ -445,25 +575,32 @@ export interface VariantResponse {
     /** Variants's data */
     data: VariantData
     /** Variants's owners */
-    owners: string[]
+    owners: object[]
     /** Variant's parent (Application) */
     parent: Application
 }
 
 export interface CreateVariantDto {
-    /** The name of the variant */
+    /**
+     * The name of the variant
+     * @minLength 2
+     */
     name: string
     /** The id referencing the application */
     parentId: string
-    /** The variants data such as defaultUrl or activitySets */
-    data: object
+    data: {
+        activitySets?: string[]
+        defaultUrl?: string
+    }
 }
 
 export interface UpdateVariantDto {
     /** The name of the variant */
     name: string
-    /** The variants data such as defaultUrl or activitySets */
-    data: object
+    data: {
+        activitySets?: string[]
+        defaultUrl?: string
+    }
 }
 
 export interface ApplicationModelDTO {
@@ -478,12 +615,21 @@ export interface ApplicationModelDTO {
      * Nodes in the application mode
      * @example ""
      */
-    nodes: string[]
+    nodes: object[]
     /**
      * Edges in the application mode
      * @example ""
      */
-    edges: string[]
+    edges: object[]
+}
+
+export interface EntityAssociationDTO {
+    identifier: {
+        type: string
+        value: string
+    }
+    /** The associated entity's type */
+    type: object
 }
 
 export interface ApplicationComponentsAssociationsDTO {
@@ -506,7 +652,7 @@ export interface ApplicationComponentsAssociationsDTO {
      * The entities associated with the component
      * @example ""
      */
-    associatedEntities: string[]
+    associatedEntities: EntityAssociationDTO[]
 }
 
 export interface ApplicationRelationshipDTO {
@@ -524,11 +670,29 @@ export interface ApplicationRelationshipDTO {
     data: object
 }
 
+export interface UpdateDTO {
+    /** @example "" */
+    type: string
+    item: {
+        id: string
+        name: string
+        type: string
+        data: object
+    }
+    relationship: {
+        id: string
+        type: string
+        from: string
+        to: string
+        data: object
+    }
+}
+
 export interface ApplicationModelUpdateRequestDTO {
     /** @example "" */
     applicationId: string
     /** @example "" */
-    updates: string[]
+    updates: UpdateDTO[]
 }
 
 export interface AddRuleResponseDTO {
@@ -545,6 +709,52 @@ export interface AddRuleRequestDTO {
      * @example ""
      */
     rule: object
+}
+
+export interface CreatePatDTO {
+    /**
+     * When the PAT will expire and can no longer be used for authentication.
+     *
+     * 		By default, PATs expire after 1 year. To create a PAT that never expires,
+     * 		explicitly set this field to `null`.
+     * @format date-time
+     * @example "2021-01-01T00:00:00.000Z"
+     */
+    expiresAt?: string
+    /** The name of the PAT. Helps distinguish between PATs and to remember their purpose. For display purposes only.  */
+    name?: string
+}
+
+export interface CreatePatResponseDTO {
+    /** The unencrypted key. This is only returned when creating a new PAT. */
+    apiKey: string
+    name?: string
+    /** @format date-time */
+    expiresAt?: string
+    _id?: string
+    /** user id */
+    user: string
+    /** @format date-time */
+    lastUsed: string
+    /** @format date-time */
+    createdAt?: string
+    /** @format date-time */
+    updatedAt?: string
+}
+
+export interface PatDTO {
+    name?: string
+    /** @format date-time */
+    expiresAt?: string
+    _id?: string
+    /** user id */
+    user: string
+    /** @format date-time */
+    lastUsed: string
+    /** @format date-time */
+    createdAt?: string
+    /** @format date-time */
+    updatedAt?: string
 }
 
 export interface UserResponse {
@@ -573,9 +783,9 @@ export interface UserResponse {
      * User's status
      * @example "active"
      */
-    status: string
+    status: object
     /** User workspaces */
-    workspaces: string[]
+    workspaces?: Workspace[]
 }
 
 export interface UpdateUserDto {
@@ -591,38 +801,9 @@ export interface CreateUserDto {
     /** The email that identifies the user */
     email: string
     /** The email that identifies the user */
-    externalId: string
+    externalId?: string
     /** The email that identifies the user */
-    paymentId: string
-}
-
-export interface CreatePatDTO {
-    /**
-     * When the PAT will expire and can no longer be used for authentication.
-     *
-     * 		By default, PATs expire after 1 year. To create a PAT that never expires,
-     * 		explicitly set this field to `null`.
-     * @format date-time
-     * @example "2021-01-01T00:00:00.000Z"
-     */
-    expiresAt: string
-    /** The name of the PAT. Helps distinguish between PATs and to remember their purpose. For display purposes only.  */
-    name: string
-}
-
-export interface PatDTO {
-    name: string
-    /** @format date-time */
-    expiresAt: string
-    _id: string
-    /** user id */
-    user: string
-    /** @format date-time */
-    lastUsed: string
-    /** @format date-time */
-    createdAt: string
-    /** @format date-time */
-    updatedAt: string
+    paymentId?: string
 }
 
 export type WorkspaceData = object
@@ -645,7 +826,7 @@ export interface WorkspaceResponse {
      * User's email address
      * @example "joh-doe@gmail.com"
      */
-    role: number
+    role: 0 | 1 | 2 | 3 | 4
     /**
      * Entity Type
      * @example "workspace"
@@ -659,7 +840,7 @@ export interface WorkspaceResponse {
      */
     lastRun: string
     /** Workspace's owners */
-    owners: string[]
+    owners: object[]
     /** Workspace's parent (System) */
     parent: Entity
 }
@@ -676,6 +857,7 @@ export interface Plan {
 export interface CreateWorkspaceDto {
     /**
      * The name of the workspace
+     * @minLength 5
      * @example "test's workspace"
      */
     name: string
@@ -683,12 +865,13 @@ export interface CreateWorkspaceDto {
      * The name of the workspace
      * @example "test's workspace"
      */
-    plan: Plan
+    plan?: Plan
 }
 
 export interface UpdateWorkspaceDto {
     /**
      * The name of the workspace
+     * @minLength 5
      * @example "test's workspace"
      */
     name?: string
@@ -757,7 +940,10 @@ export interface AnalyticsFilterDTO {
 }
 
 export interface AnalyticsRequestDTO {
-    /** Filters to apply to run logs before aggregating */
+    /**
+     * Filters to apply to run logs before aggregating
+     * @default {}
+     */
     filter?: AnalyticsFilterDTO
     /** The fields to group by */
     groupBy?: string[]
@@ -1165,7 +1351,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
             }),
 
         /**
-         * No description
+         * @description With the given JWT return user relevant information.
          *
          * @tags auth
          * @name AuthControllerGetPermissions
@@ -1200,9 +1386,10 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
          * @request GET:/api/v2/coverage
          */
         coverageControllerGetAllCoverages: (params: RequestParams = {}) =>
-            this.request<void, any>({
+            this.request<CoverageDto[], any>({
                 path: `/api/v2/coverage`,
                 method: 'GET',
+                format: 'json',
                 ...params,
             }),
 
@@ -1213,11 +1400,12 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
          * @request POST:/api/v2/coverage
          */
         coverageControllerCreateCoverage: (data: CoverageDto, params: RequestParams = {}) =>
-            this.request<void, any>({
+            this.request<CoverageDto, any>({
                 path: `/api/v2/coverage`,
                 method: 'POST',
                 body: data,
                 type: ContentType.Json,
+                format: 'json',
                 ...params,
             }),
 
@@ -1228,9 +1416,10 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
          * @request GET:/api/v2/coverage/{id}
          */
         coverageControllerGetCoverageById: (id: string, params: RequestParams = {}) =>
-            this.request<void, any>({
+            this.request<CoverageDto, any>({
                 path: `/api/v2/coverage/${id}`,
                 method: 'GET',
+                format: 'json',
                 ...params,
             }),
 
@@ -1241,11 +1430,12 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
          * @request PUT:/api/v2/coverage/{id}
          */
         coverageControllerUpdateCoverage: (id: string, data: CoverageDto, params: RequestParams = {}) =>
-            this.request<void, any>({
+            this.request<CoverageDto, any>({
                 path: `/api/v2/coverage/${id}`,
                 method: 'PUT',
                 body: data,
                 type: ContentType.Json,
+                format: 'json',
                 ...params,
             }),
 
@@ -1269,9 +1459,10 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
          * @request GET:/api/v2/coverage/variants/{id}/statistics
          */
         coverageControllerGetVariantCoverageStatistics: (id: string, params: RequestParams = {}) =>
-            this.request<void, any>({
+            this.request<CoverageStatisticsDto[], any>({
                 path: `/api/v2/coverage/variants/${id}/statistics`,
                 method: 'GET',
+                format: 'json',
                 ...params,
             }),
 
@@ -1282,9 +1473,10 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
          * @request GET:/api/v2/coverage/variants/{id}/elems/{cid}
          */
         coverageControllerGetComponentCoverage: (id: string, cid: string, params: RequestParams = {}) =>
-            this.request<void, any>({
+            this.request<Coverage, any>({
                 path: `/api/v2/coverage/variants/${id}/elems/${cid}`,
                 method: 'GET',
+                format: 'json',
                 ...params,
             }),
 
@@ -1295,9 +1487,10 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
          * @request GET:/api/v2/coverage/variants/{id}/{assetType}
          */
         coverageControllerGetVariantCoverage: (id: string, assetType: string, params: RequestParams = {}) =>
-            this.request<void, any>({
+            this.request<CoverageDto[], any>({
                 path: `/api/v2/coverage/variants/${id}/${assetType}`,
                 method: 'GET',
+                format: 'json',
                 ...params,
             }),
 
@@ -1308,11 +1501,12 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
          * @request PATCH:/api/v2/coverage/variants/{id}/flows/{fid}
          */
         coverageControllerPatchFlowCoverage: (id: string, fid: string, data: CoverageDto, params: RequestParams = {}) =>
-            this.request<void, any>({
+            this.request<CoverageDto, any>({
                 path: `/api/v2/coverage/variants/${id}/flows/${fid}`,
                 method: 'PATCH',
                 body: data,
                 type: ContentType.Json,
+                format: 'json',
                 ...params,
             }),
 
@@ -1330,7 +1524,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
             }),
 
         /**
-         * No description
+         * @description Get assets summary statistics.
          *
          * @name CoverageControllerGetAssetsCoverage
          * @request GET:/api/v2/coverage/{id}/assets
@@ -1344,20 +1538,21 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
             }),
 
         /**
-         * No description
+         * @description Get pages summary statistics.
          *
          * @name CoverageControllerGetPagesCoverage
          * @request GET:/api/v2/coverage/{id}/pages
          */
         coverageControllerGetPagesCoverage: (id: string, params: RequestParams = {}) =>
-            this.request<void, any>({
+            this.request<string, any>({
                 path: `/api/v2/coverage/${id}/pages`,
                 method: 'GET',
+                format: 'json',
                 ...params,
             }),
 
         /**
-         * No description
+         * @description Get pages summary statistics.
          *
          * @name CoverageControllerGetRunsFullCoverage
          * @request GET:/api/v2/coverage/{id}/run/{runId}
@@ -1385,7 +1580,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
             }),
 
         /**
-         * No description
+         * @description Get tags with ids
          *
          * @tags tags
          * @name TagsControllerGetTagsWithIds
@@ -1406,7 +1601,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
             }),
 
         /**
-         * No description
+         * @description Get application's tags
          *
          * @tags tags
          * @name TagsControllerGetAppTags
@@ -1421,7 +1616,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
             }),
 
         /**
-         * No description
+         * @description Create tag.
          *
          * @tags tags
          * @name TagsControllerCreate
@@ -1438,7 +1633,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
             }),
 
         /**
-         * No description
+         * @description Update tag.
          *
          * @tags tags
          * @name TagsControllerUpdateTag
@@ -1454,7 +1649,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
             }),
 
         /**
-         * No description
+         * @description Delete tag.
          *
          * @tags tags
          * @name TagsControllerRemoveTag
@@ -1468,7 +1663,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
             }),
 
         /**
-         * No description
+         * @description Get applications.
          *
          * @tags applications
          * @name ApplicationControllerGetApplications
@@ -1476,7 +1671,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
          * @request GET:/api/v2/applications
          */
         applicationControllerGetApplications: (params: RequestParams = {}) =>
-            this.request<ApplicationResponse, any>({
+            this.request<TransformedApplicationResponse, any>({
                 path: `/api/v2/applications`,
                 method: 'GET',
                 format: 'json',
@@ -1484,7 +1679,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
             }),
 
         /**
-         * No description
+         * @description Create application.
          *
          * @tags applications
          * @name ApplicationControllerCreateApplication
@@ -1501,7 +1696,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
             }),
 
         /**
-         * No description
+         * @description Get application with id.
          *
          * @tags applications
          * @name ApplicationControllerGetApplication
@@ -1509,7 +1704,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
          * @request GET:/api/v2/applications/{id}
          */
         applicationControllerGetApplication: (id: string, params: RequestParams = {}) =>
-            this.request<ApplicationResponse, any>({
+            this.request<TransformedApplicationResponse, any>({
                 path: `/api/v2/applications/${id}`,
                 method: 'GET',
                 format: 'json',
@@ -1517,7 +1712,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
             }),
 
         /**
-         * No description
+         * @description Update application.
          *
          * @tags applications
          * @name ApplicationControllerUpdate
@@ -1533,7 +1728,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
             }),
 
         /**
-         * No description
+         * @description Delete application.
          *
          * @tags applications
          * @name ApplicationControllerRemove
@@ -1547,7 +1742,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
             }),
 
         /**
-         * No description
+         * @description Get the application's tags.
          *
          * @tags applications
          * @name ApplicationControllerGetApplicationsTags
@@ -1579,7 +1774,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
             }),
 
         /**
-         * No description
+         * @description Get permissions.
          *
          * @tags permissions
          * @name PermissionControllerGetPermissions
@@ -1595,7 +1790,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
             }),
 
         /**
-         * No description
+         * @description Create permission.
          *
          * @tags permissions
          * @name PermissionControllerCreatePermission
@@ -1612,7 +1807,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
             }),
 
         /**
-         * No description
+         * @description Get permission with id.
          *
          * @tags permissions
          * @name PermissionControllerGetPermission
@@ -1628,7 +1823,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
             }),
 
         /**
-         * No description
+         * @description Update permission.
          *
          * @tags permissions
          * @name PermissionControllerUpdate
@@ -1645,7 +1840,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
             }),
 
         /**
-         * No description
+         * @description Delete permission.
          *
          * @tags permissions
          * @name PermissionControllerRemove
@@ -1660,7 +1855,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
             }),
 
         /**
-         * No description
+         * @description Get all the permissions of the resource with id
          *
          * @tags permissions
          * @name PermissionControllerGetResourcePermissions
@@ -1676,7 +1871,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
             }),
 
         /**
-         * No description
+         * @description Get all the permissions of the user with id
          *
          * @tags permissions
          * @name PermissionControllerGetUserPermissions
@@ -1885,9 +2080,10 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
          * @request POST:/api/v2/issues
          */
         issueControllerCreate: (params: RequestParams = {}) =>
-            this.request<void, any>({
+            this.request<IssueDto, any>({
                 path: `/api/v2/issues`,
                 method: 'POST',
+                format: 'json',
                 ...params,
             }),
 
@@ -1899,9 +2095,10 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
          * @request GET:/api/v2/issues
          */
         issueControllerGetAll: (params: RequestParams = {}) =>
-            this.request<void, any>({
+            this.request<IssueDto[], any>({
                 path: `/api/v2/issues`,
                 method: 'GET',
+                format: 'json',
                 ...params,
             }),
 
@@ -1913,11 +2110,12 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
          * @request PUT:/api/v2/issues
          */
         issueControllerUpdateOne: (data: IssueDto, params: RequestParams = {}) =>
-            this.request<void, any>({
+            this.request<IssueDto, any>({
                 path: `/api/v2/issues`,
                 method: 'PUT',
                 body: data,
                 type: ContentType.Json,
+                format: 'json',
                 ...params,
             }),
 
@@ -1929,9 +2127,10 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
          * @request GET:/api/v2/issues/{id}
          */
         issueControllerGet: (id: string, params: RequestParams = {}) =>
-            this.request<void, any>({
+            this.request<IssueDto, any>({
                 path: `/api/v2/issues/${id}`,
                 method: 'GET',
+                format: 'json',
                 ...params,
             }),
 
@@ -1957,11 +2156,12 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
          * @request PUT:/api/v2/issues/{id}
          */
         issueControllerUpdate: (id: string, data: IssueDto, params: RequestParams = {}) =>
-            this.request<void, any>({
+            this.request<IssueDto, any>({
                 path: `/api/v2/issues/${id}`,
                 method: 'PUT',
                 body: data,
                 type: ContentType.Json,
+                format: 'json',
                 ...params,
             }),
 
@@ -1973,18 +2173,20 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
          * @request GET:/api/v2/issues/{id}/logs/{appId}
          */
         issueControllerGetLogs: (id: string, appId: string, params: RequestParams = {}) =>
-            this.request<void, any>({
+            this.request<RunLogDTO[], any>({
                 path: `/api/v2/issues/${id}/logs/${appId}`,
                 method: 'GET',
+                format: 'json',
                 ...params,
             }),
 
         /**
-         * No description
+         * @description This should be replaced with the endpoint below: GET('/:id') The reason for this is that we want to enforce permissions on all enpoints
          *
          * @tags run
          * @name RunsControllerGetRuns
          * @request GET:/api/v2/run
+         * @deprecated
          */
         runsControllerGetRuns: (params: RequestParams = {}) =>
             this.request<RunMetadataDto[], any>({
@@ -2002,9 +2204,10 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
          * @request GET:/api/v2/run/{id}
          */
         runsControllerGetVariantRuns: (id: string, params: RequestParams = {}) =>
-            this.request<void, any>({
+            this.request<RunMetadataDto[], any>({
                 path: `/api/v2/run/${id}`,
                 method: 'GET',
+                format: 'json',
                 ...params,
             }),
 
@@ -2016,9 +2219,10 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
          * @request GET:/api/v2/run/variant/{id}/hasRuns
          */
         runsControllerHasRuns: (id: string, params: RequestParams = {}) =>
-            this.request<void, any>({
+            this.request<boolean, any>({
                 path: `/api/v2/run/variant/${id}/hasRuns`,
                 method: 'GET',
+                format: 'json',
                 ...params,
             }),
 
@@ -2117,9 +2321,10 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
          * @request PUT:/api/v2/run/parameters/{id}
          */
         runParametersControllerUpdate: (id: string, params: RequestParams = {}) =>
-            this.request<void, any>({
+            this.request<Coverage, any>({
                 path: `/api/v2/run/parameters/${id}`,
                 method: 'PUT',
+                format: 'json',
                 ...params,
             }),
 
@@ -2291,10 +2496,19 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
          * @name RunsSummaryStatisticsControllerGetMultipleRunItemStats
          * @request GET:/api/v2/run/summaryStatistics/items
          */
-        runsSummaryStatisticsControllerGetMultipleRunItemStats: (params: RequestParams = {}) =>
+        runsSummaryStatisticsControllerGetMultipleRunItemStats: (
+            query?: {
+                /** @min 1 */
+                limit?: number
+                /** @min 1 */
+                offset?: number
+            },
+            params: RequestParams = {}
+        ) =>
             this.request<SummaryStatisticsDTO, SummaryStatisticsDTO>({
                 path: `/api/v2/run/summaryStatistics/items`,
                 method: 'GET',
+                query: query,
                 format: 'json',
                 ...params,
             }),
@@ -2454,15 +2668,27 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
          * @name RunsLogControllerV2GetRunLog
          * @request GET:/api/v2/runs/{id}/log/{runNumber}
          */
-        runsLogControllerV2GetRunLog: (id: string, runNumber: string, params: RequestParams = {}) =>
-            this.request<void, any>({
+        runsLogControllerV2GetRunLog: (
+            id: string,
+            runNumber: string,
+            query?: {
+                /** @min 1 */
+                limit?: number
+                /** @min 1 */
+                offset?: number
+            },
+            params: RequestParams = {}
+        ) =>
+            this.request<object[], any>({
                 path: `/api/v2/runs/${id}/log/${runNumber}`,
                 method: 'GET',
+                query: query,
+                format: 'json',
                 ...params,
             }),
 
         /**
-         * No description
+         * @description Get all of the variants available to the user.
          *
          * @tags variants
          * @name VariantControllerGetVariants
@@ -2477,7 +2703,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
             }),
 
         /**
-         * No description
+         * @description Create a new variant.
          *
          * @tags variants
          * @name VariantControllerCreateVariant
@@ -2494,7 +2720,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
             }),
 
         /**
-         * No description
+         * @description Get a variant by id. This request only returns a variant's metadata, if you want the model use /variants/:id/model
          *
          * @tags variants
          * @name VariantControllerGetVariant
@@ -2508,7 +2734,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
             }),
 
         /**
-         * No description
+         * @description Update an existing variant.
          *
          * @tags variants
          * @name VariantControllerUpdateVariant
@@ -2568,21 +2794,31 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
             }),
 
         /**
-         * No description
+         * @description Get an application model including all of its components and relationships.
          *
          * @tags variants
          * @name ModelControllerGetApplicationModel
          * @request GET:/api/v2/variants/{id}/model
          */
-        modelControllerGetApplicationModel: (id: string, params: RequestParams = {}) =>
+        modelControllerGetApplicationModel: (
+            id: string,
+            query?: {
+                /** @min 1 */
+                limit?: number
+                /** @min 1 */
+                offset?: number
+            },
+            params: RequestParams = {}
+        ) =>
             this.request<void, any>({
                 path: `/api/v2/variants/${id}/model`,
                 method: 'GET',
+                query: query,
                 ...params,
             }),
 
         /**
-         * No description
+         * @description Create a new application model with all of its components and relationships.
          *
          * @tags variants
          * @name ModelControllerCreateApplicationModel
@@ -2612,7 +2848,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
             }),
 
         /**
-         * No description
+         * @description Add a component to an existing application.
          *
          * @tags variants
          * @name ModelControllerAddComponent
@@ -2628,7 +2864,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
             }),
 
         /**
-         * No description
+         * @description Update an existing component in an application.
          *
          * @tags variants
          * @name ModelControllerUpdateComponent
@@ -2649,7 +2885,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
             }),
 
         /**
-         * No description
+         * @description Delete an existing component from the application model. All of the component's descendants and relationships are deleted from the model. Returns the ids for the components and relationships deleted. This can create inconsistencies between any active tester's and active agent's local version of the model. It can also cause issues with the run log, activities, and rules since they may now reference non-existent application components.
          *
          * @tags variants
          * @name ModelControllerDeleteComponent
@@ -2733,7 +2969,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
             }),
 
         /**
-         * No description
+         * @description Add a relationship to an existing application.
          *
          * @tags variants
          * @name ModelControllerAddRelationship
@@ -2807,9 +3043,10 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
          * @request GET:/api/v2/variants/{id}/model/components/{cId}/coverage
          */
         coverageControllerGetComponentsCoverage: (id: string, cId: string, params: RequestParams = {}) =>
-            this.request<void, any>({
+            this.request<Coverage, any>({
                 path: `/api/v2/variants/${id}/model/components/${cId}/coverage`,
                 method: 'GET',
+                format: 'json',
                 ...params,
             }),
 
@@ -2821,9 +3058,10 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
          * @request GET:/api/v2/variants/{id}/model/coverage
          */
         coverageControllerGetVariantsCoverage: (id: string, params: RequestParams = {}) =>
-            this.request<void, any>({
+            this.request<Coverage, any>({
                 path: `/api/v2/variants/${id}/model/coverage`,
                 method: 'GET',
+                format: 'json',
                 ...params,
             }),
 
@@ -2849,9 +3087,10 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
          * @request GET:/api/v2/variants/{id}/model/coverage/simple
          */
         coverageControllerGetSimpleVariantCoverage: (id: string, params: RequestParams = {}) =>
-            this.request<void, any>({
+            this.request<Coverage, any>({
                 path: `/api/v2/variants/${id}/model/coverage/simple`,
                 method: 'GET',
+                format: 'json',
                 ...params,
             }),
 
@@ -2862,10 +3101,20 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
          * @name CoverageControllerGetCoverageWithFilters
          * @request GET:/api/v2/variants/{id}/model/coverage/filters
          */
-        coverageControllerGetCoverageWithFilters: (id: string, params: RequestParams = {}) =>
+        coverageControllerGetCoverageWithFilters: (
+            id: string,
+            query?: {
+                /** @min 1 */
+                limit?: number
+                /** @min 1 */
+                offset?: number
+            },
+            params: RequestParams = {}
+        ) =>
             this.request<void, any>({
                 path: `/api/v2/variants/${id}/model/coverage/filters`,
                 method: 'GET',
+                query: query,
                 ...params,
             }),
 
@@ -2986,23 +3235,83 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
             }),
 
         /**
-         * No description
+         * @description Creates a new Personal Access Token (PAT) for the user making this request.
          *
          * @tags users
-         * @name UserControllerGetUsers
-         * @summary Get users
-         * @request GET:/api/v2/users
+         * @name UserControllerCreatePat
+         * @summary Create a new PAT.
+         * @request POST:/api/v2/users/pat
          */
-        userControllerGetUsers: (params: RequestParams = {}) =>
-            this.request<UserResponse, any>({
-                path: `/api/v2/users`,
-                method: 'GET',
+        userControllerCreatePat: (data: CreatePatDTO, params: RequestParams = {}) =>
+            this.request<CreatePatResponseDTO, any>({
+                path: `/api/v2/users/pat`,
+                method: 'POST',
+                body: data,
+                type: ContentType.Json,
                 format: 'json',
                 ...params,
             }),
 
         /**
          * No description
+         *
+         * @tags users
+         * @name UserControllerFindPaTs
+         * @summary Get all PATs for the current user.
+         * @request GET:/api/v2/users/pat
+         */
+        userControllerFindPaTs: (params: RequestParams = {}) =>
+            this.request<PatDTO[], any>({
+                path: `/api/v2/users/pat`,
+                method: 'GET',
+                format: 'json',
+                ...params,
+            }),
+
+        /**
+         * @description Delete one of the current user's PATs by its ID. This is a no-op if the PAT does not exist or if it belongs to another user.
+         *
+         * @tags users
+         * @name UserControllerRevokePat
+         * @summary Delete a PAT.
+         * @request DELETE:/api/v2/users/pat/{id}
+         */
+        userControllerRevokePat: (id: string, params: RequestParams = {}) =>
+            this.request<void, any>({
+                path: `/api/v2/users/pat/${id}`,
+                method: 'DELETE',
+                ...params,
+            }),
+
+        /**
+         * @description Get users.
+         *
+         * @tags users
+         * @name UserControllerGetUsers
+         * @summary Get users
+         * @request GET:/api/v2/users
+         */
+        userControllerGetUsers: (
+            query?: {
+                workspaces?: boolean
+                text?: string
+                /** @min 1 */
+                limit?: number
+                /** @min 1 */
+                offset?: number
+            },
+            params: RequestParams = {}
+        ) =>
+            this.request<UserResponse, any>({
+                path: `/api/v2/users`,
+                method: 'GET',
+                query: query,
+                format: 'json',
+                ...params,
+            }),
+
+        /**
+         * @description Get user with id.
          *
          * @tags users
          * @name UserControllerGetUser
@@ -3018,7 +3327,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
             }),
 
         /**
-         * No description
+         * @description Update user.
          *
          * @tags users
          * @name UserControllerUpdate
@@ -3035,7 +3344,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
             }),
 
         /**
-         * No description
+         * @description Delete user.
          *
          * @tags users
          * @name UserControllerRemove
@@ -3063,7 +3372,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
             }),
 
         /**
-         * No description
+         * @description Returns user if it's already created, creates user if doesn't exist.
          *
          * @tags users
          * @name UserControllerValidateUser
@@ -3109,70 +3418,31 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
             }),
 
         /**
-         * @description Creates a new Personal Access Token (PAT) for the user making this request.
-         *
-         * @tags users
-         * @name UserControllerCreatePat
-         * @summary Create a new PAT.
-         * @request POST:/api/v2/users/pat
-         */
-        userControllerCreatePat: (data: CreatePatDTO, params: RequestParams = {}) =>
-            this.request<void, any>({
-                path: `/api/v2/users/pat`,
-                method: 'POST',
-                body: data,
-                type: ContentType.Json,
-                ...params,
-            }),
-
-        /**
-         * No description
-         *
-         * @tags users
-         * @name UserControllerFindPaTs
-         * @summary Get all PATs for the current user.
-         * @request GET:/api/v2/users/pat
-         */
-        userControllerFindPaTs: (params: RequestParams = {}) =>
-            this.request<PatDTO[], any>({
-                path: `/api/v2/users/pat`,
-                method: 'GET',
-                format: 'json',
-                ...params,
-            }),
-
-        /**
-         * @description Delete one of the current user's PATs by its ID. This is a no-op if the PAT does not exist or if it belongs to another user.
-         *
-         * @tags users
-         * @name UserControllerRevokePat
-         * @summary Delete a PAT.
-         * @request DELETE:/api/v2/users/pat/{id}
-         */
-        userControllerRevokePat: (id: string, params: RequestParams = {}) =>
-            this.request<void, any>({
-                path: `/api/v2/users/pat/${id}`,
-                method: 'DELETE',
-                ...params,
-            }),
-
-        /**
-         * No description
+         * @description Get all of the workspaces available to the user.
          *
          * @tags workspace
          * @name WorkspaceControllerGetWorkspaces
          * @request GET:/api/v2/workspace
          */
-        workspaceControllerGetWorkspaces: (params: RequestParams = {}) =>
+        workspaceControllerGetWorkspaces: (
+            query?: {
+                /** @min 1 */
+                limit?: number
+                /** @min 1 */
+                offset?: number
+            },
+            params: RequestParams = {}
+        ) =>
             this.request<WorkspaceResponse, any>({
                 path: `/api/v2/workspace`,
                 method: 'GET',
+                query: query,
                 format: 'json',
                 ...params,
             }),
 
         /**
-         * No description
+         * @description Create a new workspace.
          *
          * @tags workspace
          * @name WorkspaceControllerCreateWorkspace
@@ -3189,7 +3459,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
             }),
 
         /**
-         * No description
+         * @description Get a workspace by id.
          *
          * @tags workspace
          * @name WorkspaceControllerGetWorkspace
@@ -3204,7 +3474,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
             }),
 
         /**
-         * No description
+         * @description Update an existing workspace
          *
          * @tags workspace
          * @name WorkspaceControllerUpdateWorkspace
@@ -3220,7 +3490,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
             }),
 
         /**
-         * No description
+         * @description Deletes a workspace.
          *
          * @tags workspace
          * @name WorkspaceControllerDeleteWorkspace
@@ -3234,7 +3504,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
             }),
 
         /**
-         * No description
+         * @description Get invitation token with id.
          *
          * @tags invitation-token
          * @name InvitationTokenControllerGetInvitationToken
@@ -3249,7 +3519,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
             }),
 
         /**
-         * No description
+         * @description Create a new invitation token.
          *
          * @tags invitation-token
          * @name InvitationTokenControllerCreateWorkspace
@@ -3265,22 +3535,32 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
             }),
 
         /**
-         * No description
+         * @description Get invitations.
          *
          * @tags invite-user
          * @name InviteUserControllerGetUsers
          * @summary Get invitations
          * @request GET:/api/v2/invite-user
          */
-        inviteUserControllerGetUsers: (params: RequestParams = {}) =>
+        inviteUserControllerGetUsers: (
+            query?: {
+                /** @min 1 */
+                limit?: number
+                /** @min 1 */
+                offset?: number
+                text?: string
+            },
+            params: RequestParams = {}
+        ) =>
             this.request<void, any>({
                 path: `/api/v2/invite-user`,
                 method: 'GET',
+                query: query,
                 ...params,
             }),
 
         /**
-         * No description
+         * @description Create an invitation entry.
          *
          * @tags invite-user
          * @name InviteUserControllerCreateInvitation
@@ -3311,7 +3591,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
             }),
 
         /**
-         * No description
+         * @description Get entity's children.
          *
          * @tags entities
          * @name InstanceEntityControllerGetEntitysChildren
@@ -3326,7 +3606,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
             }),
 
         /**
-         * No description
+         * @description Get entity's children.
          *
          * @tags entities
          * @name InstanceEntityControllerRemoveEntity
@@ -3348,14 +3628,15 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
          * @request POST:/api/v2/subscription/manage-subscriptions
          */
         subscriptionControllerValidatePayment: (params: RequestParams = {}) =>
-            this.request<void, any>({
+            this.request<Coverage, any>({
                 path: `/api/v2/subscription/manage-subscriptions`,
                 method: 'POST',
+                format: 'json',
                 ...params,
             }),
 
         /**
-         * No description
+         * @description Get filtered and grouped statistics for a single run aggregation
          *
          * @tags analytics
          * @name AnalyticsControllerGetRunRuleStatistics
@@ -3378,7 +3659,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
             }),
 
         /**
-         * No description
+         * @description Get analytics for all components in an application.
          *
          * @tags analytics
          * @name AnalyticsControllerGetComponentRuleStatistics
@@ -3400,7 +3681,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
             }),
 
         /**
-         * No description
+         * @description Get analytics for all pages in an application.
          *
          * @tags analytics
          * @name AnalyticsControllerGetPageRuleStatistics

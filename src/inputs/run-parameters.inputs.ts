@@ -21,7 +21,7 @@ export const RunParametersSchema = z.object({
      * @default 3
      */
     actionRetryAttempts: z.coerce.number().optional().default(3),
-})
+}).default({})
 
 export type RunParameters = z.infer<typeof RunParametersSchema>
 

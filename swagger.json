@@ -309,6 +309,7 @@
       "get": {
         "operationId": "AuthController_getPermissions",
         "summary": "Get permissions",
+        "description": "With the given JWT return user relevant information.",
         "parameters": [],
         "responses": {
           "200": {
@@ -340,7 +341,17 @@
         "parameters": [],
         "responses": {
           "200": {
-            "description": ""
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CoverageDto"
+                  }
+                }
+              }
+            }
           }
         }
       },
@@ -359,7 +370,14 @@
         },
         "responses": {
           "201": {
-            "description": ""
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CoverageDto"
+                }
+              }
+            }
           }
         }
       }
@@ -379,7 +397,14 @@
         ],
         "responses": {
           "200": {
-            "description": ""
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CoverageDto"
+                }
+              }
+            }
           }
         }
       },
@@ -407,7 +432,14 @@
         },
         "responses": {
           "200": {
-            "description": ""
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CoverageDto"
+                }
+              }
+            }
           }
         }
       },
@@ -445,7 +477,17 @@
         ],
         "responses": {
           "200": {
-            "description": ""
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CoverageStatisticsDto"
+                  }
+                }
+              }
+            }
           }
         }
       }
@@ -473,7 +515,14 @@
         ],
         "responses": {
           "200": {
-            "description": ""
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
           }
         }
       }
@@ -501,7 +550,17 @@
         ],
         "responses": {
           "200": {
-            "description": ""
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CoverageDto"
+                  }
+                }
+              }
+            }
           }
         }
       }
@@ -539,7 +598,14 @@
         },
         "responses": {
           "200": {
-            "description": ""
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CoverageDto"
+                }
+              }
+            }
           }
         }
       }
@@ -567,6 +633,8 @@
     "/api/v2/coverage/{id}/assets": {
       "get": {
         "operationId": "CoverageController_getAssetsCoverage",
+        "summary": "",
+        "description": "Get assets summary statistics.",
         "parameters": [
           {
             "name": "id",
@@ -594,6 +662,8 @@
     "/api/v2/coverage/{id}/pages": {
       "get": {
         "operationId": "CoverageController_getPagesCoverage",
+        "summary": "",
+        "description": "Get pages summary statistics.",
         "parameters": [
           {
             "name": "id",
@@ -606,7 +676,14 @@
         ],
         "responses": {
           "200": {
-            "description": ""
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
           }
         }
       }
@@ -614,6 +691,8 @@
     "/api/v2/coverage/{id}/run/{runId}": {
       "get": {
         "operationId": "CoverageController_getRunsFullCoverage",
+        "summary": "",
+        "description": "Get pages summary statistics.",
         "parameters": [
           {
             "name": "id",
@@ -667,6 +746,7 @@
       "get": {
         "operationId": "TagsController_getTagsWithIds",
         "summary": "Get tags with ids",
+        "description": "Get tags with ids",
         "parameters": [
           {
             "name": "ids",
@@ -694,6 +774,7 @@
       "get": {
         "operationId": "TagsController_getAppTags",
         "summary": "Get applications tags",
+        "description": "Get application's tags",
         "parameters": [
           {
             "name": "id",
@@ -716,6 +797,7 @@
       "post": {
         "operationId": "TagsController_create",
         "summary": "Create tag",
+        "description": "Create tag.",
         "parameters": [
           {
             "name": "id",
@@ -747,6 +829,8 @@
       },
       "put": {
         "operationId": "TagsController_updateTag",
+        "summary": "",
+        "description": "Update tag.",
         "parameters": [
           {
             "name": "id",
@@ -780,6 +864,8 @@
     "/api/v2/tags/{id}/{tagId}": {
       "delete": {
         "operationId": "TagsController_removeTag",
+        "summary": "",
+        "description": "Delete tag.",
         "parameters": [
           {
             "name": "id",
@@ -812,6 +898,7 @@
       "get": {
         "operationId": "ApplicationController_getApplications",
         "summary": "Get applications",
+        "description": "Get applications.",
         "parameters": [],
         "responses": {
           "200": {
@@ -819,7 +906,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ApplicationResponse"
+                  "$ref": "#/components/schemas/TransformedApplicationResponse"
                 }
               }
             }
@@ -831,6 +918,8 @@
       },
       "post": {
         "operationId": "ApplicationController_createApplication",
+        "summary": "",
+        "description": "Create application.",
         "parameters": [],
         "requestBody": {
           "required": true,
@@ -852,6 +941,16 @@
                 }
               }
             }
+          },
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApplicationResponse"
+                }
+              }
+            }
           }
         },
         "tags": [
@@ -863,6 +962,7 @@
       "get": {
         "operationId": "ApplicationController_getApplication",
         "summary": "Get application with id",
+        "description": "Get application with id.",
         "parameters": [
           {
             "name": "id",
@@ -879,7 +979,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ApplicationResponse"
+                  "$ref": "#/components/schemas/TransformedApplicationResponse"
                 }
               }
             }
@@ -891,6 +991,8 @@
       },
       "put": {
         "operationId": "ApplicationController_update",
+        "summary": "",
+        "description": "Update application.",
         "parameters": [
           {
             "name": "id",
@@ -922,6 +1024,8 @@
       },
       "delete": {
         "operationId": "ApplicationController_remove",
+        "summary": "",
+        "description": "Delete application.",
         "parameters": [
           {
             "name": "id",
@@ -946,6 +1050,7 @@
       "get": {
         "operationId": "ApplicationController_getApplicationsTags",
         "summary": "Get the application's tags",
+        "description": "Get the application's tags.",
         "parameters": [
           {
             "name": "id",
@@ -1008,6 +1113,7 @@
       "get": {
         "operationId": "PermissionController_getPermissions",
         "summary": "Get permissions",
+        "description": "Get permissions.",
         "parameters": [],
         "responses": {
           "200": {
@@ -1027,6 +1133,8 @@
       },
       "post": {
         "operationId": "PermissionController_createPermission",
+        "summary": "",
+        "description": "Create permission.",
         "parameters": [],
         "requestBody": {
           "required": true,
@@ -1048,6 +1156,16 @@
                 }
               }
             }
+          },
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PermissionResponse"
+                }
+              }
+            }
           }
         },
         "tags": [
@@ -1059,6 +1177,7 @@
       "get": {
         "operationId": "PermissionController_getPermission",
         "summary": "Get permission with id",
+        "description": "Get permission with id.",
         "parameters": [
           {
             "name": "id",
@@ -1087,6 +1206,8 @@
       },
       "put": {
         "operationId": "PermissionController_update",
+        "summary": "",
+        "description": "Update permission.",
         "parameters": [
           {
             "name": "id",
@@ -1125,6 +1246,8 @@
       },
       "delete": {
         "operationId": "PermissionController_remove",
+        "summary": "",
+        "description": "Delete permission.",
         "parameters": [
           {
             "name": "id",
@@ -1156,6 +1279,7 @@
       "get": {
         "operationId": "PermissionController_getResourcePermissions",
         "summary": "Get permission of the resource with id",
+        "description": "Get all the permissions of the resource with id",
         "parameters": [
           {
             "name": "id",
@@ -1187,6 +1311,7 @@
       "get": {
         "operationId": "PermissionController_getUserPermissions",
         "summary": "Get all the permissions of the user with id",
+        "description": "Get all the permissions of the user with id",
         "parameters": [
           {
             "name": "id",
@@ -1233,6 +1358,9 @@
         "responses": {
           "200": {
             "description": "Post a dataset"
+          },
+          "201": {
+            "description": ""
           }
         },
         "tags": [
@@ -1284,6 +1412,16 @@
           "200": {
             "description": "Generated a dataset with the requirements document."
           },
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
           "400": {
             "description": "Invalid requirements document provided."
           }
@@ -1312,6 +1450,16 @@
         "responses": {
           "200": {
             "description": "Post a Requirements Document and return the Requirements Document with its internal id"
+          },
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
           }
         },
         "tags": [
@@ -1349,6 +1497,16 @@
         "responses": {
           "200": {
             "description": "Post a Requirements Document and return the Requirements Document with its internal id"
+          },
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
           }
         },
         "tags": [
@@ -1387,6 +1545,16 @@
         "responses": {
           "200": {
             "description": "Creates a new file entity"
+          },
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
           }
         },
         "tags": [
@@ -1426,6 +1594,9 @@
         "responses": {
           "200": {
             "description": "Uploads a file to s3"
+          },
+          "201": {
+            "description": ""
           }
         },
         "tags": [
@@ -1474,7 +1645,14 @@
         "parameters": [],
         "responses": {
           "201": {
-            "description": ""
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IssueDto"
+                }
+              }
+            }
           }
         },
         "tags": [
@@ -1486,7 +1664,17 @@
         "parameters": [],
         "responses": {
           "200": {
-            "description": ""
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/IssueDto"
+                  }
+                }
+              }
+            }
           }
         },
         "tags": [
@@ -1508,7 +1696,14 @@
         },
         "responses": {
           "200": {
-            "description": ""
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IssueDto"
+                }
+              }
+            }
           }
         },
         "tags": [
@@ -1531,7 +1726,14 @@
         ],
         "responses": {
           "200": {
-            "description": ""
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IssueDto"
+                }
+              }
+            }
           }
         },
         "tags": [
@@ -1583,7 +1785,14 @@
         },
         "responses": {
           "200": {
-            "description": ""
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IssueDto"
+                }
+              }
+            }
           }
         },
         "tags": [
@@ -1614,7 +1823,17 @@
         ],
         "responses": {
           "200": {
-            "description": ""
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/RunLogDTO"
+                  }
+                }
+              }
+            }
           }
         },
         "tags": [
@@ -1625,6 +1844,9 @@
     "/api/v2/run": {
       "get": {
         "operationId": "RunsController_getRuns",
+        "summary": "",
+        "description": "This should be replaced with the endpoint below: GET('/:id')\nThe reason for this is that we want to enforce permissions on all enpoints",
+        "deprecated": true,
         "parameters": [],
         "responses": {
           "200": {
@@ -1661,7 +1883,17 @@
         ],
         "responses": {
           "200": {
-            "description": ""
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/RunMetadataDto"
+                  }
+                }
+              }
+            }
           }
         },
         "tags": [
@@ -1684,7 +1916,14 @@
         ],
         "responses": {
           "200": {
-            "description": ""
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "boolean"
+                }
+              }
+            }
           }
         },
         "tags": [
@@ -1844,7 +2083,14 @@
         ],
         "responses": {
           "200": {
-            "description": ""
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
           }
         },
         "tags": [
@@ -2007,6 +2253,9 @@
                 }
               }
             }
+          },
+          "201": {
+            "description": ""
           }
         },
         "tags": [
@@ -2203,7 +2452,26 @@
     "/api/v2/run/summaryStatistics/items": {
       "get": {
         "operationId": "RunsSummaryStatisticsController_getMultipleRunItemStats",
-        "parameters": [],
+        "parameters": [
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "offset",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "type": "number"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "Summary statistics for the given runs.",
@@ -2376,6 +2644,16 @@
           "200": {
             "description": "Run was started successfully."
           },
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
           "400": {
             "description": "Some error occured so the run was not started."
           },
@@ -2467,6 +2745,9 @@
         "responses": {
           "200": {
             "description": "Run's associated resources (agent, driver) are freed"
+          },
+          "201": {
+            "description": ""
           }
         },
         "tags": [
@@ -2490,6 +2771,16 @@
         "responses": {
           "200": {
             "description": "Run was stopped successfully."
+          },
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
           }
         },
         "tags": [
@@ -2554,11 +2845,39 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "offset",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "type": "number"
+            }
           }
         ],
         "responses": {
           "200": {
-            "description": ""
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object"
+                  }
+                }
+              }
+            }
           }
         },
         "tags": [
@@ -2569,6 +2888,8 @@
     "/api/v2/variants": {
       "get": {
         "operationId": "VariantController_getVariants",
+        "summary": "",
+        "description": "Get all of the variants available to the user.",
         "parameters": [],
         "responses": {
           "200": {
@@ -2588,6 +2909,8 @@
       },
       "post": {
         "operationId": "VariantController_createVariant",
+        "summary": "",
+        "description": "Create a new variant.",
         "parameters": [],
         "requestBody": {
           "required": true,
@@ -2609,6 +2932,16 @@
                 }
               }
             }
+          },
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VariantResponse"
+                }
+              }
+            }
           }
         },
         "tags": [
@@ -2619,6 +2952,8 @@
     "/api/v2/variants/{id}": {
       "get": {
         "operationId": "VariantController_getVariant",
+        "summary": "",
+        "description": "Get a variant by id. This request only returns a variant's\nmetadata, if you want the model use /variants/:id/model",
         "parameters": [
           {
             "name": "id",
@@ -2640,6 +2975,8 @@
       },
       "put": {
         "operationId": "VariantController_updateVariant",
+        "summary": "",
+        "description": "Update an existing variant.",
         "parameters": [
           {
             "name": "id",
@@ -2756,6 +3093,8 @@
     "/api/v2/variants/{id}/model": {
       "get": {
         "operationId": "ModelController_getApplicationModel",
+        "summary": "",
+        "description": "Get an application model including all of its components and\nrelationships.",
         "parameters": [
           {
             "name": "id",
@@ -2763,6 +3102,24 @@
             "in": "path",
             "schema": {
               "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "offset",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "type": "number"
             }
           }
         ],
@@ -2777,6 +3134,8 @@
       },
       "post": {
         "operationId": "ModelController_createApplicationModel",
+        "summary": "",
+        "description": "Create a new application model with all of its components and\nrelationships.",
         "parameters": [
           {
             "name": "id",
@@ -2800,6 +3159,9 @@
         "responses": {
           "200": {
             "description": "Create an application's model."
+          },
+          "201": {
+            "description": ""
           }
         },
         "tags": [
@@ -2831,6 +3193,8 @@
     "/api/v2/variants/{id}/model/components": {
       "post": {
         "operationId": "ModelController_addComponent",
+        "summary": "",
+        "description": "Add a component to an existing application.",
         "parameters": [
           {
             "name": "id",
@@ -2854,6 +3218,16 @@
         "responses": {
           "200": {
             "description": "Get the application's model."
+          },
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApplicationComponentDTO"
+                }
+              }
+            }
           }
         },
         "tags": [
@@ -2864,6 +3238,8 @@
     "/api/v2/variants/{id}/model/components/{compId}": {
       "put": {
         "operationId": "ModelController_updateComponent",
+        "summary": "",
+        "description": "Update an existing component in an application.",
         "parameters": [
           {
             "name": "id",
@@ -2906,6 +3282,8 @@
       },
       "delete": {
         "operationId": "ModelController_deleteComponent",
+        "summary": "",
+        "description": "Delete an existing component from the application model. All of the\ncomponent's descendants and relationships are deleted from the model.\nReturns the ids for the components and relationships deleted.\n\nThis can create inconsistencies between any active tester's and active\nagent's local version of the model. It can also cause issues with the\nrun log, activities, and rules since they may now reference non-existent\napplication components.",
         "parameters": [
           {
             "name": "id",
@@ -3023,6 +3401,16 @@
         "responses": {
           "200": {
             "description": "Component's associations were appended."
+          },
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApplicationComponentsAssociationsDTO"
+                }
+              }
+            }
           }
         },
         "tags": [
@@ -3072,6 +3460,8 @@
     "/api/v2/variants/{id}/model/relationships": {
       "post": {
         "operationId": "ModelController_addRelationship",
+        "summary": "",
+        "description": "Add a relationship to an existing application.",
         "parameters": [
           {
             "name": "id",
@@ -3095,6 +3485,16 @@
         "responses": {
           "200": {
             "description": "Add a relationship to the model"
+          },
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApplicationRelationshipDTO"
+                }
+              }
+            }
           }
         },
         "tags": [
@@ -3169,6 +3569,9 @@
         "responses": {
           "200": {
             "description": "Make a set of updates to the application model"
+          },
+          "201": {
+            "description": ""
           }
         },
         "tags": [
@@ -3228,7 +3631,14 @@
         ],
         "responses": {
           "200": {
-            "description": ""
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
           }
         },
         "tags": [
@@ -3251,7 +3661,14 @@
         ],
         "responses": {
           "200": {
-            "description": ""
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
           }
         },
         "tags": [
@@ -3297,7 +3714,14 @@
         ],
         "responses": {
           "200": {
-            "description": ""
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
           }
         },
         "tags": [
@@ -3315,6 +3739,24 @@
             "in": "path",
             "schema": {
               "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "offset",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "type": "number"
             }
           }
         ],
@@ -3357,6 +3799,16 @@
         "responses": {
           "200": {
             "description": "Add a rule and return the rule with its internal id"
+          },
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AddRuleResponseDTO"
+                }
+              }
+            }
           }
         },
         "tags": [
@@ -3425,6 +3877,16 @@
         "responses": {
           "200": {
             "description": "Creates a new screenshot entity"
+          },
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
           }
         },
         "tags": [
@@ -3448,6 +3910,9 @@
         "responses": {
           "200": {
             "description": "Creates a public screenshot"
+          },
+          "201": {
+            "description": ""
           }
         },
         "tags": [
@@ -3471,6 +3936,9 @@
         "responses": {
           "200": {
             "description": "Uploads a screenshot jpeg"
+          },
+          "201": {
+            "description": ""
           }
         },
         "tags": [
@@ -3499,216 +3967,6 @@
         ]
       }
     },
-    "/api/v2/users": {
-      "get": {
-        "operationId": "UserController_getUsers",
-        "summary": "Get users",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "Get all the users.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/UserResponse"
-                }
-              }
-            }
-          }
-        },
-        "tags": [
-          "users"
-        ]
-      }
-    },
-    "/api/v2/users/{id}": {
-      "get": {
-        "operationId": "UserController_getUser",
-        "summary": "Get user with id",
-        "parameters": [
-          {
-            "name": "id",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Get user with id",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/UserResponse"
-                }
-              }
-            }
-          }
-        },
-        "tags": [
-          "users"
-        ]
-      },
-      "put": {
-        "operationId": "UserController_update",
-        "parameters": [
-          {
-            "name": "id",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/UpdateUserDto"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Update user.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/UserResponse"
-                }
-              }
-            }
-          }
-        },
-        "tags": [
-          "users"
-        ]
-      },
-      "delete": {
-        "operationId": "UserController_remove",
-        "parameters": [
-          {
-            "name": "id",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Delete user"
-          }
-        },
-        "tags": [
-          "users"
-        ]
-      }
-    },
-    "/api/v2/users/session": {
-      "get": {
-        "operationId": "UserController_getSession",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "tags": [
-          "users"
-        ]
-      }
-    },
-    "/api/v2/users/validateUser": {
-      "post": {
-        "operationId": "UserController_validateUser",
-        "parameters": [],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreateUserDto"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Returns user if its already created, creates user if doesnt exist."
-          }
-        },
-        "tags": [
-          "users"
-        ]
-      }
-    },
-    "/api/v2/users/activateUser/{id}": {
-      "post": {
-        "operationId": "UserController_activateUser",
-        "parameters": [
-          {
-            "name": "id",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Returns ok if user was marked as active successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/UserResponse"
-                }
-              }
-            }
-          }
-        },
-        "tags": [
-          "users"
-        ]
-      }
-    },
-    "/api/v2/users/deactivateUser/{id}": {
-      "post": {
-        "operationId": "UserController_deactivateUser",
-        "parameters": [
-          {
-            "name": "id",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Returns ok if user was marked as inactive successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/UserResponse"
-                }
-              }
-            }
-          }
-        },
-        "tags": [
-          "users"
-        ]
-      }
-    },
     "/api/v2/users/pat": {
       "post": {
         "operationId": "UserController_createPAT",
@@ -3727,7 +3985,14 @@
         },
         "responses": {
           "201": {
-            "description": ""
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreatePatResponseDTO"
+                }
+              }
+            }
           }
         },
         "tags": [
@@ -3783,10 +4048,314 @@
         ]
       }
     },
+    "/api/v2/users": {
+      "get": {
+        "operationId": "UserController_getUsers",
+        "summary": "Get users",
+        "description": "Get users.",
+        "parameters": [
+          {
+            "name": "workspaces",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "text",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "offset",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Get all the users.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserResponse"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "users"
+        ]
+      }
+    },
+    "/api/v2/users/{id}": {
+      "get": {
+        "operationId": "UserController_getUser",
+        "summary": "Get user with id",
+        "description": "Get user with id.",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Get user with id",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserResponse"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "users"
+        ]
+      },
+      "put": {
+        "operationId": "UserController_update",
+        "summary": "",
+        "description": "Update user.",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateUserDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Update user.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserResponse"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "users"
+        ]
+      },
+      "delete": {
+        "operationId": "UserController_remove",
+        "summary": "",
+        "description": "Delete user.",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Delete user"
+          }
+        },
+        "tags": [
+          "users"
+        ]
+      }
+    },
+    "/api/v2/users/session": {
+      "get": {
+        "operationId": "UserController_getSession",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "users"
+        ]
+      }
+    },
+    "/api/v2/users/validateUser": {
+      "post": {
+        "operationId": "UserController_validateUser",
+        "summary": "",
+        "description": "Returns user if it's already created, creates user if doesn't exist.",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateUserDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Returns user if its already created, creates user if doesnt exist."
+          },
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "users"
+        ]
+      }
+    },
+    "/api/v2/users/activateUser/{id}": {
+      "post": {
+        "operationId": "UserController_activateUser",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns ok if user was marked as active successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserResponse"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserResponse"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "users"
+        ]
+      }
+    },
+    "/api/v2/users/deactivateUser/{id}": {
+      "post": {
+        "operationId": "UserController_deactivateUser",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns ok if user was marked as inactive successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserResponse"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserResponse"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "users"
+        ]
+      }
+    },
     "/api/v2/workspace": {
       "get": {
         "operationId": "WorkspaceController_getWorkspaces",
-        "parameters": [],
+        "summary": "",
+        "description": "Get all of the workspaces available to the user.",
+        "parameters": [
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "offset",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "type": "number"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "Get all the workspaces.",
@@ -3805,6 +4374,8 @@
       },
       "post": {
         "operationId": "WorkspaceController_createWorkspace",
+        "summary": "",
+        "description": "Create a new workspace.",
         "parameters": [],
         "requestBody": {
           "required": true,
@@ -3826,6 +4397,16 @@
                 }
               }
             }
+          },
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WorkspaceResponse"
+                }
+              }
+            }
           }
         },
         "tags": [
@@ -3836,6 +4417,8 @@
     "/api/v2/workspace/{id}": {
       "get": {
         "operationId": "WorkspaceController_getWorkspace",
+        "summary": "",
+        "description": "Get a workspace by id.",
         "parameters": [
           {
             "name": "id",
@@ -3864,6 +4447,8 @@
       },
       "put": {
         "operationId": "WorkspaceController_updateWorkspace",
+        "summary": "",
+        "description": "Update an existing workspace",
         "parameters": [
           {
             "name": "id",
@@ -3895,6 +4480,8 @@
       },
       "delete": {
         "operationId": "WorkspaceController_deleteWorkspace",
+        "summary": "",
+        "description": "Deletes a workspace.",
         "parameters": [
           {
             "name": "id",
@@ -3919,6 +4506,7 @@
       "get": {
         "operationId": "InvitationTokenController_getInvitationToken",
         "summary": "Get invitation token with id",
+        "description": "Get invitation token with id.",
         "parameters": [
           {
             "name": "id",
@@ -3942,6 +4530,8 @@
     "/api/v2/invitation-token": {
       "post": {
         "operationId": "InvitationTokenController_createWorkspace",
+        "summary": "",
+        "description": "Create a new invitation token.",
         "parameters": [],
         "requestBody": {
           "required": true,
@@ -3956,6 +4546,16 @@
         "responses": {
           "200": {
             "description": "Create a new workspace."
+          },
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateInvitationTokenDto"
+                }
+              }
+            }
           }
         },
         "tags": [
@@ -3967,7 +4567,35 @@
       "get": {
         "operationId": "InviteUserController_getUsers",
         "summary": "Get invitations",
-        "parameters": [],
+        "description": "Get invitations.",
+        "parameters": [
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "offset",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "text",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "Get all the invitations."
@@ -3979,6 +4607,8 @@
       },
       "post": {
         "operationId": "InviteUserController_createInvitation",
+        "summary": "",
+        "description": "Create an invitation entry.",
         "parameters": [],
         "requestBody": {
           "required": true,
@@ -3993,6 +4623,16 @@
         "responses": {
           "200": {
             "description": "Create an invitation entry."
+          },
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
           }
         },
         "tags": [
@@ -4028,6 +4668,7 @@
       "get": {
         "operationId": "InstanceEntityController_getEntitysChildren",
         "summary": "Get entity's children",
+        "description": "Get entity's children.",
         "parameters": [
           {
             "name": "entityId",
@@ -4052,6 +4693,7 @@
       "delete": {
         "operationId": "InstanceEntityController_removeEntity",
         "summary": "Remove entity and it's children",
+        "description": "Get entity's children.",
         "parameters": [
           {
             "name": "entityId",
@@ -4078,7 +4720,14 @@
         "parameters": [],
         "responses": {
           "201": {
-            "description": ""
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
           }
         },
         "tags": [
@@ -4090,6 +4739,7 @@
       "post": {
         "operationId": "AnalyticsController_getRunRuleStatistics",
         "summary": "Get rule statistics for a run",
+        "description": "Get filtered and grouped statistics for a single run\n\n\naggregation",
         "parameters": [
           {
             "name": "appId",
@@ -4145,6 +4795,7 @@
       "post": {
         "operationId": "AnalyticsController_getComponentRuleStatistics",
         "summary": "Get rule statistics for all components in an application",
+        "description": "Get analytics for all components in an application.",
         "parameters": [
           {
             "name": "appId",
@@ -4186,6 +4837,7 @@
       "post": {
         "operationId": "AnalyticsController_getPageRuleStatistics",
         "summary": "Get rule statistics for all components in an application",
+        "description": "Get analytics for all pages in an application.",
         "parameters": [
           {
             "name": "appId",
@@ -4325,6 +4977,91 @@
           "parent"
         ]
       },
+      "TestResultStatisticsDto": {
+        "type": "object",
+        "properties": {
+          "passed": {
+            "type": "number"
+          },
+          "failed": {
+            "type": "number"
+          },
+          "untested": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "passed",
+          "failed",
+          "untested"
+        ]
+      },
+      "PerformanceStatisticsDto": {
+        "type": "object",
+        "properties": {
+          "ttl": {
+            "type": "number"
+          },
+          "lcp": {
+            "type": "number"
+          },
+          "loadTime": {
+            "type": "number"
+          },
+          "fcp": {
+            "type": "number"
+          },
+          "tti": {
+            "type": "number"
+          },
+          "cls": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "ttl",
+          "lcp",
+          "loadTime",
+          "fcp",
+          "tti",
+          "cls"
+        ]
+      },
+      "CoverageStatisticsDto": {
+        "type": "object",
+        "properties": {
+          "variant": {
+            "type": "string"
+          },
+          "component": {
+            "type": "string"
+          },
+          "passed": {
+            "type": "number"
+          },
+          "failed": {
+            "type": "number"
+          },
+          "functionality": {
+            "$ref": "#/components/schemas/TestResultStatisticsDto"
+          },
+          "resources": {
+            "$ref": "#/components/schemas/TestResultStatisticsDto"
+          },
+          "accesibility": {
+            "$ref": "#/components/schemas/TestResultStatisticsDto"
+          },
+          "performance": {
+            "$ref": "#/components/schemas/PerformanceStatisticsDto"
+          }
+        },
+        "required": [
+          "variant",
+          "component",
+          "passed",
+          "failed"
+        ]
+      },
       "Coverage": {
         "type": "object",
         "properties": {}
@@ -4374,6 +5111,11 @@
             "description": "The rule tested"
           },
           "results": {
+            "enum": [
+              "Passed",
+              "Failed",
+              "Unverified"
+            ],
             "type": "string",
             "description": "The result for rule tested"
           },
@@ -4404,8 +5146,45 @@
           "type",
           "run",
           "entry",
-          "time",
-          "page"
+          "time"
+        ]
+      },
+      "Action": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "enum": [
+              "CustomAction",
+              "Click",
+              "Fill Form",
+              "Submit Form",
+              "Type",
+              "Visit",
+              "Select",
+              "Upload File",
+              "Wait",
+              "Smart"
+            ],
+            "type": "string"
+          },
+          "run": {
+            "type": "string"
+          },
+          "entry": {
+            "type": "number"
+          },
+          "time": {
+            "type": "number"
+          },
+          "page": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "type",
+          "run",
+          "entry",
+          "time"
         ]
       },
       "ComponentCoverage": {
@@ -4422,12 +5201,41 @@
             "description": "The actions tested",
             "type": "array",
             "items": {
-              "type": "string"
+              "$ref": "#/components/schemas/Action"
             }
           },
           "performance": {
             "type": "object",
-            "description": "The the performance results"
+            "properties": {
+              "n": {
+                "required": true,
+                "type": "number"
+              },
+              "ttl": {
+                "required": true,
+                "type": "number"
+              },
+              "lcp": {
+                "required": true,
+                "type": "number"
+              },
+              "loadTime": {
+                "required": true,
+                "type": "number"
+              },
+              "fcp": {
+                "required": true,
+                "type": "number"
+              },
+              "tti": {
+                "required": true,
+                "type": "number"
+              },
+              "cls": {
+                "required": true,
+                "type": "number"
+              }
+            }
           },
           "component": {
             "type": "string",
@@ -4476,6 +5284,7 @@
         "properties": {
           "name": {
             "type": "string",
+            "minLength": 2,
             "example": "Performance",
             "description": "The name of the tag"
           },
@@ -4484,15 +5293,15 @@
             "description": "The id referencing the parent"
           },
           "type": {
-            "type": "string",
+            "type": "object",
+            "default": "custom",
             "example": "custom",
             "description": "The type of the tag. custom, core, default"
           }
         },
         "required": [
           "name",
-          "parent",
-          "type"
+          "parent"
         ]
       },
       "UpdateTagDto": {
@@ -4511,6 +5320,49 @@
         "required": [
           "_id",
           "name"
+        ]
+      },
+      "MetadataDTO": {
+        "type": "object",
+        "properties": {
+          "count": {
+            "type": "number"
+          },
+          "offset": {
+            "type": "number"
+          },
+          "limit": {
+            "type": "number"
+          },
+          "hasMore": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "count",
+          "offset",
+          "limit",
+          "hasMore"
+        ]
+      },
+      "TransformedApplicationResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/ApplicationResponse"
+          },
+          "metadata": {
+            "additionalProperties": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/MetadataDTO"
+              }
+            ]
+          }
+        },
+        "required": [
+          "data",
+          "metadata"
         ]
       },
       "ApplicationData": {
@@ -4542,6 +5394,13 @@
             "description": "User's email address"
           },
           "role": {
+            "enum": [
+              0,
+              1,
+              2,
+              3,
+              4
+            ],
             "type": "number",
             "example": "joh-doe@gmail.com",
             "description": "User's email address"
@@ -4563,7 +5422,7 @@
             "description": "Application's owners",
             "type": "array",
             "items": {
-              "type": "string"
+              "type": "object"
             }
           },
           "parent": {
@@ -4592,6 +5451,7 @@
         "properties": {
           "name": {
             "type": "string",
+            "minLength": 2,
             "description": "The name of the application"
           },
           "parentId": {
@@ -4609,6 +5469,7 @@
         "properties": {
           "name": {
             "type": "string",
+            "minLength": 5,
             "description": "The name of the application"
           }
         },
@@ -4640,6 +5501,13 @@
             "description": "The user"
           },
           "role": {
+            "enum": [
+              0,
+              1,
+              2,
+              3,
+              4
+            ],
             "type": "number",
             "example": 4,
             "description": "Role of the user for the resource"
@@ -4698,8 +5566,24 @@
           },
           "options": {
             "type": "object",
-            "description": "",
-            "example": ""
+            "properties": {
+              "name": {
+                "required": true,
+                "type": "string"
+              },
+              "category": {
+                "required": true,
+                "enum": [
+                  "valid",
+                  "invalid",
+                  "illegal",
+                  "minimum",
+                  "maximum",
+                  "empty"
+                ],
+                "type": "string"
+              }
+            }
           }
         },
         "required": [
@@ -4712,7 +5596,20 @@
         "properties": {
           "user": {
             "type": "object",
-            "description": ""
+            "properties": {
+              "id": {
+                "required": true,
+                "type": "string"
+              },
+              "name": {
+                "required": true,
+                "type": "string"
+              },
+              "apiKey": {
+                "required": true,
+                "type": "string"
+              }
+            }
           }
         },
         "required": [
@@ -4756,6 +5653,34 @@
           "severity",
           "status",
           "logs"
+        ]
+      },
+      "RunLogDTO": {
+        "type": "object",
+        "properties": {
+          "runId": {
+            "type": "string",
+            "description": "",
+            "example": ""
+          },
+          "runNumber": {
+            "type": "string",
+            "description": "",
+            "example": ""
+          },
+          "entries": {
+            "description": "",
+            "example": "",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "runId",
+          "runNumber",
+          "entries"
         ]
       },
       "SummaryStatisticsDTO": {
@@ -4874,6 +5799,44 @@
           "results"
         ]
       },
+      "ElementDTO": {
+        "type": "object",
+        "properties": {
+          "attributes": {
+            "type": "object",
+            "description": "",
+            "example": ""
+          }
+        },
+        "required": [
+          "attributes"
+        ]
+      },
+      "PositionDTO": {
+        "type": "object",
+        "properties": {
+          "x": {
+            "type": "number",
+            "description": "",
+            "example": ""
+          },
+          "y": {
+            "type": "number",
+            "description": "",
+            "example": ""
+          },
+          "z": {
+            "type": "number",
+            "description": "",
+            "example": ""
+          }
+        },
+        "required": [
+          "x",
+          "y",
+          "z"
+        ]
+      },
       "DimensionsDTO": {
         "type": "object",
         "properties": {
@@ -4918,6 +5881,87 @@
           "data"
         ]
       },
+      "PageComponentDTO": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "",
+            "example": ""
+          },
+          "label": {
+            "type": "string",
+            "description": "",
+            "example": ""
+          },
+          "type": {
+            "type": "string",
+            "description": "",
+            "example": ""
+          },
+          "element": {
+            "description": "",
+            "example": "",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ElementDTO"
+              }
+            ]
+          },
+          "components": {
+            "description": "",
+            "example": "",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/PageComponentDTO"
+              }
+            ]
+          },
+          "position": {
+            "description": "",
+            "example": "",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/PositionDTO"
+              }
+            ]
+          },
+          "dimensions": {
+            "description": "",
+            "example": "",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/DimensionsDTO"
+              }
+            ]
+          },
+          "content": {
+            "type": "object",
+            "description": "",
+            "example": ""
+          },
+          "item": {
+            "description": "",
+            "example": "",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ItemDTO"
+              }
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "label",
+          "type",
+          "element",
+          "components",
+          "position",
+          "dimensions",
+          "content",
+          "item"
+        ]
+      },
       "PageDTO": {
         "type": "object",
         "properties": {
@@ -4946,7 +5990,7 @@
             "example": "",
             "type": "array",
             "items": {
-              "type": "string"
+              "$ref": "#/components/schemas/PageComponentDTO"
             }
           },
           "dimensions": {
@@ -4997,34 +6041,6 @@
         "required": [
           "ok",
           "removedRuns"
-        ]
-      },
-      "RunLogDTO": {
-        "type": "object",
-        "properties": {
-          "runId": {
-            "type": "string",
-            "description": "",
-            "example": ""
-          },
-          "runNumber": {
-            "type": "string",
-            "description": "",
-            "example": ""
-          },
-          "entries": {
-            "description": "",
-            "example": "",
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          }
-        },
-        "required": [
-          "runId",
-          "runNumber",
-          "entries"
         ]
       },
       "RunStatusDTO": {
@@ -5302,9 +6318,73 @@
           "agentId"
         ]
       },
-      "RunDocument": {
+      "ObjectId": {
         "type": "object",
         "properties": {}
+      },
+      "RunDocument": {
+        "type": "object",
+        "properties": {
+          "applicationId": {
+            "$ref": "#/components/schemas/ObjectId"
+          },
+          "parameters": {
+            "$ref": "#/components/schemas/RunParametersDto"
+          },
+          "runNumber": {
+            "type": "number"
+          },
+          "startTime": {
+            "type": "string"
+          },
+          "endTime": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "initialWorkQueue": {
+            "type": "object"
+          },
+          "summaryStatistics": {
+            "type": "object"
+          },
+          "results": {
+            "type": "object",
+            "properties": {
+              "passed": {
+                "required": true,
+                "type": "number"
+              },
+              "failed": {
+                "required": true,
+                "type": "number"
+              },
+              "untested": {
+                "required": true,
+                "type": "number"
+              },
+              "partial": {
+                "required": true,
+                "type": "number"
+              }
+            }
+          },
+          "templateName": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "applicationId",
+          "runNumber",
+          "startTime",
+          "endTime",
+          "status",
+          "initialWorkQueue",
+          "summaryStatistics",
+          "results",
+          "templateName"
+        ]
       },
       "VariantData": {
         "type": "object",
@@ -5335,6 +6415,13 @@
             "description": "User's email address"
           },
           "role": {
+            "enum": [
+              0,
+              1,
+              2,
+              3,
+              4
+            ],
             "type": "number",
             "example": "joh-doe@gmail.com",
             "description": "User's email address"
@@ -5356,7 +6443,7 @@
             "description": "Variants's owners",
             "type": "array",
             "items": {
-              "type": "string"
+              "type": "object"
             }
           },
           "parent": {
@@ -5385,6 +6472,7 @@
         "properties": {
           "name": {
             "type": "string",
+            "minLength": 2,
             "description": "The name of the variant"
           },
           "parentId": {
@@ -5393,7 +6481,19 @@
           },
           "data": {
             "type": "object",
-            "description": "The variants data such as defaultUrl or activitySets"
+            "properties": {
+              "activitySets": {
+                "required": false,
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "defaultUrl": {
+                "required": false,
+                "type": "string"
+              }
+            }
           }
         },
         "required": [
@@ -5411,7 +6511,19 @@
           },
           "data": {
             "type": "object",
-            "description": "The variants data such as defaultUrl or activitySets"
+            "properties": {
+              "activitySets": {
+                "required": false,
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "defaultUrl": {
+                "required": false,
+                "type": "string"
+              }
+            }
           }
         },
         "required": [
@@ -5437,7 +6549,7 @@
             "example": "",
             "type": "array",
             "items": {
-              "type": "string"
+              "type": "object"
             }
           },
           "edges": {
@@ -5445,7 +6557,7 @@
             "example": "",
             "type": "array",
             "items": {
-              "type": "string"
+              "type": "object"
             }
           }
         },
@@ -5454,6 +6566,32 @@
           "applicationId",
           "nodes",
           "edges"
+        ]
+      },
+      "EntityAssociationDTO": {
+        "type": "object",
+        "properties": {
+          "identifier": {
+            "type": "object",
+            "properties": {
+              "type": {
+                "required": true,
+                "type": "string"
+              },
+              "value": {
+                "required": true,
+                "type": "string"
+              }
+            }
+          },
+          "type": {
+            "type": "object",
+            "description": "The associated entity's type"
+          }
+        },
+        "required": [
+          "identifier",
+          "type"
         ]
       },
       "ApplicationComponentsAssociationsDTO": {
@@ -5479,7 +6617,7 @@
             "example": "",
             "type": "array",
             "items": {
-              "type": "string"
+              "$ref": "#/components/schemas/EntityAssociationDTO"
             }
           }
         },
@@ -5533,6 +6671,67 @@
           "data"
         ]
       },
+      "UpdateDTO": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "description": "",
+            "example": ""
+          },
+          "item": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "required": true,
+                "type": "string"
+              },
+              "name": {
+                "required": true,
+                "type": "string"
+              },
+              "type": {
+                "required": true,
+                "type": "string"
+              },
+              "data": {
+                "required": true,
+                "type": "object"
+              }
+            }
+          },
+          "relationship": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "required": true,
+                "type": "string"
+              },
+              "type": {
+                "required": true,
+                "type": "string"
+              },
+              "from": {
+                "required": true,
+                "type": "string"
+              },
+              "to": {
+                "required": true,
+                "type": "string"
+              },
+              "data": {
+                "required": true,
+                "type": "object"
+              }
+            }
+          }
+        },
+        "required": [
+          "type",
+          "item",
+          "relationship"
+        ]
+      },
       "ApplicationModelUpdateRequestDTO": {
         "type": "object",
         "properties": {
@@ -5546,7 +6745,7 @@
             "example": "",
             "type": "array",
             "items": {
-              "type": "string"
+              "$ref": "#/components/schemas/UpdateDTO"
             }
           }
         },
@@ -5581,6 +6780,96 @@
           "rule"
         ]
       },
+      "CreatePatDTO": {
+        "type": "object",
+        "properties": {
+          "expiresAt": {
+            "format": "date-time",
+            "type": "string",
+            "description": "When the PAT will expire and can no longer be used for authentication.\n\n\t\tBy default, PATs expire after 1 year. To create a PAT that never expires,\n\t\texplicitly set this field to `null`.",
+            "example": "2021-01-01T00:00:00.000Z"
+          },
+          "name": {
+            "type": "string",
+            "description": "The name of the PAT. Helps distinguish between PATs and to remember their purpose. For display purposes only. "
+          }
+        }
+      },
+      "CreatePatResponseDTO": {
+        "type": "object",
+        "properties": {
+          "apiKey": {
+            "type": "string",
+            "description": "The unencrypted key. This is only returned when creating a new PAT."
+          },
+          "name": {
+            "type": "string"
+          },
+          "expiresAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "_id": {
+            "type": "string"
+          },
+          "user": {
+            "type": "string",
+            "description": "user id"
+          },
+          "lastUsed": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "apiKey",
+          "user",
+          "lastUsed"
+        ]
+      },
+      "PatDTO": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "expiresAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "_id": {
+            "type": "string"
+          },
+          "user": {
+            "type": "string",
+            "description": "user id"
+          },
+          "lastUsed": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "user",
+          "lastUsed"
+        ]
+      },
       "UserResponse": {
         "type": "object",
         "properties": {
@@ -5612,7 +6901,7 @@
             "description": "User's stripe or payment ID"
           },
           "status": {
-            "type": "string",
+            "type": "object",
             "example": "active",
             "description": "User's status"
           },
@@ -5620,7 +6909,7 @@
             "description": "User workspaces",
             "type": "array",
             "items": {
-              "type": "string"
+              "$ref": "#/components/schemas/Workspace"
             }
           }
         },
@@ -5631,8 +6920,7 @@
           "email",
           "externalId",
           "paymentId",
-          "status",
-          "workspaces"
+          "status"
         ]
       },
       "UpdateUserDto": {
@@ -5669,68 +6957,7 @@
           }
         },
         "required": [
-          "email",
-          "externalId",
-          "paymentId"
-        ]
-      },
-      "CreatePatDTO": {
-        "type": "object",
-        "properties": {
-          "expiresAt": {
-            "format": "date-time",
-            "type": "string",
-            "description": "When the PAT will expire and can no longer be used for authentication.\n\n\t\tBy default, PATs expire after 1 year. To create a PAT that never expires,\n\t\texplicitly set this field to `null`.",
-            "example": "2021-01-01T00:00:00.000Z"
-          },
-          "name": {
-            "type": "string",
-            "description": "The name of the PAT. Helps distinguish between PATs and to remember their purpose. For display purposes only. "
-          }
-        },
-        "required": [
-          "expiresAt",
-          "name"
-        ]
-      },
-      "PatDTO": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string"
-          },
-          "expiresAt": {
-            "format": "date-time",
-            "type": "string"
-          },
-          "_id": {
-            "type": "string"
-          },
-          "user": {
-            "type": "string",
-            "description": "user id"
-          },
-          "lastUsed": {
-            "format": "date-time",
-            "type": "string"
-          },
-          "createdAt": {
-            "format": "date-time",
-            "type": "string"
-          },
-          "updatedAt": {
-            "format": "date-time",
-            "type": "string"
-          }
-        },
-        "required": [
-          "name",
-          "expiresAt",
-          "_id",
-          "user",
-          "lastUsed",
-          "createdAt",
-          "updatedAt"
+          "email"
         ]
       },
       "WorkspaceData": {
@@ -5762,6 +6989,13 @@
             "description": "User's email address"
           },
           "role": {
+            "enum": [
+              0,
+              1,
+              2,
+              3,
+              4
+            ],
             "type": "number",
             "example": "joh-doe@gmail.com",
             "description": "User's email address"
@@ -5788,7 +7022,7 @@
             "description": "Workspace's owners",
             "type": "array",
             "items": {
-              "type": "string"
+              "type": "object"
             }
           },
           "parent": {
@@ -5840,6 +7074,7 @@
         "properties": {
           "name": {
             "type": "string",
+            "minLength": 5,
             "example": "test's workspace",
             "description": "The name of the workspace"
           },
@@ -5854,8 +7089,7 @@
           }
         },
         "required": [
-          "name",
-          "plan"
+          "name"
         ]
       },
       "UpdateWorkspaceDto": {
@@ -5863,6 +7097,7 @@
         "properties": {
           "name": {
             "type": "string",
+            "minLength": 5,
             "example": "test's workspace",
             "description": "The name of the workspace"
           },
@@ -5922,14 +7157,14 @@
             "type": "string"
           },
           "ruleType": {
-            "type": "string",
             "enum": [
               "accessibility-rule",
               "functional-rule",
               "resource-rule",
               "webform-rule",
               "link-rule"
-            ]
+            ],
+            "type": "string"
           },
           "pageId": {
             "type": "string"
@@ -5938,7 +7173,6 @@
             "type": "string"
           },
           "componentType": {
-            "type": "string",
             "enum": [
               "Iframe",
               "Body",
@@ -5971,7 +7205,8 @@
               "Text Area",
               "Text Node",
               "Unclassified"
-            ]
+            ],
+            "type": "string"
           }
         }
       },
@@ -5979,6 +7214,7 @@
         "type": "object",
         "properties": {
           "filter": {
+            "default": {},
             "description": "Filters to apply to run logs before aggregating",
             "allOf": [
               {
@@ -6042,14 +7278,14 @@
             ]
           },
           "ruleType": {
-            "type": "string",
             "enum": [
               "accessibility-rule",
               "functional-rule",
               "resource-rule",
               "webform-rule",
               "link-rule"
-            ]
+            ],
+            "type": "string"
           },
           "pageId": {
             "oneOf": [
@@ -6072,7 +7308,6 @@
             ]
           },
           "componentType": {
-            "type": "string",
             "enum": [
               "Iframe",
               "Body",
@@ -6105,7 +7340,8 @@
               "Text Area",
               "Text Node",
               "Unclassified"
-            ]
+            ],
+            "type": "string"
           }
         },
         "required": [

@@ -17,12 +17,13 @@ export class Api {
     }
 
     public async getApplication(id: string) {
-        const res = await this._api.api.applicationControllerGetApplication(id)
+        const res = await this._api.api.applicationControllerGetApplication(id, { secure: true })
         return res.data
     }
 
-    private authParams({ apiKey, apiKeyId }: ApiKeyData): RequestParams {
-        if (!apiKey) return {}
+    private authParams(authData: ApiKeyData | null): RequestParams {
+        if (!authData) return {}
+        const { apiKeyId, apiKey } = authData
         const token = btoa(`${apiKeyId}:${apiKey}`)
         return {
             headers: {
