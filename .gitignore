@@ -15,3 +15,6 @@ node_modules
 
 # caches
 .tsbuildinfo
+
+# Build artifacts
+dist

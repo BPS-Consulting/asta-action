@@ -1,0 +1,31 @@
+name: 'asta'
+description: 'Test a web application with ASTA'
+
+inputs:
+
+  application:
+    description: 'The application to test. This can be a name or an ID'
+    required: true
+
+  variant:
+    description: 'The application variant to test. This can be a name or an ID'
+    required: true
+
+  run-template:
+    description: 'Configure the test run with an existing run template. This can be a template name or id'
+    required: false
+
+  parameters:
+    description: 'Parameters to configure the test run. These will override settings obtained from the `run-template`'
+    required: false
+
+  api-key:
+    description: |
+      A Personal Access Token (PAT) used to authenticate the run. Alternatively,
+       you can provide an API key using the ASTA_API_KEY environment variable.
+
+  api-key-id:
+    description: |
+      The ID of your Personal Access Token (PAT). May also be set via the
+      ASTA_API_KEY_ID environment variable.
+    

@@ -1,0 +1,6135 @@
+{
+  "openapi": "3.0.0",
+  "paths": {
+    "/api/v2/assets/{appId}/{type}": {
+      "get": {
+        "operationId": "AssetsController_findAll",
+        "summary": "Get assets for the given application with type",
+        "parameters": [
+          {
+            "name": "appId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "type",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Get assets for the given application with type",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/AssetDto"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "operationId": "AssetsController_create",
+        "summary": "Create asset",
+        "parameters": [
+          {
+            "name": "appId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "type",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateAssetDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Create asset",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AssetDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v2/assets/{appId}/{type}/application": {
+      "get": {
+        "operationId": "AssetsController_findAllByApplication",
+        "summary": "Get assets for the given application",
+        "parameters": [
+          {
+            "name": "appId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "type",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Get assets for the given application",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/AssetDto"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v2/assets/{appId}/{type}/{id}": {
+      "get": {
+        "operationId": "AssetsController_findOne",
+        "summary": "Get asset with type and id",
+        "parameters": [
+          {
+            "name": "appId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "type",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Get asset with type and id",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AssetDto"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "operationId": "AssetsController_update",
+        "summary": "Put asset with type",
+        "parameters": [
+          {
+            "name": "appId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "type",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AssetDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Update asset",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AssetDto"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "operationId": "AssetsController_remove",
+        "summary": "Delete asset",
+        "parameters": [
+          {
+            "name": "appId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "type",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Delete asset",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v2/assets/{appId}/{type}/{id}/tags": {
+      "put": {
+        "operationId": "AssetsController_updateTags",
+        "summary": "Update assets tags",
+        "parameters": [
+          {
+            "name": "appId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "type",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Update assets tags",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AssetDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v2/auth/whoami": {
+      "get": {
+        "operationId": "AuthController_getPermissions",
+        "summary": "Get permissions",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Get all the permissions available to the authenticated user"
+          }
+        },
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/api/v2/auth/logout": {
+      "post": {
+        "operationId": "AuthController_logOut",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/api/v2/coverage": {
+      "get": {
+        "operationId": "CoverageController_getAllCoverages",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      },
+      "post": {
+        "operationId": "CoverageController_createCoverage",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CoverageDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/v2/coverage/{id}": {
+      "get": {
+        "operationId": "CoverageController_getCoverageById",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      },
+      "put": {
+        "operationId": "CoverageController_updateCoverage",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CoverageDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      },
+      "delete": {
+        "operationId": "CoverageController_deleteCoverage",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/v2/coverage/variants/{id}/statistics": {
+      "get": {
+        "operationId": "CoverageController_getVariantCoverageStatistics",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/v2/coverage/variants/{id}/elems/{cid}": {
+      "get": {
+        "operationId": "CoverageController_getComponentCoverage",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "cid",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/v2/coverage/variants/{id}/{assetType}": {
+      "get": {
+        "operationId": "CoverageController_getVariantCoverage",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "assetType",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/v2/coverage/variants/{id}/flows/{fid}": {
+      "patch": {
+        "operationId": "CoverageController_patchFlowCoverage",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "fid",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CoverageDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/v2/coverage/variants/{id}/model/coverage": {
+      "patch": {
+        "operationId": "CoverageController_patchModelCoverage",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/v2/coverage/{id}/assets": {
+      "get": {
+        "operationId": "CoverageController_getAssetsCoverage",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Get Assets coverage",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Coverage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v2/coverage/{id}/pages": {
+      "get": {
+        "operationId": "CoverageController_getPagesCoverage",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/v2/coverage/{id}/run/{runId}": {
+      "get": {
+        "operationId": "CoverageController_getRunsFullCoverage",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "runId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Get variants coverage for the given run.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CoverageResponseDto"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v2/agents": {
+      "get": {
+        "operationId": "AgentsController_getAgents",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Get all active agents available to the user"
+          }
+        },
+        "tags": [
+          "agents"
+        ]
+      }
+    },
+    "/api/v2/tags": {
+      "get": {
+        "operationId": "TagsController_getTagsWithIds",
+        "summary": "Get tags with ids",
+        "parameters": [
+          {
+            "name": "ids",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Get tags with ids"
+          }
+        },
+        "tags": [
+          "tags"
+        ]
+      }
+    },
+    "/api/v2/tags/{id}": {
+      "get": {
+        "operationId": "TagsController_getAppTags",
+        "summary": "Get applications tags",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Get applications tags"
+          }
+        },
+        "tags": [
+          "tags"
+        ]
+      },
+      "post": {
+        "operationId": "TagsController_create",
+        "summary": "Create tag",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateTagDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Create Tag"
+          }
+        },
+        "tags": [
+          "tags"
+        ]
+      },
+      "put": {
+        "operationId": "TagsController_updateTag",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateTagDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Update Tag."
+          }
+        },
+        "tags": [
+          "tags"
+        ]
+      }
+    },
+    "/api/v2/tags/{id}/{tagId}": {
+      "delete": {
+        "operationId": "TagsController_removeTag",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "tagId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Delete applications tag"
+          }
+        },
+        "tags": [
+          "tags"
+        ]
+      }
+    },
+    "/api/v2/applications": {
+      "get": {
+        "operationId": "ApplicationController_getApplications",
+        "summary": "Get applications",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Get all the applications.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApplicationResponse"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "applications"
+        ]
+      },
+      "post": {
+        "operationId": "ApplicationController_createApplication",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateApplicationDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Create a new application.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApplicationResponse"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "applications"
+        ]
+      }
+    },
+    "/api/v2/applications/{id}": {
+      "get": {
+        "operationId": "ApplicationController_getApplication",
+        "summary": "Get application with id",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Get application with id",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApplicationResponse"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "applications"
+        ]
+      },
+      "put": {
+        "operationId": "ApplicationController_update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateApplicationDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Update Application."
+          }
+        },
+        "tags": [
+          "applications"
+        ]
+      },
+      "delete": {
+        "operationId": "ApplicationController_remove",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Delete application"
+          }
+        },
+        "tags": [
+          "applications"
+        ]
+      }
+    },
+    "/api/v2/applications/{id}/tags": {
+      "get": {
+        "operationId": "ApplicationController_getApplicationsTags",
+        "summary": "Get the application's tags",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Get the application's tags",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApplicationResponse"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "applications"
+        ]
+      }
+    },
+    "/api/v2/applications/parent/{id}": {
+      "get": {
+        "operationId": "ApplicationController_getApplicationWithParent",
+        "summary": "Get applications with given parent",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Get applications with a given parent",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApplicationResponse"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "applications"
+        ]
+      }
+    },
+    "/api/v2/permissions": {
+      "get": {
+        "operationId": "PermissionController_getPermissions",
+        "summary": "Get permissions",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Get all the permissions available to the authenticated user",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PermissionResponse"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "permissions"
+        ]
+      },
+      "post": {
+        "operationId": "PermissionController_createPermission",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreatePermissionDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Create a new permission.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PermissionResponse"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "permissions"
+        ]
+      }
+    },
+    "/api/v2/permissions/{id}": {
+      "get": {
+        "operationId": "PermissionController_getPermission",
+        "summary": "Get permission with id",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Get permission with id",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PermissionResponse"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "permissions"
+        ]
+      },
+      "put": {
+        "operationId": "PermissionController_update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdatePermissionRoleDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Update role permission.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PermissionResponse"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "permissions"
+        ]
+      },
+      "delete": {
+        "operationId": "PermissionController_remove",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Delete permission",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PermissionResponse"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "permissions"
+        ]
+      }
+    },
+    "/api/v2/permissions/resource/{id}": {
+      "get": {
+        "operationId": "PermissionController_getResourcePermissions",
+        "summary": "Get permission of the resource with id",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Get permission of the resource with id",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PermissionResponse"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "permissions"
+        ]
+      }
+    },
+    "/api/v2/permissions/user/{id}": {
+      "get": {
+        "operationId": "PermissionController_getUserPermissions",
+        "summary": "Get all the permissions of the user with id",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Get all the permissions of the user with id.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PermissionResponse"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "permissions"
+        ]
+      }
+    },
+    "/api/v2/datasets": {
+      "get": {
+        "operationId": "DatasetController_getDatasets",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Get all datasets"
+          }
+        },
+        "tags": [
+          "datasets"
+        ]
+      },
+      "post": {
+        "operationId": "DatasetController_postDatasets",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Post a dataset"
+          }
+        },
+        "tags": [
+          "datasets"
+        ]
+      }
+    },
+    "/api/v2/datasets/{id}": {
+      "get": {
+        "operationId": "DatasetController_getDataset",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Dataset found with id."
+          },
+          "404": {
+            "description": "Dataset not found."
+          }
+        },
+        "tags": [
+          "datasets"
+        ]
+      }
+    },
+    "/api/v2/datasets/generate": {
+      "post": {
+        "operationId": "DatasetController_generateDataset",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GenerateDatasetDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Generated a dataset with the requirements document."
+          },
+          "400": {
+            "description": "Invalid requirements document provided."
+          }
+        },
+        "tags": [
+          "datasets"
+        ]
+      }
+    },
+    "/api/v2/requirementsDocuments": {
+      "get": {
+        "operationId": "RequirementsDocumentsController_getRequirementsDocuments",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Get all requirements documents"
+          }
+        },
+        "tags": [
+          "requirementsDocuments"
+        ]
+      },
+      "post": {
+        "operationId": "RequirementsDocumentsController_postRequirementsDocument",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Post a Requirements Document and return the Requirements Document with its internal id"
+          }
+        },
+        "tags": [
+          "requirementsDocuments"
+        ]
+      }
+    },
+    "/api/v2/requirementsDocuments/{id}": {
+      "get": {
+        "operationId": "RequirementsDocumentsController_getRequirementsDocument",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Get all requirements documents"
+          }
+        },
+        "tags": [
+          "requirementsDocuments"
+        ]
+      }
+    },
+    "/api/v2/requirementsDocuments/v2": {
+      "post": {
+        "operationId": "RequirementsDocumentsController_postRequirementsDocumentV2",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Post a Requirements Document and return the Requirements Document with its internal id"
+          }
+        },
+        "tags": [
+          "requirementsDocuments"
+        ]
+      }
+    },
+    "/api/v2/drivers": {
+      "get": {
+        "operationId": "DriversController_getDrivers",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RequestWithUserDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Get all drivers available to the user"
+          }
+        },
+        "tags": [
+          "drivers"
+        ]
+      }
+    },
+    "/api/v2/files": {
+      "post": {
+        "operationId": "FileController_createFileEntity",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Creates a new file entity"
+          }
+        },
+        "tags": [
+          "Files"
+        ]
+      }
+    },
+    "/api/v2/files/{fileId}": {
+      "post": {
+        "operationId": "FileController_uploadFile",
+        "parameters": [
+          {
+            "name": "fileId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "content-type",
+            "required": true,
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "content-length",
+            "required": true,
+            "in": "header",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Uploads a file to s3"
+          }
+        },
+        "tags": [
+          "Files"
+        ]
+      },
+      "get": {
+        "operationId": "FileController_getFile",
+        "parameters": [
+          {
+            "name": "fileId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Get a file by its id"
+          }
+        },
+        "tags": [
+          "Files"
+        ]
+      }
+    },
+    "/api/v2/health": {
+      "get": {
+        "operationId": "HealthController_getHealth",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Get the health of the application."
+          }
+        },
+        "tags": [
+          "health"
+        ]
+      }
+    },
+    "/api/v2/issues": {
+      "post": {
+        "operationId": "IssueController_create",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "issues"
+        ]
+      },
+      "get": {
+        "operationId": "IssueController_getAll",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "issues"
+        ]
+      },
+      "put": {
+        "operationId": "IssueController_updateOne",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/IssueDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "issues"
+        ]
+      }
+    },
+    "/api/v2/issues/{id}": {
+      "get": {
+        "operationId": "IssueController_get",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "issues"
+        ]
+      },
+      "delete": {
+        "operationId": "IssueController_delete",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "issues"
+        ]
+      },
+      "put": {
+        "operationId": "IssueController_update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/IssueDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "issues"
+        ]
+      }
+    },
+    "/api/v2/issues/{id}/logs/{appId}": {
+      "get": {
+        "operationId": "IssueController_getLogs",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "appId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "issues"
+        ]
+      }
+    },
+    "/api/v2/run": {
+      "get": {
+        "operationId": "RunsController_getRuns",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "List runs.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/RunMetadataDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "run"
+        ]
+      }
+    },
+    "/api/v2/run/{id}": {
+      "get": {
+        "operationId": "RunsController_getVariantRuns",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "run"
+        ]
+      }
+    },
+    "/api/v2/run/variant/{id}/hasRuns": {
+      "get": {
+        "operationId": "RunsController_hasRuns",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "run"
+        ]
+      }
+    },
+    "/api/v2/run/{runId}/statistics": {
+      "get": {
+        "operationId": "RunsController_getSummaryStatistics",
+        "parameters": [
+          {
+            "name": "runId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Get a run's summary statistics.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SummaryStatisticsDTO"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "run"
+        ]
+      }
+    },
+    "/api/v2/run/{runId}/currentPage": {
+      "get": {
+        "operationId": "RunsController_getCurrentPage",
+        "parameters": [
+          {
+            "name": "runId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Get a run's current page.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PageDTO"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "run"
+        ]
+      }
+    },
+    "/api/v2/run/{variantId}": {
+      "delete": {
+        "operationId": "RunsController_remove",
+        "parameters": [
+          {
+            "name": "variantId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Get a run's current page.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RemoveRunsResponseDTO"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "run"
+        ]
+      }
+    },
+    "/api/v2/run/parameters": {
+      "get": {
+        "operationId": "RunParametersController_getAll",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "List run paramters."
+          }
+        },
+        "tags": [
+          "run"
+        ]
+      },
+      "post": {
+        "operationId": "RunParametersController_create",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": "Create run paramters."
+          }
+        },
+        "tags": [
+          "run"
+        ]
+      }
+    },
+    "/api/v2/run/parameters/{id}": {
+      "get": {
+        "operationId": "RunParametersController_get",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List run paramters."
+          }
+        },
+        "tags": [
+          "run"
+        ]
+      },
+      "put": {
+        "operationId": "RunParametersController_update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "run"
+        ]
+      }
+    },
+    "/api/v2/run/parameters/{id}/delete": {
+      "post": {
+        "operationId": "RunParametersController_delete",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "run"
+        ]
+      }
+    },
+    "/api/v2/run/{runId}/log": {
+      "get": {
+        "operationId": "RunsLogController_getRunLog",
+        "parameters": [
+          {
+            "name": "runId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Log for runId.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RunLogDTO"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Log for runId was not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RunLogDTO"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "run"
+        ]
+      },
+      "put": {
+        "operationId": "RunsLogController_updateRunLog",
+        "parameters": [
+          {
+            "name": "runId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RunLogDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Write the log for a run.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RunLogDTO"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "run"
+        ]
+      }
+    },
+    "/api/v2/run/log": {
+      "get": {
+        "operationId": "RunsLogController_getLogs",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RunStatusDTO"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "run"
+        ]
+      }
+    },
+    "/api/v2/run/{runId}/log/append": {
+      "post": {
+        "operationId": "RunsLogController_appendRunLog",
+        "parameters": [
+          {
+            "name": "runId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AppendRunLogRequestDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Append the log for a run.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RunLogDTO"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "run"
+        ]
+      }
+    },
+    "/api/v2/run/{id}/status": {
+      "get": {
+        "operationId": "RunsStatusController_getStatus",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Get a run's status",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RunStatusDTO"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "run"
+        ]
+      },
+      "put": {
+        "operationId": "RunsStatusController_updateStatus",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RunStatusDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Update a run's status.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RunStatusDTO"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "run"
+        ]
+      }
+    },
+    "/api/v2/run/{runId}/summaryStatistics": {
+      "get": {
+        "operationId": "RunsSummaryStatisticsController_get",
+        "parameters": [
+          {
+            "name": "runId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Summary statistics for runId.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SummaryStatisticsDTO"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No summary statistics found for runId.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SummaryStatisticsDTO"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "run"
+        ]
+      },
+      "put": {
+        "operationId": "RunsSummaryStatisticsController_updateSummaryStatistics",
+        "parameters": [
+          {
+            "name": "runId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SummaryStatisticsDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Updated summary statistics.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SummaryStatisticsDTO"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "run"
+        ]
+      }
+    },
+    "/api/v2/run/{runId}/summaryStatistics/items": {
+      "get": {
+        "operationId": "RunsSummaryStatisticsController_getItemStats",
+        "parameters": [
+          {
+            "name": "runId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Summary statistics for runId.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SummaryStatisticsDTO"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No summary statistics found for runId.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SummaryStatisticsDTO"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "run"
+        ]
+      }
+    },
+    "/api/v2/run/summaryStatistics/items": {
+      "get": {
+        "operationId": "RunsSummaryStatisticsController_getMultipleRunItemStats",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Summary statistics for the given runs.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SummaryStatisticsDTO"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No summary statistics found for the given runs.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SummaryStatisticsDTO"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "run"
+        ]
+      }
+    },
+    "/api/v2/run/{runId}/summaryStatistics/rules": {
+      "get": {
+        "operationId": "RunsSummaryStatisticsController_getRuleStats",
+        "parameters": [
+          {
+            "name": "runId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Summary statistics for runId.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SummaryStatisticsDTO"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No summary statistics found for runId.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SummaryStatisticsDTO"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "run"
+        ]
+      }
+    },
+    "/api/v2/run/{runId}/workQueue": {
+      "get": {
+        "operationId": "RunsWorkQueueController_get",
+        "parameters": [
+          {
+            "name": "runId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Work queue for runId.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WorkQueueDTO"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Work queue for runId was not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WorkQueueDTO"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "run"
+        ]
+      },
+      "put": {
+        "operationId": "RunsWorkQueueController_update",
+        "parameters": [
+          {
+            "name": "runId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WorkQueueDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Updated work queue.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WorkQueueDTO"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "run"
+        ]
+      }
+    },
+    "/api/v2/start/variant/{id}": {
+      "post": {
+        "operationId": "StartRunController_startRun",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/StartRunRequestDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Run was started successfully."
+          },
+          "400": {
+            "description": "Some error occured so the run was not started."
+          },
+          "403": {
+            "description": "The user does not have permission to use the driver requested."
+          },
+          "500": {
+            "description": "An unknown error occured which prevented the run from starting."
+          }
+        },
+        "tags": [
+          "start"
+        ]
+      }
+    },
+    "/api/v2/run/options": {
+      "get": {
+        "operationId": "StartOptionsController_getStartOptions",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "The start options available to the user."
+          }
+        },
+        "tags": [
+          "run"
+        ]
+      }
+    },
+    "/api/v2/run/{runId}/pause": {
+      "post": {
+        "operationId": "StopRunController_pauseRun",
+        "parameters": [
+          {
+            "name": "runId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Command was successful"
+          }
+        },
+        "tags": [
+          "run"
+        ]
+      }
+    },
+    "/api/v2/run/{runId}/resume": {
+      "post": {
+        "operationId": "StopRunController_resumeRun",
+        "parameters": [
+          {
+            "name": "runId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Command was successful"
+          }
+        },
+        "tags": [
+          "run"
+        ]
+      }
+    },
+    "/api/v2/run/{runId}/stopComplete": {
+      "post": {
+        "operationId": "StopRunController_stopComplete",
+        "parameters": [
+          {
+            "name": "runId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Run's associated resources (agent, driver) are freed"
+          }
+        },
+        "tags": [
+          "run"
+        ]
+      }
+    },
+    "/api/v2/run/{runId}/stop": {
+      "post": {
+        "operationId": "StopRunController_stopRun",
+        "parameters": [
+          {
+            "name": "runId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Run was stopped successfully."
+          }
+        },
+        "tags": [
+          "run"
+        ]
+      }
+    },
+    "/api/v2/runs/{id}/run/{runNumber}": {
+      "get": {
+        "operationId": "RunsLogControllerV2_getRun",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "runNumber",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RunDocument"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "runs"
+        ]
+      }
+    },
+    "/api/v2/runs/{id}/log/{runNumber}": {
+      "get": {
+        "operationId": "RunsLogControllerV2_getRunLog",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "runNumber",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "runs"
+        ]
+      }
+    },
+    "/api/v2/variants": {
+      "get": {
+        "operationId": "VariantController_getVariants",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Get all the variants.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VariantResponse"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "variants"
+        ]
+      },
+      "post": {
+        "operationId": "VariantController_createVariant",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateVariantDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Create a new variant.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VariantResponse"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "variants"
+        ]
+      }
+    },
+    "/api/v2/variants/{id}": {
+      "get": {
+        "operationId": "VariantController_getVariant",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Get the variant with id."
+          }
+        },
+        "tags": [
+          "variants"
+        ]
+      },
+      "put": {
+        "operationId": "VariantController_updateVariant",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateVariantDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Update an existing variant.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VariantResponse"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "variants"
+        ]
+      }
+    },
+    "/api/v2/variants/parent/{id}": {
+      "get": {
+        "operationId": "VariantController_getVariantsWithParent",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Get variants with given parent",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VariantResponse"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "variants"
+        ]
+      }
+    },
+    "/api/v2/variants/{id}/workspace": {
+      "get": {
+        "operationId": "VariantController_getVariantsWorkspace",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Get the variant's workspace"
+          }
+        },
+        "tags": [
+          "variants"
+        ]
+      }
+    },
+    "/api/v2/variants/{id}/application": {
+      "get": {
+        "operationId": "VariantController_getVariantsApplication",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Get the variant's application"
+          }
+        },
+        "tags": [
+          "variants"
+        ]
+      }
+    },
+    "/api/v2/variants/{id}/model": {
+      "get": {
+        "operationId": "ModelController_getApplicationModel",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Get the application's model."
+          }
+        },
+        "tags": [
+          "variants"
+        ]
+      },
+      "post": {
+        "operationId": "ModelController_createApplicationModel",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ApplicationModelDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Create an application's model."
+          }
+        },
+        "tags": [
+          "variants"
+        ]
+      },
+      "delete": {
+        "operationId": "ModelController_removeModel",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "variants"
+        ]
+      }
+    },
+    "/api/v2/variants/{id}/model/components": {
+      "post": {
+        "operationId": "ModelController_addComponent",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ApplicationComponentDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Get the application's model."
+          }
+        },
+        "tags": [
+          "variants"
+        ]
+      }
+    },
+    "/api/v2/variants/{id}/model/components/{compId}": {
+      "put": {
+        "operationId": "ModelController_updateComponent",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "compId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ApplicationComponentDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Component was updated"
+          },
+          "403": {
+            "description": "Component was BROWSER_NODE or COMMON_COMPONENTS_NODE and cannot be updated"
+          }
+        },
+        "tags": [
+          "variants"
+        ]
+      },
+      "delete": {
+        "operationId": "ModelController_deleteComponent",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "compId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Component, descendants, and relationships deleted from the model."
+          },
+          "403": {
+            "description": "Component was BROWSER_NODE or COMMON_COMPONENTS_NODE and cannot be updated."
+          }
+        },
+        "tags": [
+          "variants"
+        ]
+      }
+    },
+    "/api/v2/variants/{id}/model/componentAssociations": {
+      "get": {
+        "operationId": "ModelController_getComponentsAssociations",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of this application's component's assocations with entities"
+          }
+        },
+        "tags": [
+          "variants"
+        ]
+      }
+    },
+    "/api/v2/variants/{id}/model/componentAssociations/{compId}": {
+      "get": {
+        "operationId": "ModelController_getComponentAssociations",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "compId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of entities associated with this component"
+          }
+        },
+        "tags": [
+          "variants"
+        ]
+      },
+      "post": {
+        "operationId": "ModelController_addComponentAssociations",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "compId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ApplicationComponentsAssociationsDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Component's associations were appended."
+          }
+        },
+        "tags": [
+          "variants"
+        ]
+      },
+      "put": {
+        "operationId": "ModelController_updateComponentsAssociation",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "compId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ApplicationComponentsAssociationsDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Component's assocaited were updated."
+          }
+        },
+        "tags": [
+          "variants"
+        ]
+      }
+    },
+    "/api/v2/variants/{id}/model/relationships": {
+      "post": {
+        "operationId": "ModelController_addRelationship",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ApplicationRelationshipDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Add a relationship to the model"
+          }
+        },
+        "tags": [
+          "variants"
+        ]
+      }
+    },
+    "/api/v2/variants/{id}/model/relationships/{relId}": {
+      "put": {
+        "operationId": "ModelController_updateRelationship",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "relId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ApplicationRelationshipDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Update an existing relationship in the model"
+          }
+        },
+        "tags": [
+          "variants"
+        ]
+      }
+    },
+    "/api/v2/variants/{id}/model/update": {
+      "post": {
+        "operationId": "ModelController_updateModel",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ApplicationModelUpdateRequestDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Make a set of updates to the application model"
+          }
+        },
+        "tags": [
+          "variants"
+        ]
+      }
+    },
+    "/api/v2/variants/{id}/model/components/{cId}/coverage": {
+      "patch": {
+        "operationId": "CoverageController_patchComponentCoverage",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "cId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "variants"
+        ]
+      },
+      "get": {
+        "operationId": "CoverageController_getComponentsCoverage",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "cId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "variants"
+        ]
+      }
+    },
+    "/api/v2/variants/{id}/model/coverage": {
+      "get": {
+        "operationId": "CoverageController_getVariantsCoverage",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "variants"
+        ]
+      }
+    },
+    "/api/v2/variants/{id}/coverage/rules": {
+      "get": {
+        "operationId": "CoverageController_getCoverage",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Get rules coverage for a variant"
+          }
+        },
+        "tags": [
+          "variants"
+        ]
+      }
+    },
+    "/api/v2/variants/{id}/model/coverage/simple": {
+      "get": {
+        "operationId": "CoverageController_getSimpleVariantCoverage",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "variants"
+        ]
+      }
+    },
+    "/api/v2/variants/{id}/model/coverage/filters": {
+      "get": {
+        "operationId": "CoverageController_getCoverageWithFilters",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "variants"
+        ]
+      }
+    },
+    "/api/v2/rules": {
+      "get": {
+        "operationId": "RulesController_getRules",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Get all of the rules in the system"
+          }
+        },
+        "tags": [
+          "rules"
+        ]
+      },
+      "post": {
+        "operationId": "RulesController_addRule",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddRuleRequestDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Add a rule and return the rule with its internal id"
+          }
+        },
+        "tags": [
+          "rules"
+        ]
+      }
+    },
+    "/api/v2/rules/{id}": {
+      "get": {
+        "operationId": "RulesController_getRuleById",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Get a rule by id"
+          }
+        },
+        "tags": [
+          "rules"
+        ]
+      },
+      "put": {
+        "operationId": "RulesController_updateRule",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddRuleResponseDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Rule was updated"
+          }
+        },
+        "tags": [
+          "rules"
+        ]
+      }
+    },
+    "/api/v2/screenshots": {
+      "post": {
+        "operationId": "ScreenshotController_createScreenshotEntity",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Creates a new screenshot entity"
+          }
+        },
+        "tags": [
+          "Screenshots"
+        ]
+      }
+    },
+    "/api/v2/screenshots/public/{id}": {
+      "post": {
+        "operationId": "ScreenshotController_addPublicScreenshot",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Creates a public screenshot"
+          }
+        },
+        "tags": [
+          "Screenshots"
+        ]
+      }
+    },
+    "/api/v2/screenshots/{screenshotId}": {
+      "post": {
+        "operationId": "ScreenshotController_uploadScreenshot",
+        "parameters": [
+          {
+            "name": "screenshotId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Uploads a screenshot jpeg"
+          }
+        },
+        "tags": [
+          "Screenshots"
+        ]
+      },
+      "get": {
+        "operationId": "ScreenshotController_getScreenshot",
+        "parameters": [
+          {
+            "name": "screenshotId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Get a screenshot by its id"
+          }
+        },
+        "tags": [
+          "Screenshots"
+        ]
+      }
+    },
+    "/api/v2/users": {
+      "get": {
+        "operationId": "UserController_getUsers",
+        "summary": "Get users",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Get all the users.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserResponse"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "users"
+        ]
+      }
+    },
+    "/api/v2/users/{id}": {
+      "get": {
+        "operationId": "UserController_getUser",
+        "summary": "Get user with id",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Get user with id",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserResponse"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "users"
+        ]
+      },
+      "put": {
+        "operationId": "UserController_update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateUserDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Update user.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserResponse"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "users"
+        ]
+      },
+      "delete": {
+        "operationId": "UserController_remove",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Delete user"
+          }
+        },
+        "tags": [
+          "users"
+        ]
+      }
+    },
+    "/api/v2/users/session": {
+      "get": {
+        "operationId": "UserController_getSession",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "users"
+        ]
+      }
+    },
+    "/api/v2/users/validateUser": {
+      "post": {
+        "operationId": "UserController_validateUser",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateUserDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Returns user if its already created, creates user if doesnt exist."
+          }
+        },
+        "tags": [
+          "users"
+        ]
+      }
+    },
+    "/api/v2/users/activateUser/{id}": {
+      "post": {
+        "operationId": "UserController_activateUser",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns ok if user was marked as active successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserResponse"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "users"
+        ]
+      }
+    },
+    "/api/v2/users/deactivateUser/{id}": {
+      "post": {
+        "operationId": "UserController_deactivateUser",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns ok if user was marked as inactive successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserResponse"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "users"
+        ]
+      }
+    },
+    "/api/v2/users/pat": {
+      "post": {
+        "operationId": "UserController_createPAT",
+        "summary": "Create a new PAT.",
+        "description": "Creates a new Personal Access Token (PAT) for the user making this request.",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreatePatDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "users"
+        ]
+      },
+      "get": {
+        "operationId": "UserController_findPATs",
+        "summary": "Get all PATs for the current user.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Returns all PATs for the current user. Even if the user has no PATs, a successful response with an empty array is returned.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PatDTO"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "users"
+        ]
+      }
+    },
+    "/api/v2/users/pat/{id}": {
+      "delete": {
+        "operationId": "UserController_revokePAT",
+        "summary": "Delete a PAT.",
+        "description": "Delete one of the current user's PATs by its ID. This is a no-op if the PAT does not exist or if it belongs to another user.",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns ok if the PAT was deleted successfully."
+          }
+        },
+        "tags": [
+          "users"
+        ]
+      }
+    },
+    "/api/v2/workspace": {
+      "get": {
+        "operationId": "WorkspaceController_getWorkspaces",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Get all the workspaces.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WorkspaceResponse"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "workspace"
+        ]
+      },
+      "post": {
+        "operationId": "WorkspaceController_createWorkspace",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateWorkspaceDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Create a new workspace.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WorkspaceResponse"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "workspace"
+        ]
+      }
+    },
+    "/api/v2/workspace/{id}": {
+      "get": {
+        "operationId": "WorkspaceController_getWorkspace",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Get workspace with id.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WorkspaceResponse"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "workspace"
+        ]
+      },
+      "put": {
+        "operationId": "WorkspaceController_updateWorkspace",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateWorkspaceDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Update an existing workspace."
+          }
+        },
+        "tags": [
+          "workspace"
+        ]
+      },
+      "delete": {
+        "operationId": "WorkspaceController_deleteWorkspace",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Delete workspace."
+          }
+        },
+        "tags": [
+          "workspace"
+        ]
+      }
+    },
+    "/api/v2/invitation-token/{id}": {
+      "get": {
+        "operationId": "InvitationTokenController_getInvitationToken",
+        "summary": "Get invitation token with id",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Get all the workspaces."
+          }
+        },
+        "tags": [
+          "invitation-token"
+        ]
+      }
+    },
+    "/api/v2/invitation-token": {
+      "post": {
+        "operationId": "InvitationTokenController_createWorkspace",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateInvitationTokenDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Create a new workspace."
+          }
+        },
+        "tags": [
+          "invitation-token"
+        ]
+      }
+    },
+    "/api/v2/invite-user": {
+      "get": {
+        "operationId": "InviteUserController_getUsers",
+        "summary": "Get invitations",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Get all the invitations."
+          }
+        },
+        "tags": [
+          "invite-user"
+        ]
+      },
+      "post": {
+        "operationId": "InviteUserController_createInvitation",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateUserInvitationDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Create an invitation entry."
+          }
+        },
+        "tags": [
+          "invite-user"
+        ]
+      }
+    },
+    "/api/v2/invite-user/{invitationId}": {
+      "delete": {
+        "operationId": "InviteUserController_removeEntity",
+        "summary": "Remove invitation",
+        "parameters": [
+          {
+            "name": "invitationId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Remove invitation"
+          }
+        },
+        "tags": [
+          "invite-user"
+        ]
+      }
+    },
+    "/api/v2/entities/{entityId}/children": {
+      "get": {
+        "operationId": "InstanceEntityController_getEntitysChildren",
+        "summary": "Get entity's children",
+        "parameters": [
+          {
+            "name": "entityId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Get entity's children"
+          }
+        },
+        "tags": [
+          "entities"
+        ]
+      }
+    },
+    "/api/v2/entities/{entityId}": {
+      "delete": {
+        "operationId": "InstanceEntityController_removeEntity",
+        "summary": "Remove entity and it's children",
+        "parameters": [
+          {
+            "name": "entityId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Remove entity and it's children"
+          }
+        },
+        "tags": [
+          "entities"
+        ]
+      }
+    },
+    "/api/v2/subscription/manage-subscriptions": {
+      "post": {
+        "operationId": "SubscriptionController_validatePayment",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "subscription"
+        ]
+      }
+    },
+    "/api/v2/analytics/app/{appId}/run/{runId}": {
+      "post": {
+        "operationId": "AnalyticsController_getRunRuleStatistics",
+        "summary": "Get rule statistics for a run",
+        "parameters": [
+          {
+            "name": "appId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "runId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AnalyticsRequestDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Rule statistics",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AnalyticsResultsDTO"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No run with the specified ID exists"
+          },
+          "412": {
+            "description": "The run is still in progress"
+          }
+        },
+        "tags": [
+          "analytics"
+        ]
+      }
+    },
+    "/api/v2/analytics/app/{appId}/components": {
+      "post": {
+        "operationId": "AnalyticsController_getComponentRuleStatistics",
+        "summary": "Get rule statistics for all components in an application",
+        "parameters": [
+          {
+            "name": "appId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AnalyticsRequestDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Aggregated analytics",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AnalyticsResultsDTO"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "analytics"
+        ]
+      }
+    },
+    "/api/v2/analytics/app/{appId}/pages": {
+      "post": {
+        "operationId": "AnalyticsController_getPageRuleStatistics",
+        "summary": "Get rule statistics for all components in an application",
+        "parameters": [
+          {
+            "name": "appId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AnalyticsRequestDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Aggregated analytics",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AnalyticsResultsDTO"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "analytics"
+        ]
+      }
+    }
+  },
+  "info": {
+    "title": "ASTA Repository API",
+    "description": "API used for the agent and companion",
+    "version": "0.0.1",
+    "contact": {}
+  },
+  "tags": [],
+  "servers": [
+    {
+      "url": "http://localhost:4000",
+      "description": "Local development server"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "bearer": {
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "type": "http"
+      }
+    },
+    "schemas": {
+      "CoverageDto": {
+        "type": "object",
+        "properties": {
+          "asset": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          },
+          "data": {
+            "type": "object"
+          }
+        },
+        "required": [
+          "type",
+          "data"
+        ]
+      },
+      "AssetDto": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "desc": {
+            "type": "string"
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "coverage": {
+            "$ref": "#/components/schemas/CoverageDto"
+          },
+          "parent": {
+            "type": "string",
+            "description": "The id referencing the application the asset belongs to"
+          }
+        },
+        "required": [
+          "name",
+          "desc",
+          "tags",
+          "coverage",
+          "parent"
+        ]
+      },
+      "CreateAssetDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "desc": {
+            "type": "string"
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "parent": {
+            "type": "string",
+            "description": "The id referencing the application the asset belongs to"
+          }
+        },
+        "required": [
+          "name",
+          "desc",
+          "tags",
+          "parent"
+        ]
+      },
+      "Coverage": {
+        "type": "object",
+        "properties": {}
+      },
+      "ApplicationComponentDTO": {
+        "type": "object",
+        "properties": {
+          "applicationId": {
+            "type": "string",
+            "description": "",
+            "example": ""
+          },
+          "id": {
+            "type": "string",
+            "description": "",
+            "example": ""
+          },
+          "type": {
+            "type": "string",
+            "description": "",
+            "example": ""
+          },
+          "name": {
+            "type": "string",
+            "description": "",
+            "example": ""
+          },
+          "data": {
+            "type": "object",
+            "description": "",
+            "example": ""
+          }
+        },
+        "required": [
+          "applicationId",
+          "id",
+          "type",
+          "name",
+          "data"
+        ]
+      },
+      "Rule": {
+        "type": "object",
+        "properties": {
+          "rule": {
+            "type": "string",
+            "description": "The rule tested"
+          },
+          "results": {
+            "type": "string",
+            "description": "The result for rule tested"
+          },
+          "type": {
+            "type": "string",
+            "description": "The type of rule"
+          },
+          "run": {
+            "type": "string",
+            "description": "The run where the rule was tested"
+          },
+          "entry": {
+            "type": "number",
+            "description": "The rule entry"
+          },
+          "time": {
+            "type": "number",
+            "description": "The time when the rule was tested"
+          },
+          "page": {
+            "type": "string",
+            "description": "The page where the rule was tested"
+          }
+        },
+        "required": [
+          "rule",
+          "results",
+          "type",
+          "run",
+          "entry",
+          "time",
+          "page"
+        ]
+      },
+      "ComponentCoverage": {
+        "type": "object",
+        "properties": {
+          "rules": {
+            "description": "The rules tested",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Rule"
+            }
+          },
+          "actions": {
+            "description": "The actions tested",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "performance": {
+            "type": "object",
+            "description": "The the performance results"
+          },
+          "component": {
+            "type": "string",
+            "description": "The component tested"
+          }
+        },
+        "required": [
+          "rules",
+          "actions",
+          "performance",
+          "component"
+        ]
+      },
+      "CoverageResponseDto": {
+        "type": "object",
+        "properties": {
+          "variant": {
+            "type": "string",
+            "description": "The tested variant"
+          },
+          "component": {
+            "description": "The tested component",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ApplicationComponentDTO"
+              }
+            ]
+          },
+          "coverage": {
+            "description": "The coverage recorded",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ComponentCoverage"
+              }
+            ]
+          }
+        },
+        "required": [
+          "variant",
+          "component",
+          "coverage"
+        ]
+      },
+      "CreateTagDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Performance",
+            "description": "The name of the tag"
+          },
+          "parent": {
+            "type": "string",
+            "description": "The id referencing the parent"
+          },
+          "type": {
+            "type": "string",
+            "example": "custom",
+            "description": "The type of the tag. custom, core, default"
+          }
+        },
+        "required": [
+          "name",
+          "parent",
+          "type"
+        ]
+      },
+      "UpdateTagDto": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string",
+            "description": "An unique identifier for the tag",
+            "example": "6399004470fd609bc8b30338"
+          },
+          "name": {
+            "type": "string",
+            "description": "The name of the tag"
+          }
+        },
+        "required": [
+          "_id",
+          "name"
+        ]
+      },
+      "ApplicationData": {
+        "type": "object",
+        "properties": {}
+      },
+      "Workspace": {
+        "type": "object",
+        "properties": {}
+      },
+      "ApplicationResponse": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string",
+            "example": "6398ff6875c42c6e2a417b8e"
+          },
+          "createdAt": {
+            "type": "string",
+            "example": "2020-11-24T17:43:15.970Z"
+          },
+          "updatedAt": {
+            "type": "string",
+            "example": "2020-11-24T17:43:15.970Z"
+          },
+          "name": {
+            "type": "string",
+            "example": "joh-doe@gmail.com",
+            "description": "User's email address"
+          },
+          "role": {
+            "type": "number",
+            "example": "joh-doe@gmail.com",
+            "description": "User's email address"
+          },
+          "type": {
+            "type": "string",
+            "example": "application",
+            "description": "Entity Type"
+          },
+          "data": {
+            "description": "Application's data",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ApplicationData"
+              }
+            ]
+          },
+          "owners": {
+            "description": "Application's owners",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "parent": {
+            "description": "Application's parent (Workspace)",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Workspace"
+              }
+            ]
+          }
+        },
+        "required": [
+          "_id",
+          "createdAt",
+          "updatedAt",
+          "name",
+          "role",
+          "type",
+          "data",
+          "owners",
+          "parent"
+        ]
+      },
+      "CreateApplicationDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "The name of the application"
+          },
+          "parentId": {
+            "type": "string",
+            "description": "The id referencing the workspace"
+          }
+        },
+        "required": [
+          "name",
+          "parentId"
+        ]
+      },
+      "UpdateApplicationDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "The name of the application"
+          }
+        },
+        "required": [
+          "name"
+        ]
+      },
+      "PermissionResponse": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string",
+            "example": "6398ff6875c42c6e2a417b8e"
+          },
+          "createdAt": {
+            "type": "string",
+            "example": "2020-11-24T17:43:15.970Z"
+          },
+          "updatedAt": {
+            "type": "string",
+            "example": "2020-11-24T17:43:15.970Z"
+          },
+          "resource": {
+            "type": "object",
+            "description": "The resource"
+          },
+          "user": {
+            "type": "object",
+            "description": "The user"
+          },
+          "role": {
+            "type": "number",
+            "example": 4,
+            "description": "Role of the user for the resource"
+          }
+        },
+        "required": [
+          "_id",
+          "createdAt",
+          "updatedAt",
+          "resource",
+          "user",
+          "role"
+        ]
+      },
+      "CreatePermissionDto": {
+        "type": "object",
+        "properties": {
+          "userRef": {
+            "type": "string",
+            "description": "The id referencing the user"
+          },
+          "resource": {
+            "type": "string",
+            "description": "The id referencing resource"
+          },
+          "role": {
+            "type": "number",
+            "description": "The role of the user",
+            "default": "none"
+          }
+        },
+        "required": [
+          "userRef",
+          "resource",
+          "role"
+        ]
+      },
+      "UpdatePermissionRoleDto": {
+        "type": "object",
+        "properties": {
+          "role": {
+            "type": "number",
+            "description": "The role of the user"
+          }
+        },
+        "required": [
+          "role"
+        ]
+      },
+      "GenerateDatasetDTO": {
+        "type": "object",
+        "properties": {
+          "requirementsDocumentId": {
+            "type": "string",
+            "description": ""
+          },
+          "options": {
+            "type": "object",
+            "description": "",
+            "example": ""
+          }
+        },
+        "required": [
+          "requirementsDocumentId",
+          "options"
+        ]
+      },
+      "RequestWithUserDTO": {
+        "type": "object",
+        "properties": {
+          "user": {
+            "type": "object",
+            "description": ""
+          }
+        },
+        "required": [
+          "user"
+        ]
+      },
+      "IssueDto": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "severity": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "logs": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "created_at": {
+            "type": "string"
+          },
+          "updated_at": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "title",
+          "description",
+          "severity",
+          "status",
+          "logs"
+        ]
+      },
+      "SummaryStatisticsDTO": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The id for the run these statistics belong to",
+            "example": "1231-asdf-123d-asdf"
+          },
+          "runId": {
+            "type": "string",
+            "description": "The id for the run these statistics belong to",
+            "example": "1231-asdf-123d-asdf"
+          },
+          "componentStatistics": {
+            "type": "object",
+            "description": "The statistics for each type of test"
+          }
+        },
+        "required": [
+          "id",
+          "runId",
+          "componentStatistics"
+        ]
+      },
+      "RunResultsDto": {
+        "type": "object",
+        "properties": {
+          "passed": {
+            "type": "number"
+          },
+          "failed": {
+            "type": "number"
+          },
+          "untested": {
+            "type": "number"
+          },
+          "partial": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "passed",
+          "failed",
+          "untested",
+          "partial"
+        ]
+      },
+      "RunMetadataDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The run's id",
+            "example": "123"
+          },
+          "applicationId": {
+            "type": "string",
+            "description": "",
+            "example": ""
+          },
+          "parametersId": {
+            "type": "string",
+            "description": "",
+            "example": ""
+          },
+          "templateName": {
+            "type": "string",
+            "description": "",
+            "example": ""
+          },
+          "runNumber": {
+            "type": "string",
+            "description": "",
+            "example": ""
+          },
+          "startTime": {
+            "type": "string",
+            "description": "",
+            "example": ""
+          },
+          "endTime": {
+            "type": "string",
+            "description": "",
+            "example": ""
+          },
+          "status": {
+            "type": "string",
+            "description": "",
+            "example": ""
+          },
+          "summaryStatistics": {
+            "description": "",
+            "example": "",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/SummaryStatisticsDTO"
+              }
+            ]
+          },
+          "results": {
+            "$ref": "#/components/schemas/RunResultsDto"
+          }
+        },
+        "required": [
+          "id",
+          "applicationId",
+          "parametersId",
+          "templateName",
+          "runNumber",
+          "startTime",
+          "endTime",
+          "status",
+          "summaryStatistics",
+          "results"
+        ]
+      },
+      "DimensionsDTO": {
+        "type": "object",
+        "properties": {
+          "w": {
+            "type": "number",
+            "description": "",
+            "example": ""
+          },
+          "h": {
+            "type": "number",
+            "description": "",
+            "example": ""
+          }
+        },
+        "required": [
+          "w",
+          "h"
+        ]
+      },
+      "ItemDTO": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "",
+            "example": ""
+          },
+          "type": {
+            "type": "string",
+            "description": "",
+            "example": ""
+          },
+          "data": {
+            "type": "object",
+            "description": "",
+            "example": ""
+          }
+        },
+        "required": [
+          "id",
+          "type",
+          "data"
+        ]
+      },
+      "PageDTO": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "",
+            "example": ""
+          },
+          "url": {
+            "type": "string",
+            "description": "",
+            "example": ""
+          },
+          "title": {
+            "type": "string",
+            "description": "",
+            "example": ""
+          },
+          "content": {
+            "type": "object",
+            "description": "",
+            "example": ""
+          },
+          "components": {
+            "description": "",
+            "example": "",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "dimensions": {
+            "description": "",
+            "example": "",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/DimensionsDTO"
+              }
+            ]
+          },
+          "item": {
+            "description": "",
+            "example": "",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ItemDTO"
+              }
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "url",
+          "title",
+          "content",
+          "components",
+          "dimensions",
+          "item"
+        ]
+      },
+      "RemoveRunsResponseDTO": {
+        "type": "object",
+        "properties": {
+          "ok": {
+            "type": "boolean",
+            "description": "If the operation was ok or not",
+            "example": true
+          },
+          "removedRuns": {
+            "description": "The ids of the removed runs",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "ok",
+          "removedRuns"
+        ]
+      },
+      "RunLogDTO": {
+        "type": "object",
+        "properties": {
+          "runId": {
+            "type": "string",
+            "description": "",
+            "example": ""
+          },
+          "runNumber": {
+            "type": "string",
+            "description": "",
+            "example": ""
+          },
+          "entries": {
+            "description": "",
+            "example": "",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "runId",
+          "runNumber",
+          "entries"
+        ]
+      },
+      "RunStatusDTO": {
+        "type": "object",
+        "properties": {
+          "runId": {
+            "type": "string",
+            "description": "",
+            "example": ""
+          },
+          "templateName": {
+            "type": "string",
+            "description": "",
+            "example": ""
+          },
+          "runNumber": {
+            "type": "number",
+            "description": "",
+            "example": "123"
+          },
+          "applicationName": {
+            "type": "string",
+            "description": "",
+            "example": ""
+          },
+          "startingPageTitle": {
+            "type": "string",
+            "description": "",
+            "example": ""
+          },
+          "depth": {
+            "type": "number",
+            "description": "",
+            "example": ""
+          },
+          "startTime": {
+            "type": "string",
+            "description": "",
+            "example": ""
+          },
+          "endTime": {
+            "type": "string",
+            "description": "",
+            "example": ""
+          },
+          "currentPageTitle": {
+            "type": "string",
+            "description": "",
+            "example": ""
+          },
+          "currentComponentLabel": {
+            "type": "string",
+            "description": "",
+            "example": ""
+          },
+          "runningState": {
+            "type": "string",
+            "description": "",
+            "example": "",
+            "enum": [
+              "running",
+              "paused",
+              "stopped",
+              "finished"
+            ]
+          },
+          "currentScreenshotId": {
+            "type": "string",
+            "description": "",
+            "example": ""
+          }
+        },
+        "required": [
+          "runId",
+          "templateName",
+          "runNumber",
+          "applicationName",
+          "startingPageTitle",
+          "depth",
+          "startTime",
+          "endTime",
+          "currentPageTitle",
+          "currentComponentLabel",
+          "runningState"
+        ]
+      },
+      "AppendRunLogRequestDTO": {
+        "type": "object",
+        "properties": {
+          "entries": {
+            "description": "",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "entries"
+        ]
+      },
+      "WorkQueueDTO": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "",
+            "example": ""
+          },
+          "runId": {
+            "type": "string",
+            "description": "",
+            "example": ""
+          },
+          "items": {
+            "description": "",
+            "example": "",
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          },
+          "count": {
+            "type": "number",
+            "description": "total number of items in the work queue",
+            "minimum": 0,
+            "example": 8
+          },
+          "completedCount": {
+            "type": "number",
+            "description": "How many work queue items have already been tested",
+            "minimum": 0,
+            "example": 0
+          }
+        },
+        "required": [
+          "id",
+          "runId",
+          "items",
+          "count",
+          "completedCount"
+        ]
+      },
+      "RunParametersDto": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "isTemplate": {
+            "type": "boolean"
+          },
+          "app": {
+            "type": "string"
+          },
+          "path": {
+            "type": "string"
+          },
+          "depth": {
+            "type": "number"
+          },
+          "duration": {
+            "type": "number"
+          },
+          "stopAfterFlows": {
+            "type": "boolean"
+          },
+          "enableModeling": {
+            "type": "boolean"
+          },
+          "pageLoadTimeout": {
+            "type": "number"
+          },
+          "actionRetryAttempts": {
+            "type": "number"
+          },
+          "debugMode": {
+            "type": "boolean"
+          },
+          "assets": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "extensions": {
+            "type": "object"
+          }
+        },
+        "required": [
+          "_id",
+          "name",
+          "isTemplate",
+          "app",
+          "path",
+          "depth",
+          "duration",
+          "stopAfterFlows",
+          "enableModeling",
+          "pageLoadTimeout",
+          "actionRetryAttempts",
+          "debugMode",
+          "assets",
+          "extensions"
+        ]
+      },
+      "StartRunRequestDTO": {
+        "type": "object",
+        "properties": {
+          "user": {
+            "type": "object",
+            "description": ""
+          },
+          "runId": {
+            "type": "string",
+            "description": "The id for the run generated by the server",
+            "example": ""
+          },
+          "runNumber": {
+            "type": "string",
+            "description": "The number for the run generated by the server",
+            "example": "1"
+          },
+          "applicationId": {
+            "type": "string",
+            "description": "The application to use for the run",
+            "example": "Grants.gov"
+          },
+          "parameters": {
+            "description": "The values for the run parameters",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/RunParametersDto"
+              }
+            ]
+          },
+          "parametersId": {
+            "type": "string",
+            "description": "The values for the run parameters"
+          },
+          "workQueue": {
+            "description": "A set of work queue items for the test",
+            "example": "",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "runOn": {
+            "type": "string",
+            "description": "Driver to use"
+          },
+          "driverId": {
+            "type": "string",
+            "description": "Driver to use"
+          },
+          "agentId": {
+            "type": "string",
+            "description": "Agent to use"
+          }
+        },
+        "required": [
+          "user",
+          "runId",
+          "runNumber",
+          "applicationId",
+          "parameters",
+          "parametersId",
+          "workQueue",
+          "runOn",
+          "driverId",
+          "agentId"
+        ]
+      },
+      "RunDocument": {
+        "type": "object",
+        "properties": {}
+      },
+      "VariantData": {
+        "type": "object",
+        "properties": {}
+      },
+      "Application": {
+        "type": "object",
+        "properties": {}
+      },
+      "VariantResponse": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string",
+            "example": "6398ff6875c42c6e2a417b8e"
+          },
+          "createdAt": {
+            "type": "string",
+            "example": "2020-11-24T17:43:15.970Z"
+          },
+          "updatedAt": {
+            "type": "string",
+            "example": "2020-11-24T17:43:15.970Z"
+          },
+          "name": {
+            "type": "string",
+            "example": "joh-doe@gmail.com",
+            "description": "User's email address"
+          },
+          "role": {
+            "type": "number",
+            "example": "joh-doe@gmail.com",
+            "description": "User's email address"
+          },
+          "type": {
+            "type": "string",
+            "example": "variant",
+            "description": "Entity Type"
+          },
+          "data": {
+            "description": "Variants's data",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/VariantData"
+              }
+            ]
+          },
+          "owners": {
+            "description": "Variants's owners",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "parent": {
+            "description": "Variant's parent (Application)",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Application"
+              }
+            ]
+          }
+        },
+        "required": [
+          "_id",
+          "createdAt",
+          "updatedAt",
+          "name",
+          "role",
+          "type",
+          "data",
+          "owners",
+          "parent"
+        ]
+      },
+      "CreateVariantDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "The name of the variant"
+          },
+          "parentId": {
+            "type": "string",
+            "description": "The id referencing the application"
+          },
+          "data": {
+            "type": "object",
+            "description": "The variants data such as defaultUrl or activitySets"
+          }
+        },
+        "required": [
+          "name",
+          "parentId",
+          "data"
+        ]
+      },
+      "UpdateVariantDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "The name of the variant"
+          },
+          "data": {
+            "type": "object",
+            "description": "The variants data such as defaultUrl or activitySets"
+          }
+        },
+        "required": [
+          "name",
+          "data"
+        ]
+      },
+      "ApplicationModelDTO": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Equals applicationId to conform to resource DTO",
+            "example": ""
+          },
+          "applicationId": {
+            "type": "string",
+            "description": "",
+            "example": ""
+          },
+          "nodes": {
+            "description": "Nodes in the application mode",
+            "example": "",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "edges": {
+            "description": "Edges in the application mode",
+            "example": "",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "id",
+          "applicationId",
+          "nodes",
+          "edges"
+        ]
+      },
+      "ApplicationComponentsAssociationsDTO": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "A unique identifier for the component.",
+            "example": "1231-asdf-123d-asdf"
+          },
+          "applicationId": {
+            "type": "string",
+            "description": "A unique identifier for the application.",
+            "example": "1231-asdf-123d-asdf"
+          },
+          "componentId": {
+            "type": "string",
+            "description": "A unique identifier for the component.",
+            "example": "1231-asdf-123d-asdf"
+          },
+          "associatedEntities": {
+            "description": "The entities associated with the component",
+            "example": "",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "id",
+          "applicationId",
+          "componentId",
+          "associatedEntities"
+        ]
+      },
+      "ApplicationRelationshipDTO": {
+        "type": "object",
+        "properties": {
+          "applicationId": {
+            "type": "string",
+            "description": "",
+            "example": ""
+          },
+          "id": {
+            "type": "string",
+            "description": "",
+            "example": ""
+          },
+          "type": {
+            "type": "string",
+            "description": "",
+            "example": ""
+          },
+          "to": {
+            "type": "string",
+            "description": "",
+            "example": ""
+          },
+          "from": {
+            "type": "string",
+            "description": "",
+            "example": ""
+          },
+          "data": {
+            "type": "object",
+            "description": "",
+            "example": ""
+          }
+        },
+        "required": [
+          "applicationId",
+          "id",
+          "type",
+          "to",
+          "from",
+          "data"
+        ]
+      },
+      "ApplicationModelUpdateRequestDTO": {
+        "type": "object",
+        "properties": {
+          "applicationId": {
+            "type": "string",
+            "description": "",
+            "example": ""
+          },
+          "updates": {
+            "description": "",
+            "example": "",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "applicationId",
+          "updates"
+        ]
+      },
+      "AddRuleResponseDTO": {
+        "type": "object",
+        "properties": {
+          "rule": {
+            "type": "object",
+            "description": "The rule that was saved, includes internalId that was generated by mongo",
+            "example": ""
+          }
+        },
+        "required": [
+          "rule"
+        ]
+      },
+      "AddRuleRequestDTO": {
+        "type": "object",
+        "properties": {
+          "rule": {
+            "type": "object",
+            "description": "The rule to save",
+            "example": ""
+          }
+        },
+        "required": [
+          "rule"
+        ]
+      },
+      "UserResponse": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string",
+            "example": "6398ff6875c42c6e2a417b8e"
+          },
+          "createdAt": {
+            "type": "string",
+            "example": "2020-11-24T17:43:15.970Z"
+          },
+          "updatedAt": {
+            "type": "string",
+            "example": "2020-11-24T17:43:15.970Z"
+          },
+          "email": {
+            "type": "string",
+            "example": "joh-doe@gmail.com",
+            "description": "User's email address"
+          },
+          "externalId": {
+            "type": "string",
+            "example": "1749751b-9f2f-4a1e-bdcf-03ff26729118",
+            "description": "User's cognito or external ID"
+          },
+          "paymentId": {
+            "type": "string",
+            "example": "cus_NeBMaIP2OU1SWh",
+            "description": "User's stripe or payment ID"
+          },
+          "status": {
+            "type": "string",
+            "example": "active",
+            "description": "User's status"
+          },
+          "workspaces": {
+            "description": "User workspaces",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "_id",
+          "createdAt",
+          "updatedAt",
+          "email",
+          "externalId",
+          "paymentId",
+          "status",
+          "workspaces"
+        ]
+      },
+      "UpdateUserDto": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "The email that identifies the user"
+          },
+          "externalId": {
+            "type": "string",
+            "description": "The email that identifies the user"
+          },
+          "paymentId": {
+            "type": "string",
+            "description": "The email that identifies the user"
+          }
+        }
+      },
+      "CreateUserDto": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "The email that identifies the user"
+          },
+          "externalId": {
+            "type": "string",
+            "description": "The email that identifies the user"
+          },
+          "paymentId": {
+            "type": "string",
+            "description": "The email that identifies the user"
+          }
+        },
+        "required": [
+          "email",
+          "externalId",
+          "paymentId"
+        ]
+      },
+      "CreatePatDTO": {
+        "type": "object",
+        "properties": {
+          "expiresAt": {
+            "format": "date-time",
+            "type": "string",
+            "description": "When the PAT will expire and can no longer be used for authentication.\n\n\t\tBy default, PATs expire after 1 year. To create a PAT that never expires,\n\t\texplicitly set this field to `null`.",
+            "example": "2021-01-01T00:00:00.000Z"
+          },
+          "name": {
+            "type": "string",
+            "description": "The name of the PAT. Helps distinguish between PATs and to remember their purpose. For display purposes only. "
+          }
+        },
+        "required": [
+          "expiresAt",
+          "name"
+        ]
+      },
+      "PatDTO": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "expiresAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "_id": {
+            "type": "string"
+          },
+          "user": {
+            "type": "string",
+            "description": "user id"
+          },
+          "lastUsed": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "expiresAt",
+          "_id",
+          "user",
+          "lastUsed",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "WorkspaceData": {
+        "type": "object",
+        "properties": {}
+      },
+      "Entity": {
+        "type": "object",
+        "properties": {}
+      },
+      "WorkspaceResponse": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string",
+            "example": "6398ff6875c42c6e2a417b8e"
+          },
+          "createdAt": {
+            "type": "string",
+            "example": "2020-11-24T17:43:15.970Z"
+          },
+          "updatedAt": {
+            "type": "string",
+            "example": "2020-11-24T17:43:15.970Z"
+          },
+          "name": {
+            "type": "string",
+            "example": "joh-doe@gmail.com",
+            "description": "User's email address"
+          },
+          "role": {
+            "type": "number",
+            "example": "joh-doe@gmail.com",
+            "description": "User's email address"
+          },
+          "type": {
+            "type": "string",
+            "example": "workspace",
+            "description": "Entity Type"
+          },
+          "data": {
+            "description": "Workspace's data",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/WorkspaceData"
+              }
+            ]
+          },
+          "lastRun": {
+            "type": "string",
+            "example": "workspace",
+            "description": "Entity Type"
+          },
+          "owners": {
+            "description": "Workspace's owners",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "parent": {
+            "description": "Workspace's parent (System)",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Entity"
+              }
+            ]
+          }
+        },
+        "required": [
+          "_id",
+          "createdAt",
+          "updatedAt",
+          "name",
+          "role",
+          "type",
+          "data",
+          "lastRun",
+          "owners",
+          "parent"
+        ]
+      },
+      "Plan": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Free Plan"
+          },
+          "testItemsPerDay": {
+            "type": "number",
+            "example": 1500
+          },
+          "runHistoryDurationInDays": {
+            "type": "number",
+            "example": 14
+          }
+        },
+        "required": [
+          "name",
+          "testItemsPerDay",
+          "runHistoryDurationInDays"
+        ]
+      },
+      "CreateWorkspaceDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "test's workspace",
+            "description": "The name of the workspace"
+          },
+          "plan": {
+            "example": "test's workspace",
+            "description": "The name of the workspace",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Plan"
+              }
+            ]
+          }
+        },
+        "required": [
+          "name",
+          "plan"
+        ]
+      },
+      "UpdateWorkspaceDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "test's workspace",
+            "description": "The name of the workspace"
+          },
+          "plan": {
+            "example": "test's workspace",
+            "description": "The name of the workspace",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Plan"
+              }
+            ]
+          }
+        }
+      },
+      "CreateInvitationTokenDto": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "The email to send the invitation"
+          }
+        },
+        "required": [
+          "email"
+        ]
+      },
+      "CreateUserInvitationDto": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "The email of the user"
+          },
+          "resource": {
+            "type": "string",
+            "description": "The id referencing resource"
+          },
+          "role": {
+            "type": "number",
+            "description": "The role of the user for the given resource",
+            "default": "none"
+          }
+        },
+        "required": [
+          "email",
+          "resource",
+          "role"
+        ]
+      },
+      "AnalyticsFilterDTO": {
+        "type": "object",
+        "properties": {
+          "runId": {
+            "type": "string"
+          },
+          "ruleId": {
+            "type": "string"
+          },
+          "ruleType": {
+            "type": "string",
+            "enum": [
+              "accessibility-rule",
+              "functional-rule",
+              "resource-rule",
+              "webform-rule",
+              "link-rule"
+            ]
+          },
+          "pageId": {
+            "type": "string"
+          },
+          "componentId": {
+            "type": "string"
+          },
+          "componentType": {
+            "type": "string",
+            "enum": [
+              "Iframe",
+              "Body",
+              "Header",
+              "Footer",
+              "Navbar",
+              "Form",
+              "Button",
+              "Anchor",
+              "Input",
+              "Content",
+              "Section",
+              "Select",
+              "Option",
+              "Table",
+              "Table Header",
+              "Table Row",
+              "Table Cell",
+              "Large Heading",
+              "Medium Heading",
+              "Small Heading",
+              "Webform",
+              "Label",
+              "Field",
+              "Checkbox Cluster",
+              "Radio Group",
+              "Radio",
+              "Checkbox",
+              "Select Option",
+              "Text Area",
+              "Text Node",
+              "Unclassified"
+            ]
+          }
+        }
+      },
+      "AnalyticsRequestDTO": {
+        "type": "object",
+        "properties": {
+          "filter": {
+            "description": "Filters to apply to run logs before aggregating",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/AnalyticsFilterDTO"
+              }
+            ]
+          },
+          "groupBy": {
+            "description": "The fields to group by",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "populate": {
+            "description": "Populate certain fields by joining with other collections.\n\nValues in this list must be a subset of `groupBy`, and can only\napply to id fields. Instead of containing\nan ObjectId, populated fields will contain the document the id\nrefers to.",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "AnalyticsDTO": {
+        "type": "object",
+        "properties": {
+          "passed": {
+            "type": "number",
+            "description": "The number of rules that passed"
+          },
+          "failed": {
+            "type": "number",
+            "description": "The number of rules that failed"
+          },
+          "total": {
+            "type": "number",
+            "description": "The total number of rules, components, pages, etc. Includes tested and untested entities"
+          },
+          "tested": {
+            "type": "number",
+            "description": "The number of tests that ran. Equal to `passed + failed`"
+          },
+          "runId": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "object"
+              }
+            ]
+          },
+          "ruleId": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "object"
+              }
+            ]
+          },
+          "ruleType": {
+            "type": "string",
+            "enum": [
+              "accessibility-rule",
+              "functional-rule",
+              "resource-rule",
+              "webform-rule",
+              "link-rule"
+            ]
+          },
+          "pageId": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "object"
+              }
+            ]
+          },
+          "componentId": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "object"
+              }
+            ]
+          },
+          "componentType": {
+            "type": "string",
+            "enum": [
+              "Iframe",
+              "Body",
+              "Header",
+              "Footer",
+              "Navbar",
+              "Form",
+              "Button",
+              "Anchor",
+              "Input",
+              "Content",
+              "Section",
+              "Select",
+              "Option",
+              "Table",
+              "Table Header",
+              "Table Row",
+              "Table Cell",
+              "Large Heading",
+              "Medium Heading",
+              "Small Heading",
+              "Webform",
+              "Label",
+              "Field",
+              "Checkbox Cluster",
+              "Radio Group",
+              "Radio",
+              "Checkbox",
+              "Select Option",
+              "Text Area",
+              "Text Node",
+              "Unclassified"
+            ]
+          }
+        },
+        "required": [
+          "passed",
+          "failed",
+          "total",
+          "tested"
+        ]
+      },
+      "AnalyticsResultsDTO": {
+        "type": "object",
+        "properties": {
+          "analytics": {
+            "description": "Analytics results. Shape is determined by `groupBy` and `populate`.\n\nEach result contains `passed`, `failed`, and `total` rule results\nfor the desired aggregation, as well as properties for each `groupBy`.\nPopulated fields (specified by `populate`) will contain documents from\ntheir respective, collections instead of an ObjectId or a UUID.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AnalyticsDTO"
+            }
+          }
+        },
+        "required": [
+          "analytics"
+        ]
+      }
+    }
+  }
+}
