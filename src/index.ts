@@ -1,25 +1,65 @@
-import { Api } from "./codegen";
-import { getActionInputs, type ActionInputs } from "./inputs";
-import { toError } from "./util";
+import { Api } from './codegen'
+import { getActionInputs, type ActionInputs } from './inputs'
+import { sleep, toError } from './util'
 
-const core = require('@actions/core');
-const github = require('@actions/github');
+// const core = require('@actions/core')
+// const github = require('@actions/github')
+import core from '@actions/core'
+import github from '@actions/github'
 
 async function main() {
-  const inputs: ActionInputs = getActionInputs()
-  const api = new Api(inputs)
-  console.log(inputs)
-}
+    const POLL_INTERVAL = 1_000
 
-/**
- * @todo support application names
- * @param applicationNameOrId 
- */
-async function verifyApplication(api: Api, applicationNameOrId: string) {
-  
+    const inputs: ActionInputs = getActionInputs()
+    const api = new Api(inputs)
+
+    // check that application exists
+    const _application = await api.getApplication()
+    core.debug(`Found application:\n${JSON.stringify(_application, null, 2)}`)
+
+    core.debug('Starting run...')
+    const runId = await api.startRun()
+    core.debug(`Started run: ${runId}`)
+
+    let runStatus: Awaited<ReturnType<typeof api.getRunStatus>>
+    let lastRunLogNumber = 0
+    let numErrors = 0
+    for (
+        runStatus = await api.getRunStatus(runId);
+        runStatus.runningState === 'running';
+        runStatus = await api.getRunStatus(runId)
+    ) {
+        core.debug(`Run status: ${JSON.stringify(runStatus, null, 2)}`)
+        const logs = await api.getRunLogs(runId, {
+            offset: lastRunLogNumber,
+            limit: 50,
+        })
+        if (logs.length) {
+            lastRunLogNumber = Number(logs[logs.length - 1].id)
+        }
+        for (const log of logs) {
+            if ('message' in log) {
+                console.log(log.message)
+                continue
+            }
+            if ((log['level'] as string)?.toLowerCase?.() == 'error') {
+                numErrors++
+                core.error(
+                    log['message']
+                        ? String(log['message'])
+                        : JSON.stringify(log)
+                )
+            }
+        }
+        await sleep(POLL_INTERVAL)
+    }
+
+    if (numErrors > 0) {
+        core.setFailed(`Run failed with ${numErrors} errors`)
+    }
 }
 
 main().catch(err => {
-  const error = toError(err)
-  core.setFailed(error.message)
+    const error = toError(err)
+    core.setFailed(error.message)
 })

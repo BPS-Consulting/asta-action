@@ -37,3 +37,7 @@ jobs:
 
       - name: Build
         run: yarn build
+
+      # Ensure that changes to index.js have been committed
+      - name: Check for uncommitted changes
+        run: git diff --exit-code dist

@@ -13,3 +13,5 @@ export const toError = (err: unknown): Error => {
         return new Error(JSON.stringify(err))
     }
 }
+
+export const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))

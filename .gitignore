@@ -17,8 +17,7 @@ node_modules
 # caches
 .tsbuildinfo
 
-# Build/Test/etc artifacts
-dist
+# Test artifacts
 coverage
 
 # Keys
