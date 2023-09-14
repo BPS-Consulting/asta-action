@@ -17,6 +17,12 @@ jobs:
           node-version: 18.x
           cache: yarn
 
+      - name: Install latest Yarn
+        run: corepack prepare yarn@stable --activate
+
+      - name: Activate latest Yarn
+        run: yarn set version stable
+
       - name: Install dependencies
         run: yarn --immutable
 

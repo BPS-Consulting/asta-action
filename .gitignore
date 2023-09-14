@@ -11,10 +11,27 @@
 # !.yarn/cache
 .pnp.*
 
+# Dependencies
 node_modules
 
 # caches
 .tsbuildinfo
 
-# Build artifacts
+# Build/Test/etc artifacts
 dist
+coverage
+
+# Keys
+*.key
+*.pem
+
+# Temp files
+*.tmp
+tmp
+
+# Editor Files
+*.swp
+*.swo
+
+# OS Files
+.DS_Store
