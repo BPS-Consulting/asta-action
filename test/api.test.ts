@@ -18,7 +18,7 @@ beforeAll(async () => {
     inputs = ActionInputsSchema.parse({
         application: '64da53b177f4ac4fd8005957',
         variant: '64da53c177f4ac4fd8005967',
-        runTemplate: '64da566577f4ac4fd8005a3e',
+        runTemplate: '64da53c177f4ac4fd8005967',
         repositoryUrl: 'http://localhost:4000',
         apiKey: key,
         apiKeyId: id,

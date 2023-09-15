@@ -1,9 +1,8 @@
 // Inputs provided by the user to the action in their workflow via `with`.
 import { ActionInputsSchema, type ActionInputs } from './action.inputs'
 
-import core from '@actions/core'
-import github from '@actions/github'
-import { RunParametersSchema, getRunParameters } from './run-parameters.inputs'
+import * as core from '@actions/core'
+import { getRunParameters } from './run-parameters.inputs'
 
 const getActionInputs = (): ActionInputs => {
     const {

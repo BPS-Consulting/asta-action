@@ -1,12 +1,8 @@
 import 'source-map-support/register'
+import * as core from '@actions/core'
 import { Api } from './codegen'
 import { getActionInputs, type ActionInputs } from './inputs'
 import { sleep, toError } from './util'
-
-// const core = require('@actions/core')
-// const github = require('@actions/github')
-import core from '@actions/core'
-import github from '@actions/github'
 
 async function main() {
     const POLL_INTERVAL = 1_000

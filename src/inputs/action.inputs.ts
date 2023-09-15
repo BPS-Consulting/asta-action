@@ -1,5 +1,4 @@
 import { z } from 'zod'
-import core from '@actions/core'
 import { RunParametersSchema } from './run-parameters.inputs'
 
 
