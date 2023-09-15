@@ -11,5 +11,8 @@ module.exports = {
   },
   externalsPresets: {
     node: true
+  },
+  optimization: {
+    minimize: false,
   }
 };

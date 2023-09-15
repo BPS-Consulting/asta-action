@@ -23,6 +23,7 @@
     "@actions/github": "^5.1.1",
     "cross-fetch": "^4.0.0",
     "js-yaml": "^4.1.0",
+    "source-map-support": "^0.5.21",
     "zod": "^3.22.2"
   },
   "devDependencies": {

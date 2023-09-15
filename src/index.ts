@@ -1,3 +1,4 @@
+import 'source-map-support/register'
 import { Api } from './codegen'
 import { getActionInputs, type ActionInputs } from './inputs'
 import { sleep, toError } from './util'
