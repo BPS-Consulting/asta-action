@@ -7,16 +7,17 @@ import { sleep, toError } from './util'
 async function main() {
     const POLL_INTERVAL = 1_000
 
+    core.debug(`Parsing inputs...`)
     const inputs: ActionInputs = getActionInputs()
     const api = new Api(inputs)
 
     // check that application exists
     const _application = await api.getApplication()
-    core.debug(`Found application:\n${JSON.stringify(_application, null, 2)}`)
+    console.log(`Found application:\n${JSON.stringify(_application, null, 2)}`)
 
     core.debug('Starting run...')
     const runId = await api.startRun()
-    core.debug(`Started run: ${runId}`)
+    console.log(`Started run: ${runId}`)
 
     let runStatus: Awaited<ReturnType<typeof api.getRunStatus>>
     let lastRunLogNumber = 0
