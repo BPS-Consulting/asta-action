@@ -33,7 +33,13 @@ export class Api {
             applicationId: this.inputs.application,
             parametersId: this.inputs.runTemplate,
             parameters: this.inputs.parameters as any,
-            workQueue: []
+            workQueue: [],
+            runId: null,
+            runNumber: null,
+            driverId: null,
+            agentId: null,
+            user: null,
+
         } as any
 
         const res = await this._api.api.startRunControllerStartRun(variantId, body, { secure: true })
