@@ -58,6 +58,7 @@ async function main() {
 }
 
 main().catch(err => {
+    core.debug(err.stack)
     const error = toError(err)
     core.setFailed(error.message)
 })
