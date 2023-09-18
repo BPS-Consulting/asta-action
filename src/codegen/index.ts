@@ -65,7 +65,8 @@ export class Api {
         )
         const body: StartRunRequestDTO = {
             runOn: 'server',
-            applicationId: application,
+            // applicationId: application,
+            applicationId: variantId,
             parametersId: null,
             parameters: params,
             workQueue: [],

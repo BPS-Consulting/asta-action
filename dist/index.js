@@ -13010,7 +13010,8 @@ class Api {
         const params = (0, deepmerge_1.default)(paramsFromRunTemplate.data.resource.data, parameterOverrides);
         const body = {
             runOn: 'server',
-            applicationId: application,
+            // applicationId: application,
+            applicationId: variantId,
             parametersId: null,
             parameters: params,
             workQueue: [],
