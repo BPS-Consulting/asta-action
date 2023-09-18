@@ -12990,12 +12990,12 @@ class Api {
         const { apiKey, apiKeyId } = inputs;
         this._api.setSecurityData({ apiKey, apiKeyId });
     }
-    async getApplication(id = this.inputs.application) {
-        const res = await this._api.api.applicationControllerGetApplication(id, { secure: true });
+    async getApplication(variantId = this.inputs.application) {
+        const res = await this._api.api.applicationControllerGetApplication(variantId, { secure: true });
         return res.data;
     }
-    async getVariant(applicationId) {
-        const res = await this._api.api.variantControllerGetVariant(applicationId, { secure: true });
+    async getVariant(variantId = this.inputs.variant) {
+        const res = await this._api.api.variantControllerGetVariant(variantId, { secure: true });
         return res;
     }
     /**

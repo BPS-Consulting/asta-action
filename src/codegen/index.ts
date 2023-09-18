@@ -26,16 +26,16 @@ export class Api {
         this._api.setSecurityData({ apiKey, apiKeyId })
     }
 
-    public async getApplication(id: string = this.inputs.application) {
+    public async getApplication(variantId: string = this.inputs.application) {
         const res = await this._api.api.applicationControllerGetApplication(
-            id,
+            variantId,
             { secure: true }
         )
         return res.data
     }
 
-    public async getVariant(applicationId: string) {
-        const res: any = await this._api.api.variantControllerGetVariant(applicationId, { secure: true })
+    public async getVariant(variantId = this.inputs.variant) {
+        const res: any = await this._api.api.variantControllerGetVariant(variantId, { secure: true })
         return res
     }
 
