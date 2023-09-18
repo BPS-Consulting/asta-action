@@ -41,11 +41,20 @@ export class Api {
      */
     public async startRun(variantId = this.inputs.variant): Promise<string> {
         const paramsFromRunTemplate =
-            await this._api.api.runParametersControllerGet(
+            await this._api.api.assetsControllerFindOne(
+                this.inputs.application,
+                'run_parameter',
                 this.inputs.runTemplate,
                 { secure: true }
             )
-        const params = deepmerge(paramsFromRunTemplate, this.inputs.parameters)
+        const params = deepmerge(
+            (
+                paramsFromRunTemplate.data.resource as {
+                    data: StartRunRequestDTO['parameters']
+                }
+            ).data,
+            this.inputs.parameters
+        )
         const body: StartRunRequestDTO = {
             runOn: 'server',
             applicationId: this.inputs.application,
@@ -88,7 +97,7 @@ export class Api {
         const res = await this._api.api.runsLogControllerV2GetRunLog(
             applicationId,
             runId,
-            requestParams,
+            requestParams
         )
         return res.data
     }

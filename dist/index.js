@@ -13000,8 +13000,8 @@ class Api {
      * @returns The ID of the started run
      */
     async startRun(variantId = this.inputs.variant) {
-        const paramsFromRunTemplate = await this._api.api.runParametersControllerGet(this.inputs.runTemplate, { secure: true });
-        const params = (0, deepmerge_1.default)(paramsFromRunTemplate, this.inputs.parameters);
+        const paramsFromRunTemplate = await this._api.api.assetsControllerFindOne(this.inputs.application, 'run_parameter', this.inputs.runTemplate, { secure: true });
+        const params = (0, deepmerge_1.default)(paramsFromRunTemplate.data.resource.data, this.inputs.parameters);
         const body = {
             runOn: 'server',
             applicationId: this.inputs.application,
