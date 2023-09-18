@@ -46,6 +46,7 @@ export class Api {
      */
     public async startRun(variantId = this.inputs.variant): Promise<string> {
         const { runTemplate, application, parameters: parameterOverrides } = this.inputs
+
         console.log(`Getting parameters from run template ${runTemplate}`)
         const paramsFromRunTemplate =
             await this._api.api.assetsControllerFindOne(
@@ -65,7 +66,7 @@ export class Api {
         const body: StartRunRequestDTO = {
             runOn: 'server',
             applicationId: application,
-            parametersId: runTemplate,
+            parametersId: null,
             parameters: params,
             workQueue: [],
             runId: null,

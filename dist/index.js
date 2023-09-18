@@ -13011,7 +13011,7 @@ class Api {
         const body = {
             runOn: 'server',
             applicationId: application,
-            parametersId: runTemplate,
+            parametersId: null,
             parameters: params,
             workQueue: [],
             runId: null,
