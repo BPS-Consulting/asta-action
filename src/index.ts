@@ -19,8 +19,11 @@ async function main() {
 
     core.debug('Starting run...')
     const runId = await api.startRun()
-    core.notice(
-        `Started run ${runId} for ${application.data.name} (${variant.name})`
+    core.notice(`
+Started run ${runId} for ${application.data.name} (${variant.name})
+    
+View detailed logs here: https://companion.asta.grantsgovservices.com/app/${inputs.variant}/log?run=${runId}&filters%5Blevel%5D%5B%24ne%5D=Debug
+`.trim()
     )
 
     let runStatus: Awaited<ReturnType<typeof api.getRunStatus>>
@@ -40,14 +43,14 @@ async function main() {
         if (logs.length) {
             lastRunLogNumber = Number(logs[logs.length - 1].id)
         } else {
-            console.log(`No logs found for run ${runId}`)
+            core.debug(`No logs found for run ${runId}`)
         }
 
         for (const log of logs) {
             const msg =
                 log.msg || (log as Record<string, any>)['message']
 
-            msg && console.log(msg)
+            msg && console.log(`[${log.level}] ${msg}`)
 
             if ((log['level'] as string)?.toLowerCase?.() == 'error') {
                 numErrors++
@@ -58,8 +61,12 @@ async function main() {
         await sleep(POLL_INTERVAL)
     }
 
+    core.debug(`Final run status: ${JSON.stringify(runStatus, null, 2)}`)
+
     if (numErrors > 0) {
-        core.setFailed(`Run failed with ${numErrors} errors`)
+        core.setFailed(`Test run failed with ${numErrors} errors`)
+    } else {
+        core.notice(`Test run completed successfully`)
     }
 }
 

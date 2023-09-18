@@ -102,7 +102,7 @@ export class Api {
         params: PaginationParams = {},
         applicationId = this.inputs.application
     ) {
-        const requestParams = { ...params, secure: true }
+        const requestParams = { query: params, secure: true  }
         const res = await this._api.api.runsLogControllerV2GetRunLog(
             applicationId,
             runId,
