@@ -36,17 +36,14 @@ async function main() {
             lastRunLogNumber = Number(logs[logs.length - 1].id)
         }
         for (const log of logs) {
-            if ('message' in log) {
-                console.log(log.message)
-                continue
-            }
+            const msg =
+                log.msg || (log as Record<string, any>)['message']
+
+            msg && console.log(msg)
+
             if ((log['level'] as string)?.toLowerCase?.() == 'error') {
                 numErrors++
-                core.error(
-                    log['message']
-                        ? String(log['message'])
-                        : JSON.stringify(log)
-                )
+                core.error(msg ? String(msg) : JSON.stringify(log))
             }
         }
         await sleep(POLL_INTERVAL)

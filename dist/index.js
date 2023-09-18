@@ -2565,6 +2565,150 @@ module.exports = exports
 
 /***/ }),
 
+/***/ "./node_modules/deepmerge/dist/cjs.js":
+/*!********************************************!*\
+  !*** ./node_modules/deepmerge/dist/cjs.js ***!
+  \********************************************/
+/***/ ((module) => {
+
+"use strict";
+
+
+var isMergeableObject = function isMergeableObject(value) {
+	return isNonNullObject(value)
+		&& !isSpecial(value)
+};
+
+function isNonNullObject(value) {
+	return !!value && typeof value === 'object'
+}
+
+function isSpecial(value) {
+	var stringValue = Object.prototype.toString.call(value);
+
+	return stringValue === '[object RegExp]'
+		|| stringValue === '[object Date]'
+		|| isReactElement(value)
+}
+
+// see https://github.com/facebook/react/blob/b5ac963fb791d1298e7f396236383bc955f916c1/src/isomorphic/classic/element/ReactElement.js#L21-L25
+var canUseSymbol = typeof Symbol === 'function' && Symbol.for;
+var REACT_ELEMENT_TYPE = canUseSymbol ? Symbol.for('react.element') : 0xeac7;
+
+function isReactElement(value) {
+	return value.$$typeof === REACT_ELEMENT_TYPE
+}
+
+function emptyTarget(val) {
+	return Array.isArray(val) ? [] : {}
+}
+
+function cloneUnlessOtherwiseSpecified(value, options) {
+	return (options.clone !== false && options.isMergeableObject(value))
+		? deepmerge(emptyTarget(value), value, options)
+		: value
+}
+
+function defaultArrayMerge(target, source, options) {
+	return target.concat(source).map(function(element) {
+		return cloneUnlessOtherwiseSpecified(element, options)
+	})
+}
+
+function getMergeFunction(key, options) {
+	if (!options.customMerge) {
+		return deepmerge
+	}
+	var customMerge = options.customMerge(key);
+	return typeof customMerge === 'function' ? customMerge : deepmerge
+}
+
+function getEnumerableOwnPropertySymbols(target) {
+	return Object.getOwnPropertySymbols
+		? Object.getOwnPropertySymbols(target).filter(function(symbol) {
+			return Object.propertyIsEnumerable.call(target, symbol)
+		})
+		: []
+}
+
+function getKeys(target) {
+	return Object.keys(target).concat(getEnumerableOwnPropertySymbols(target))
+}
+
+function propertyIsOnObject(object, property) {
+	try {
+		return property in object
+	} catch(_) {
+		return false
+	}
+}
+
+// Protects from prototype poisoning and unexpected merging up the prototype chain.
+function propertyIsUnsafe(target, key) {
+	return propertyIsOnObject(target, key) // Properties are safe to merge if they don't exist in the target yet,
+		&& !(Object.hasOwnProperty.call(target, key) // unsafe if they exist up the prototype chain,
+			&& Object.propertyIsEnumerable.call(target, key)) // and also unsafe if they're nonenumerable.
+}
+
+function mergeObject(target, source, options) {
+	var destination = {};
+	if (options.isMergeableObject(target)) {
+		getKeys(target).forEach(function(key) {
+			destination[key] = cloneUnlessOtherwiseSpecified(target[key], options);
+		});
+	}
+	getKeys(source).forEach(function(key) {
+		if (propertyIsUnsafe(target, key)) {
+			return
+		}
+
+		if (propertyIsOnObject(target, key) && options.isMergeableObject(source[key])) {
+			destination[key] = getMergeFunction(key, options)(target[key], source[key], options);
+		} else {
+			destination[key] = cloneUnlessOtherwiseSpecified(source[key], options);
+		}
+	});
+	return destination
+}
+
+function deepmerge(target, source, options) {
+	options = options || {};
+	options.arrayMerge = options.arrayMerge || defaultArrayMerge;
+	options.isMergeableObject = options.isMergeableObject || isMergeableObject;
+	// cloneUnlessOtherwiseSpecified is added to `options` so that custom arrayMerge()
+	// implementations can use it. The caller may not replace it.
+	options.cloneUnlessOtherwiseSpecified = cloneUnlessOtherwiseSpecified;
+
+	var sourceIsArray = Array.isArray(source);
+	var targetIsArray = Array.isArray(target);
+	var sourceAndTargetTypesMatch = sourceIsArray === targetIsArray;
+
+	if (!sourceAndTargetTypesMatch) {
+		return cloneUnlessOtherwiseSpecified(source, options)
+	} else if (sourceIsArray) {
+		return options.arrayMerge(target, source, options)
+	} else {
+		return mergeObject(target, source, options)
+	}
+}
+
+deepmerge.all = function deepmergeAll(array, options) {
+	if (!Array.isArray(array)) {
+		throw new Error('first argument should be an array')
+	}
+
+	return array.reduce(function(prev, next) {
+		return deepmerge(prev, next, options)
+	}, {})
+};
+
+var deepmerge_1 = deepmerge;
+
+module.exports = deepmerge_1;
+
+
+/***/ }),
+
 /***/ "./node_modules/js-yaml/index.js":
 /*!***************************************!*\
   !*** ./node_modules/js-yaml/index.js ***!
@@ -10821,9 +10965,10 @@ class Api extends HttpClient {
              * @summary Get assets for the given application
              * @request GET:/api/v2/assets/{appId}/{type}/application
              */
-            assetsControllerFindAllByApplication: (appId, type, params = {}) => this.request({
+            assetsControllerFindAllByApplication: (appId, type, query, params = {}) => this.request({
                 path: `/api/v2/assets/${appId}/${type}/application`,
                 method: 'GET',
+                query: query,
                 format: 'json',
                 ...params,
             }),
@@ -10882,7 +11027,7 @@ class Api extends HttpClient {
                 ...params,
             }),
             /**
-             * @description With the given JWT return user relevant information.
+             * No description
              *
              * @tags auth
              * @name AuthControllerGetPermissions
@@ -10915,7 +11060,6 @@ class Api extends HttpClient {
             coverageControllerGetAllCoverages: (params = {}) => this.request({
                 path: `/api/v2/coverage`,
                 method: 'GET',
-                format: 'json',
                 ...params,
             }),
             /**
@@ -10929,7 +11073,6 @@ class Api extends HttpClient {
                 method: 'POST',
                 body: data,
                 type: ContentType.Json,
-                format: 'json',
                 ...params,
             }),
             /**
@@ -10941,7 +11084,6 @@ class Api extends HttpClient {
             coverageControllerGetCoverageById: (id, params = {}) => this.request({
                 path: `/api/v2/coverage/${id}`,
                 method: 'GET',
-                format: 'json',
                 ...params,
             }),
             /**
@@ -10955,7 +11097,6 @@ class Api extends HttpClient {
                 method: 'PUT',
                 body: data,
                 type: ContentType.Json,
-                format: 'json',
                 ...params,
             }),
             /**
@@ -10978,7 +11119,6 @@ class Api extends HttpClient {
             coverageControllerGetVariantCoverageStatistics: (id, params = {}) => this.request({
                 path: `/api/v2/coverage/variants/${id}/statistics`,
                 method: 'GET',
-                format: 'json',
                 ...params,
             }),
             /**
@@ -10990,7 +11130,6 @@ class Api extends HttpClient {
             coverageControllerGetComponentCoverage: (id, cid, params = {}) => this.request({
                 path: `/api/v2/coverage/variants/${id}/elems/${cid}`,
                 method: 'GET',
-                format: 'json',
                 ...params,
             }),
             /**
@@ -11002,7 +11141,6 @@ class Api extends HttpClient {
             coverageControllerGetVariantCoverage: (id, assetType, params = {}) => this.request({
                 path: `/api/v2/coverage/variants/${id}/${assetType}`,
                 method: 'GET',
-                format: 'json',
                 ...params,
             }),
             /**
@@ -11016,7 +11154,6 @@ class Api extends HttpClient {
                 method: 'PATCH',
                 body: data,
                 type: ContentType.Json,
-                format: 'json',
                 ...params,
             }),
             /**
@@ -11031,7 +11168,7 @@ class Api extends HttpClient {
                 ...params,
             }),
             /**
-             * @description Get assets summary statistics.
+             * No description
              *
              * @name CoverageControllerGetAssetsCoverage
              * @request GET:/api/v2/coverage/{id}/assets
@@ -11043,7 +11180,7 @@ class Api extends HttpClient {
                 ...params,
             }),
             /**
-             * @description Get pages summary statistics.
+             * No description
              *
              * @name CoverageControllerGetPagesCoverage
              * @request GET:/api/v2/coverage/{id}/pages
@@ -11051,11 +11188,10 @@ class Api extends HttpClient {
             coverageControllerGetPagesCoverage: (id, params = {}) => this.request({
                 path: `/api/v2/coverage/${id}/pages`,
                 method: 'GET',
-                format: 'json',
                 ...params,
             }),
             /**
-             * @description Get pages summary statistics.
+             * No description
              *
              * @name CoverageControllerGetRunsFullCoverage
              * @request GET:/api/v2/coverage/{id}/run/{runId}
@@ -11079,7 +11215,7 @@ class Api extends HttpClient {
                 ...params,
             }),
             /**
-             * @description Get tags with ids
+             * No description
              *
              * @tags tags
              * @name TagsControllerGetTagsWithIds
@@ -11093,7 +11229,7 @@ class Api extends HttpClient {
                 ...params,
             }),
             /**
-             * @description Get application's tags
+             * No description
              *
              * @tags tags
              * @name TagsControllerGetAppTags
@@ -11106,7 +11242,7 @@ class Api extends HttpClient {
                 ...params,
             }),
             /**
-             * @description Create tag.
+             * No description
              *
              * @tags tags
              * @name TagsControllerCreate
@@ -11121,7 +11257,7 @@ class Api extends HttpClient {
                 ...params,
             }),
             /**
-             * @description Update tag.
+             * No description
              *
              * @tags tags
              * @name TagsControllerUpdateTag
@@ -11135,7 +11271,7 @@ class Api extends HttpClient {
                 ...params,
             }),
             /**
-             * @description Delete tag.
+             * No description
              *
              * @tags tags
              * @name TagsControllerRemoveTag
@@ -11147,7 +11283,7 @@ class Api extends HttpClient {
                 ...params,
             }),
             /**
-             * @description Get applications.
+             * No description
              *
              * @tags applications
              * @name ApplicationControllerGetApplications
@@ -11161,7 +11297,7 @@ class Api extends HttpClient {
                 ...params,
             }),
             /**
-             * @description Create application.
+             * No description
              *
              * @tags applications
              * @name ApplicationControllerCreateApplication
@@ -11176,7 +11312,7 @@ class Api extends HttpClient {
                 ...params,
             }),
             /**
-             * @description Get application with id.
+             * No description
              *
              * @tags applications
              * @name ApplicationControllerGetApplication
@@ -11190,7 +11326,7 @@ class Api extends HttpClient {
                 ...params,
             }),
             /**
-             * @description Update application.
+             * No description
              *
              * @tags applications
              * @name ApplicationControllerUpdate
@@ -11204,7 +11340,7 @@ class Api extends HttpClient {
                 ...params,
             }),
             /**
-             * @description Delete application.
+             * No description
              *
              * @tags applications
              * @name ApplicationControllerRemove
@@ -11216,7 +11352,7 @@ class Api extends HttpClient {
                 ...params,
             }),
             /**
-             * @description Get the application's tags.
+             * No description
              *
              * @tags applications
              * @name ApplicationControllerGetApplicationsTags
@@ -11244,7 +11380,7 @@ class Api extends HttpClient {
                 ...params,
             }),
             /**
-             * @description Get permissions.
+             * No description
              *
              * @tags permissions
              * @name PermissionControllerGetPermissions
@@ -11258,7 +11394,7 @@ class Api extends HttpClient {
                 ...params,
             }),
             /**
-             * @description Create permission.
+             * No description
              *
              * @tags permissions
              * @name PermissionControllerCreatePermission
@@ -11273,7 +11409,7 @@ class Api extends HttpClient {
                 ...params,
             }),
             /**
-             * @description Get permission with id.
+             * No description
              *
              * @tags permissions
              * @name PermissionControllerGetPermission
@@ -11287,7 +11423,7 @@ class Api extends HttpClient {
                 ...params,
             }),
             /**
-             * @description Update permission.
+             * No description
              *
              * @tags permissions
              * @name PermissionControllerUpdate
@@ -11302,7 +11438,7 @@ class Api extends HttpClient {
                 ...params,
             }),
             /**
-             * @description Delete permission.
+             * No description
              *
              * @tags permissions
              * @name PermissionControllerRemove
@@ -11315,7 +11451,7 @@ class Api extends HttpClient {
                 ...params,
             }),
             /**
-             * @description Get all the permissions of the resource with id
+             * No description
              *
              * @tags permissions
              * @name PermissionControllerGetResourcePermissions
@@ -11329,7 +11465,7 @@ class Api extends HttpClient {
                 ...params,
             }),
             /**
-             * @description Get all the permissions of the user with id
+             * No description
              *
              * @tags permissions
              * @name PermissionControllerGetUserPermissions
@@ -11512,7 +11648,6 @@ class Api extends HttpClient {
             issueControllerCreate: (params = {}) => this.request({
                 path: `/api/v2/issues`,
                 method: 'POST',
-                format: 'json',
                 ...params,
             }),
             /**
@@ -11525,7 +11660,6 @@ class Api extends HttpClient {
             issueControllerGetAll: (params = {}) => this.request({
                 path: `/api/v2/issues`,
                 method: 'GET',
-                format: 'json',
                 ...params,
             }),
             /**
@@ -11540,7 +11674,6 @@ class Api extends HttpClient {
                 method: 'PUT',
                 body: data,
                 type: ContentType.Json,
-                format: 'json',
                 ...params,
             }),
             /**
@@ -11553,7 +11686,6 @@ class Api extends HttpClient {
             issueControllerGet: (id, params = {}) => this.request({
                 path: `/api/v2/issues/${id}`,
                 method: 'GET',
-                format: 'json',
                 ...params,
             }),
             /**
@@ -11580,7 +11712,6 @@ class Api extends HttpClient {
                 method: 'PUT',
                 body: data,
                 type: ContentType.Json,
-                format: 'json',
                 ...params,
             }),
             /**
@@ -11593,16 +11724,14 @@ class Api extends HttpClient {
             issueControllerGetLogs: (id, appId, params = {}) => this.request({
                 path: `/api/v2/issues/${id}/logs/${appId}`,
                 method: 'GET',
-                format: 'json',
                 ...params,
             }),
             /**
-             * @description This should be replaced with the endpoint below: GET('/:id') The reason for this is that we want to enforce permissions on all enpoints
+             * No description
              *
              * @tags run
              * @name RunsControllerGetRuns
              * @request GET:/api/v2/run
-             * @deprecated
              */
             runsControllerGetRuns: (params = {}) => this.request({
                 path: `/api/v2/run`,
@@ -11620,7 +11749,6 @@ class Api extends HttpClient {
             runsControllerGetVariantRuns: (id, params = {}) => this.request({
                 path: `/api/v2/run/${id}`,
                 method: 'GET',
-                format: 'json',
                 ...params,
             }),
             /**
@@ -11633,7 +11761,6 @@ class Api extends HttpClient {
             runsControllerHasRuns: (id, params = {}) => this.request({
                 path: `/api/v2/run/variant/${id}/hasRuns`,
                 method: 'GET',
-                format: 'json',
                 ...params,
             }),
             /**
@@ -11685,6 +11812,7 @@ class Api extends HttpClient {
             runParametersControllerGetAll: (params = {}) => this.request({
                 path: `/api/v2/run/parameters`,
                 method: 'GET',
+                format: 'json',
                 ...params,
             }),
             /**
@@ -11694,9 +11822,11 @@ class Api extends HttpClient {
              * @name RunParametersControllerCreate
              * @request POST:/api/v2/run/parameters
              */
-            runParametersControllerCreate: (params = {}) => this.request({
+            runParametersControllerCreate: (data, params = {}) => this.request({
                 path: `/api/v2/run/parameters`,
                 method: 'POST',
+                body: data,
+                type: ContentType.Json,
                 ...params,
             }),
             /**
@@ -11709,6 +11839,7 @@ class Api extends HttpClient {
             runParametersControllerGet: (id, params = {}) => this.request({
                 path: `/api/v2/run/parameters/${id}`,
                 method: 'GET',
+                format: 'json',
                 ...params,
             }),
             /**
@@ -11718,10 +11849,11 @@ class Api extends HttpClient {
              * @name RunParametersControllerUpdate
              * @request PUT:/api/v2/run/parameters/{id}
              */
-            runParametersControllerUpdate: (id, params = {}) => this.request({
+            runParametersControllerUpdate: (id, data, params = {}) => this.request({
                 path: `/api/v2/run/parameters/${id}`,
                 method: 'PUT',
-                format: 'json',
+                body: data,
+                type: ContentType.Json,
                 ...params,
             }),
             /**
@@ -11868,10 +12000,9 @@ class Api extends HttpClient {
              * @name RunsSummaryStatisticsControllerGetMultipleRunItemStats
              * @request GET:/api/v2/run/summaryStatistics/items
              */
-            runsSummaryStatisticsControllerGetMultipleRunItemStats: (query, params = {}) => this.request({
+            runsSummaryStatisticsControllerGetMultipleRunItemStats: (params = {}) => this.request({
                 path: `/api/v2/run/summaryStatistics/items`,
                 method: 'GET',
-                query: query,
                 format: 'json',
                 ...params,
             }),
@@ -11928,6 +12059,7 @@ class Api extends HttpClient {
                 method: 'POST',
                 body: data,
                 type: ContentType.Json,
+                format: 'json',
                 ...params,
             }),
             /**
@@ -12010,15 +12142,14 @@ class Api extends HttpClient {
              * @name RunsLogControllerV2GetRunLog
              * @request GET:/api/v2/runs/{id}/log/{runNumber}
              */
-            runsLogControllerV2GetRunLog: (id, runNumber, query, params = {}) => this.request({
+            runsLogControllerV2GetRunLog: (id, runNumber, params = {}) => this.request({
                 path: `/api/v2/runs/${id}/log/${runNumber}`,
                 method: 'GET',
-                query: query,
                 format: 'json',
                 ...params,
             }),
             /**
-             * @description Get all of the variants available to the user.
+             * No description
              *
              * @tags variants
              * @name VariantControllerGetVariants
@@ -12031,7 +12162,7 @@ class Api extends HttpClient {
                 ...params,
             }),
             /**
-             * @description Create a new variant.
+             * No description
              *
              * @tags variants
              * @name VariantControllerCreateVariant
@@ -12046,7 +12177,7 @@ class Api extends HttpClient {
                 ...params,
             }),
             /**
-             * @description Get a variant by id. This request only returns a variant's metadata, if you want the model use /variants/:id/model
+             * No description
              *
              * @tags variants
              * @name VariantControllerGetVariant
@@ -12058,7 +12189,7 @@ class Api extends HttpClient {
                 ...params,
             }),
             /**
-             * @description Update an existing variant.
+             * No description
              *
              * @tags variants
              * @name VariantControllerUpdateVariant
@@ -12110,20 +12241,19 @@ class Api extends HttpClient {
                 ...params,
             }),
             /**
-             * @description Get an application model including all of its components and relationships.
+             * No description
              *
              * @tags variants
              * @name ModelControllerGetApplicationModel
              * @request GET:/api/v2/variants/{id}/model
              */
-            modelControllerGetApplicationModel: (id, query, params = {}) => this.request({
+            modelControllerGetApplicationModel: (id, params = {}) => this.request({
                 path: `/api/v2/variants/${id}/model`,
                 method: 'GET',
-                query: query,
                 ...params,
             }),
             /**
-             * @description Create a new application model with all of its components and relationships.
+             * No description
              *
              * @tags variants
              * @name ModelControllerCreateApplicationModel
@@ -12149,7 +12279,7 @@ class Api extends HttpClient {
                 ...params,
             }),
             /**
-             * @description Add a component to an existing application.
+             * No description
              *
              * @tags variants
              * @name ModelControllerAddComponent
@@ -12163,7 +12293,7 @@ class Api extends HttpClient {
                 ...params,
             }),
             /**
-             * @description Update an existing component in an application.
+             * No description
              *
              * @tags variants
              * @name ModelControllerUpdateComponent
@@ -12177,7 +12307,7 @@ class Api extends HttpClient {
                 ...params,
             }),
             /**
-             * @description Delete an existing component from the application model. All of the component's descendants and relationships are deleted from the model. Returns the ids for the components and relationships deleted. This can create inconsistencies between any active tester's and active agent's local version of the model. It can also cause issues with the run log, activities, and rules since they may now reference non-existent application components.
+             * No description
              *
              * @tags variants
              * @name ModelControllerDeleteComponent
@@ -12241,7 +12371,7 @@ class Api extends HttpClient {
                 ...params,
             }),
             /**
-             * @description Add a relationship to an existing application.
+             * No description
              *
              * @tags variants
              * @name ModelControllerAddRelationship
@@ -12304,7 +12434,6 @@ class Api extends HttpClient {
             coverageControllerGetComponentsCoverage: (id, cId, params = {}) => this.request({
                 path: `/api/v2/variants/${id}/model/components/${cId}/coverage`,
                 method: 'GET',
-                format: 'json',
                 ...params,
             }),
             /**
@@ -12317,7 +12446,6 @@ class Api extends HttpClient {
             coverageControllerGetVariantsCoverage: (id, params = {}) => this.request({
                 path: `/api/v2/variants/${id}/model/coverage`,
                 method: 'GET',
-                format: 'json',
                 ...params,
             }),
             /**
@@ -12342,7 +12470,6 @@ class Api extends HttpClient {
             coverageControllerGetSimpleVariantCoverage: (id, params = {}) => this.request({
                 path: `/api/v2/variants/${id}/model/coverage/simple`,
                 method: 'GET',
-                format: 'json',
                 ...params,
             }),
             /**
@@ -12352,10 +12479,9 @@ class Api extends HttpClient {
              * @name CoverageControllerGetCoverageWithFilters
              * @request GET:/api/v2/variants/{id}/model/coverage/filters
              */
-            coverageControllerGetCoverageWithFilters: (id, query, params = {}) => this.request({
+            coverageControllerGetCoverageWithFilters: (id, params = {}) => this.request({
                 path: `/api/v2/variants/${id}/model/coverage/filters`,
                 method: 'GET',
-                query: query,
                 ...params,
             }),
             /**
@@ -12502,22 +12628,21 @@ class Api extends HttpClient {
                 ...params,
             }),
             /**
-             * @description Get users.
+             * No description
              *
              * @tags users
              * @name UserControllerGetUsers
              * @summary Get users
              * @request GET:/api/v2/users
              */
-            userControllerGetUsers: (query, params = {}) => this.request({
+            userControllerGetUsers: (params = {}) => this.request({
                 path: `/api/v2/users`,
                 method: 'GET',
-                query: query,
                 format: 'json',
                 ...params,
             }),
             /**
-             * @description Get user with id.
+             * No description
              *
              * @tags users
              * @name UserControllerGetUser
@@ -12531,7 +12656,7 @@ class Api extends HttpClient {
                 ...params,
             }),
             /**
-             * @description Update user.
+             * No description
              *
              * @tags users
              * @name UserControllerUpdate
@@ -12546,7 +12671,7 @@ class Api extends HttpClient {
                 ...params,
             }),
             /**
-             * @description Delete user.
+             * No description
              *
              * @tags users
              * @name UserControllerRemove
@@ -12570,7 +12695,7 @@ class Api extends HttpClient {
                 ...params,
             }),
             /**
-             * @description Returns user if it's already created, creates user if doesn't exist.
+             * No description
              *
              * @tags users
              * @name UserControllerValidateUser
@@ -12610,21 +12735,20 @@ class Api extends HttpClient {
                 ...params,
             }),
             /**
-             * @description Get all of the workspaces available to the user.
+             * No description
              *
              * @tags workspace
              * @name WorkspaceControllerGetWorkspaces
              * @request GET:/api/v2/workspace
              */
-            workspaceControllerGetWorkspaces: (query, params = {}) => this.request({
+            workspaceControllerGetWorkspaces: (params = {}) => this.request({
                 path: `/api/v2/workspace`,
                 method: 'GET',
-                query: query,
                 format: 'json',
                 ...params,
             }),
             /**
-             * @description Create a new workspace.
+             * No description
              *
              * @tags workspace
              * @name WorkspaceControllerCreateWorkspace
@@ -12639,7 +12763,7 @@ class Api extends HttpClient {
                 ...params,
             }),
             /**
-             * @description Get a workspace by id.
+             * No description
              *
              * @tags workspace
              * @name WorkspaceControllerGetWorkspace
@@ -12652,7 +12776,7 @@ class Api extends HttpClient {
                 ...params,
             }),
             /**
-             * @description Update an existing workspace
+             * No description
              *
              * @tags workspace
              * @name WorkspaceControllerUpdateWorkspace
@@ -12666,7 +12790,7 @@ class Api extends HttpClient {
                 ...params,
             }),
             /**
-             * @description Deletes a workspace.
+             * No description
              *
              * @tags workspace
              * @name WorkspaceControllerDeleteWorkspace
@@ -12678,7 +12802,7 @@ class Api extends HttpClient {
                 ...params,
             }),
             /**
-             * @description Get invitation token with id.
+             * No description
              *
              * @tags invitation-token
              * @name InvitationTokenControllerGetInvitationToken
@@ -12691,7 +12815,7 @@ class Api extends HttpClient {
                 ...params,
             }),
             /**
-             * @description Create a new invitation token.
+             * No description
              *
              * @tags invitation-token
              * @name InvitationTokenControllerCreateWorkspace
@@ -12705,21 +12829,20 @@ class Api extends HttpClient {
                 ...params,
             }),
             /**
-             * @description Get invitations.
+             * No description
              *
              * @tags invite-user
              * @name InviteUserControllerGetUsers
              * @summary Get invitations
              * @request GET:/api/v2/invite-user
              */
-            inviteUserControllerGetUsers: (query, params = {}) => this.request({
+            inviteUserControllerGetUsers: (params = {}) => this.request({
                 path: `/api/v2/invite-user`,
                 method: 'GET',
-                query: query,
                 ...params,
             }),
             /**
-             * @description Create an invitation entry.
+             * No description
              *
              * @tags invite-user
              * @name InviteUserControllerCreateInvitation
@@ -12746,7 +12869,7 @@ class Api extends HttpClient {
                 ...params,
             }),
             /**
-             * @description Get entity's children.
+             * No description
              *
              * @tags entities
              * @name InstanceEntityControllerGetEntitysChildren
@@ -12759,7 +12882,7 @@ class Api extends HttpClient {
                 ...params,
             }),
             /**
-             * @description Get entity's children.
+             * No description
              *
              * @tags entities
              * @name InstanceEntityControllerRemoveEntity
@@ -12781,11 +12904,10 @@ class Api extends HttpClient {
             subscriptionControllerValidatePayment: (params = {}) => this.request({
                 path: `/api/v2/subscription/manage-subscriptions`,
                 method: 'POST',
-                format: 'json',
                 ...params,
             }),
             /**
-             * @description Get filtered and grouped statistics for a single run aggregation
+             * No description
              *
              * @tags analytics
              * @name AnalyticsControllerGetRunRuleStatistics
@@ -12801,7 +12923,7 @@ class Api extends HttpClient {
                 ...params,
             }),
             /**
-             * @description Get analytics for all components in an application.
+             * No description
              *
              * @tags analytics
              * @name AnalyticsControllerGetComponentRuleStatistics
@@ -12817,7 +12939,7 @@ class Api extends HttpClient {
                 ...params,
             }),
             /**
-             * @description Get analytics for all pages in an application.
+             * No description
              *
              * @tags analytics
              * @name AnalyticsControllerGetPageRuleStatistics
@@ -12854,12 +12976,17 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.Api = void 0;
 const cross_fetch_1 = __importDefault(__webpack_require__(/*! cross-fetch */ "./node_modules/cross-fetch/dist/browser-ponyfill.js"));
+const deepmerge_1 = __importDefault(__webpack_require__(/*! deepmerge */ "./node_modules/deepmerge/dist/cjs.js"));
 const api_1 = __webpack_require__(/*! ./api */ "./src/codegen/api.ts");
 class Api {
     constructor(inputs) {
         this.authParams = this.authParams.bind(this);
         this.inputs = inputs;
-        this._api = new api_1.Api({ baseUrl: inputs.repositoryUrl, securityWorker: this.authParams, customFetch: cross_fetch_1.default });
+        this._api = new api_1.Api({
+            baseUrl: inputs.repositoryUrl,
+            securityWorker: this.authParams,
+            customFetch: cross_fetch_1.default,
+        });
         const { apiKey, apiKeyId } = inputs;
         this._api.setSecurityData({ apiKey, apiKeyId });
     }
@@ -12873,11 +13000,13 @@ class Api {
      * @returns The ID of the started run
      */
     async startRun(variantId = this.inputs.variant) {
+        const paramsFromRunTemplate = await this._api.api.runParametersControllerGet(this.inputs.runTemplate, { secure: true });
+        const params = (0, deepmerge_1.default)(paramsFromRunTemplate, this.inputs.parameters);
         const body = {
             runOn: 'server',
             applicationId: this.inputs.application,
             parametersId: this.inputs.runTemplate,
-            parameters: this.inputs.parameters,
+            parameters: params,
             workQueue: [],
             runId: null,
             runNumber: null,
@@ -12895,7 +13024,8 @@ class Api {
         return runId;
     }
     async getRunLogs(runId, params = {}, applicationId = this.inputs.application) {
-        const res = await this._api.api.runsLogControllerV2GetRunLog(applicationId, runId, params, { secure: true });
+        const requestParams = { ...params, secure: true };
+        const res = await this._api.api.runsLogControllerV2GetRunLog(applicationId, runId, requestParams);
         return res.data;
     }
     async getRunStatus(runId) {
@@ -12909,8 +13039,8 @@ class Api {
         const token = btoa(`${apiKeyId}:${apiKey}`);
         return {
             headers: {
-                Authorization: `Bearer ${token}`
-            }
+                Authorization: `Bearer ${token}`,
+            },
         };
     }
 }
@@ -12980,15 +13110,11 @@ async function main() {
             lastRunLogNumber = Number(logs[logs.length - 1].id);
         }
         for (const log of logs) {
-            if ('message' in log) {
-                console.log(log.message);
-                continue;
-            }
+            const msg = log.msg || log['message'];
+            msg && console.log(msg);
             if (log['level']?.toLowerCase?.() == 'error') {
                 numErrors++;
-                core.error(log['message']
-                    ? String(log['message'])
-                    : JSON.stringify(log));
+                core.error(msg ? String(msg) : JSON.stringify(log));
             }
         }
         await (0, util_1.sleep)(POLL_INTERVAL);
