@@ -12,12 +12,16 @@ async function main() {
     const api = new Api(inputs)
 
     // check that application exists
-    const _application = await api.getApplication()
-    console.log(`Found application:\n${JSON.stringify(_application, null, 2)}`)
+    const application = await api.getApplication()
+    console.log(`Found application:\n${JSON.stringify(application, null, 2)}`)
+    const variant = await api.getVariant(application.data._id)
+    console.log(`Found variant:\n${JSON.stringify(variant, null, 2)}`)
 
     core.debug('Starting run...')
     const runId = await api.startRun()
-    console.log(`Started run: ${runId}`)
+    core.notice(
+        `Started run ${runId} for ${application.data.name} (${variant.name})`
+    )
 
     let runStatus: Awaited<ReturnType<typeof api.getRunStatus>>
     let lastRunLogNumber = 0
@@ -32,9 +36,13 @@ async function main() {
             offset: lastRunLogNumber,
             limit: 50,
         })
+
         if (logs.length) {
             lastRunLogNumber = Number(logs[logs.length - 1].id)
+        } else {
+            console.log(`No logs found for run ${runId}`)
         }
+
         for (const log of logs) {
             const msg =
                 log.msg || (log as Record<string, any>)['message']
@@ -46,6 +54,7 @@ async function main() {
                 core.error(msg ? String(msg) : JSON.stringify(log))
             }
         }
+
         await sleep(POLL_INTERVAL)
     }
 

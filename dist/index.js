@@ -12994,6 +12994,10 @@ class Api {
         const res = await this._api.api.applicationControllerGetApplication(id, { secure: true });
         return res.data;
     }
+    async getVariant(applicationId) {
+        const res = await this._api.api.variantControllerGetVariant(applicationId, { secure: true });
+        return res;
+    }
     /**
      *
      * @param variantId
@@ -13092,11 +13096,13 @@ async function main() {
     const inputs = (0, inputs_1.getActionInputs)();
     const api = new codegen_1.Api(inputs);
     // check that application exists
-    const _application = await api.getApplication();
-    console.log(`Found application:\n${JSON.stringify(_application, null, 2)}`);
+    const application = await api.getApplication();
+    console.log(`Found application:\n${JSON.stringify(application, null, 2)}`);
+    const variant = await api.getVariant(application.data._id);
+    console.log(`Found variant:\n${JSON.stringify(variant, null, 2)}`);
     core.debug('Starting run...');
     const runId = await api.startRun();
-    console.log(`Started run: ${runId}`);
+    core.notice(`Started run ${runId} for ${application.data.name} (${variant.name})`);
     let runStatus;
     let lastRunLogNumber = 0;
     let numErrors = 0;
@@ -13108,6 +13114,9 @@ async function main() {
         });
         if (logs.length) {
             lastRunLogNumber = Number(logs[logs.length - 1].id);
+        }
+        else {
+            console.log(`No logs found for run ${runId}`);
         }
         for (const log of logs) {
             const msg = log.msg || log['message'];

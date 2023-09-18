@@ -34,6 +34,11 @@ export class Api {
         return res.data
     }
 
+    public async getVariant(applicationId: string) {
+        const res: any = await this._api.api.variantControllerGetVariant(applicationId, { secure: true })
+        return res
+    }
+
     /**
      *
      * @param variantId
