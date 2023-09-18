@@ -12877,7 +12877,13 @@ class Api {
             runOn: 'server',
             applicationId: this.inputs.application,
             parametersId: this.inputs.runTemplate,
-            parameters: this.inputs.parameters
+            parameters: this.inputs.parameters,
+            workQueue: [],
+            runId: null,
+            runNumber: null,
+            driverId: null,
+            agentId: null,
+            user: null,
         };
         const res = await this._api.api.startRunControllerStartRun(variantId, body, { secure: true });
         const data = res.data;
@@ -12952,14 +12958,15 @@ const inputs_1 = __webpack_require__(/*! ./inputs */ "./src/inputs/index.ts");
 const util_1 = __webpack_require__(/*! ./util */ "./src/util.ts");
 async function main() {
     const POLL_INTERVAL = 1000;
+    core.debug(`Parsing inputs...`);
     const inputs = (0, inputs_1.getActionInputs)();
     const api = new codegen_1.Api(inputs);
     // check that application exists
     const _application = await api.getApplication();
-    core.debug(`Found application:\n${JSON.stringify(_application, null, 2)}`);
+    console.log(`Found application:\n${JSON.stringify(_application, null, 2)}`);
     core.debug('Starting run...');
     const runId = await api.startRun();
-    core.debug(`Started run: ${runId}`);
+    console.log(`Started run: ${runId}`);
     let runStatus;
     let lastRunLogNumber = 0;
     let numErrors = 0;
@@ -12991,6 +12998,7 @@ async function main() {
     }
 }
 main().catch(err => {
+    core.debug(err.stack);
     const error = (0, util_1.toError)(err);
     core.setFailed(error.message);
 });
