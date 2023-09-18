@@ -13004,12 +13004,14 @@ class Api {
      * @returns The ID of the started run
      */
     async startRun(variantId = this.inputs.variant) {
-        const paramsFromRunTemplate = await this._api.api.assetsControllerFindOne(this.inputs.application, 'run_parameter', this.inputs.runTemplate, { secure: true });
-        const params = (0, deepmerge_1.default)(paramsFromRunTemplate.data.resource.data, this.inputs.parameters);
+        const { runTemplate, application, parameters: parameterOverrides } = this.inputs;
+        console.log(`Getting parameters from run template ${runTemplate}`);
+        const paramsFromRunTemplate = await this._api.api.assetsControllerFindOne(application, 'run_parameter', runTemplate, { secure: true });
+        const params = (0, deepmerge_1.default)(paramsFromRunTemplate.data.resource.data, parameterOverrides);
         const body = {
             runOn: 'server',
-            applicationId: this.inputs.application,
-            parametersId: this.inputs.runTemplate,
+            applicationId: application,
+            parametersId: runTemplate,
             parameters: params,
             workQueue: [],
             runId: null,
@@ -13018,6 +13020,7 @@ class Api {
             agentId: null,
             user: null,
         };
+        console.log(`Start run request:\n${JSON.stringify(body, null, 2)}`);
         const res = await this._api.api.startRunControllerStartRun(variantId, body, { secure: true });
         const data = res.data;
         if (typeof data != 'object' && !data)
