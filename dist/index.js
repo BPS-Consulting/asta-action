@@ -13101,7 +13101,7 @@ async function main() {
     // check that application exists
     const application = await api.getApplication();
     console.log(`Found application:\n${JSON.stringify(application, null, 2)}`);
-    const variant = await api.getVariant(application.data._id);
+    const variant = await api.getVariant();
     console.log(`Found variant:\n${JSON.stringify(variant, null, 2)}`);
     core.debug('Starting run...');
     const runId = await api.startRun();
