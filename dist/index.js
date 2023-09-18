@@ -13031,7 +13031,7 @@ class Api {
             throw new TypeError(`Start run response is missing a run id, or returned an invalid on. Expected a string, got ${typeof runId}`);
         return runId;
     }
-    async getRunLogs(runId, params = {}, applicationId = this.inputs.application) {
+    async getRunLogs(runId, params = {}, applicationId = this.inputs.variant) {
         const requestParams = { query: params, secure: true };
         const res = await this._api.api.runsLogControllerV2GetRunLog(applicationId, runId, requestParams);
         return res.data;

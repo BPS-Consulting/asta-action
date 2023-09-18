@@ -101,7 +101,7 @@ export class Api {
     public async getRunLogs(
         runId: string,
         params: PaginationParams = {},
-        applicationId = this.inputs.application
+        applicationId = this.inputs.variant
     ) {
         const requestParams = { query: params, secure: true  }
         const res = await this._api.api.runsLogControllerV2GetRunLog(
