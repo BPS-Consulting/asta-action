@@ -13031,6 +13031,9 @@ class Api {
             throw new TypeError(`Start run response is missing a run id, or returned an invalid on. Expected a string, got ${typeof runId}`);
         return runId;
     }
+    async stopRun(runId) {
+        await this._api.api.stopRunControllerStopRun(runId, { secure: true });
+    }
     async getRunLogs(runId, params = {}, applicationId = this.inputs.variant) {
         const requestParams = { query: params, secure: true };
         const res = await this._api.api.runsLogControllerV2GetRunLog(applicationId, runId, requestParams);
@@ -13099,18 +13102,12 @@ async function main() {
     core.debug(`Parsing inputs...`);
     const inputs = (0, inputs_1.getActionInputs)();
     const api = new codegen_1.Api(inputs);
-    // check that application exists
-    const application = await api.getApplication();
-    console.log(`Found application:\n${JSON.stringify(application, null, 2)}`);
-    const variant = await api.getVariant();
-    console.log(`Found variant:\n${JSON.stringify(variant, null, 2)}`);
-    core.debug('Starting run...');
-    const runId = await api.startRun();
-    core.notice(`
-Started run ${runId} for ${application.data.name} (${variant.name})
-    
-View detailed logs here: https://companion.asta.grantsgovservices.com/app/${inputs.variant}/log?run=${runId}&filters%5Blevel%5D%5B%24ne%5D=Debug
-`.trim());
+    const runId = await startRun(api, inputs);
+    process.on('SIGINT', () => {
+        console.log('Stopping run');
+        api.stopRun(runId);
+        console.log('Stopped run');
+    });
     let runStatus;
     let lastRunLogNumber = 0;
     let numErrors = 0;
@@ -13127,12 +13124,9 @@ View detailed logs here: https://companion.asta.grantsgovservices.com/app/${inpu
             core.debug(`No logs found for run ${runId}`);
         }
         for (const log of logs) {
-            const msg = log.msg || log['message'];
-            msg && console.log(`[${log.level}] ${msg}`);
-            if (log['level']?.toLowerCase?.() == 'error') {
+            onLog(log);
+            if (isErrorLog(log))
                 numErrors++;
-                core.error(msg ? String(msg) : JSON.stringify(log));
-            }
         }
         await (0, util_1.sleep)(POLL_INTERVAL);
     }
@@ -13143,6 +13137,36 @@ View detailed logs here: https://companion.asta.grantsgovservices.com/app/${inpu
     else {
         core.notice(`Test run completed successfully`);
     }
+}
+async function startRun(api, inputs) {
+    // check that application exists
+    const application = await api.getApplication();
+    console.log(`Found application:\n${JSON.stringify(application, null, 2)}`);
+    const variant = await api.getVariant();
+    console.log(`Found variant:\n${JSON.stringify(variant, null, 2)}`);
+    core.debug('Starting run...');
+    const runId = await api.startRun();
+    core.notice(`
+Started run ${runId} for ${application.data.name} (${variant.name})
+    
+View detailed logs here: https://companion.asta.grantsgovservices.com/app/${inputs.variant}/log?run=${runId}&filters%5Blevel%5D%5B%24ne%5D=Debug
+`.trim());
+    return runId;
+}
+function onLog(log) {
+    const msg = log.msg || log['message'];
+    if (!msg)
+        return;
+    if (isErrorLog(log)) {
+        // numErrors++
+        core.error(msg ? String(msg) : JSON.stringify(log));
+    }
+    else {
+        console.log(`[${log.level} - ${log.type}] ${msg}`);
+    }
+}
+function isErrorLog(log) {
+    return log['level']?.toLowerCase?.() == 'error';
 }
 main().catch(err => {
     core.debug(err.stack);

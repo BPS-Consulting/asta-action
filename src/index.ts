@@ -13,6 +13,11 @@ async function main() {
     const api = new Api(inputs)
 
     const runId = await startRun(api, inputs)
+    process.on('SIGINT', () => {
+        console.log('Stopping run')
+        api.stopRun(runId)
+        console.log('Stopped run')
+    })
 
 
     let runStatus: Awaited<ReturnType<typeof api.getRunStatus>>

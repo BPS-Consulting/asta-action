@@ -98,6 +98,10 @@ export class Api {
         return runId
     }
 
+    public async stopRun(runId: string) {
+        await this._api.api.stopRunControllerStopRun(runId, { secure: true })
+    }
+
     public async getRunLogs(
         runId: string,
         params: PaginationParams = {},
