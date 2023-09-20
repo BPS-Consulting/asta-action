@@ -13103,6 +13103,7 @@ async function main() {
     const inputs = (0, inputs_1.getActionInputs)();
     const api = new codegen_1.Api(inputs);
     const runId = await startRun(api, inputs);
+    core.setOutput('run-id', runId);
     process.on('SIGINT', () => {
         console.log('Stopping run');
         api.stopRun(runId);

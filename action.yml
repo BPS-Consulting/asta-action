@@ -29,6 +29,10 @@ inputs:
       The ID of your Personal Access Token (PAT). May also be set via the
       ASTA_API_KEY_ID environment variable.
     
+outputs:
+  run-id:
+    description: The unique ID of the ASTA run executed in this workflow
+
 runs:
   using: 'node20'
   main: 'dist/index.js'
