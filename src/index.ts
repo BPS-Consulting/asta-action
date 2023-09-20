@@ -3,6 +3,7 @@ import * as core from '@actions/core'
 import { Api } from './codegen'
 import { getActionInputs, type ActionInputs } from './inputs'
 import { sleep, toError } from './util'
+import { RunLogEntryDTO } from './codegen/api'
 
 async function main() {
     const POLL_INTERVAL = 1_000
@@ -11,20 +12,8 @@ async function main() {
     const inputs: ActionInputs = getActionInputs()
     const api = new Api(inputs)
 
-    // check that application exists
-    const application = await api.getApplication()
-    console.log(`Found application:\n${JSON.stringify(application, null, 2)}`)
-    const variant = await api.getVariant()
-    console.log(`Found variant:\n${JSON.stringify(variant, null, 2)}`)
+    const runId = await startRun(api, inputs)
 
-    core.debug('Starting run...')
-    const runId = await api.startRun()
-    core.notice(`
-Started run ${runId} for ${application.data.name} (${variant.name})
-    
-View detailed logs here: https://companion.asta.grantsgovservices.com/app/${inputs.variant}/log?run=${runId}&filters%5Blevel%5D%5B%24ne%5D=Debug
-`.trim()
-    )
 
     let runStatus: Awaited<ReturnType<typeof api.getRunStatus>>
     let lastRunLogNumber = 0
@@ -47,15 +36,8 @@ View detailed logs here: https://companion.asta.grantsgovservices.com/app/${inpu
         }
 
         for (const log of logs) {
-            const msg =
-                log.msg || (log as Record<string, any>)['message']
-
-            msg && console.log(`[${log.level}] ${msg}`)
-
-            if ((log['level'] as string)?.toLowerCase?.() == 'error') {
-                numErrors++
-                core.error(msg ? String(msg) : JSON.stringify(log))
-            }
+            onLog(log)
+            if (isErrorLog(log)) numErrors++
         }
 
         await sleep(POLL_INTERVAL)
@@ -68,6 +50,43 @@ View detailed logs here: https://companion.asta.grantsgovservices.com/app/${inpu
     } else {
         core.notice(`Test run completed successfully`)
     }
+}
+
+async function startRun(api: Api, inputs: ActionInputs) {
+
+    // check that application exists
+    const application = await api.getApplication()
+    console.log(`Found application:\n${JSON.stringify(application, null, 2)}`)
+    const variant = await api.getVariant()
+    console.log(`Found variant:\n${JSON.stringify(variant, null, 2)}`)
+
+    core.debug('Starting run...')
+    const runId = await api.startRun()
+    core.notice(`
+Started run ${runId} for ${application.data.name} (${variant.name})
+    
+View detailed logs here: https://companion.asta.grantsgovservices.com/app/${inputs.variant}/log?run=${runId}&filters%5Blevel%5D%5B%24ne%5D=Debug
+`.trim()
+    )
+
+    return runId
+}
+
+function onLog(log: RunLogEntryDTO) {
+    const msg =
+        log.msg || (log as Record<string, any>)['message']
+
+    if (!msg) return
+
+    if (isErrorLog(log)) {
+        // numErrors++
+        core.error(msg ? String(msg) : JSON.stringify(log))
+    } else {
+        console.log(`[${log.level} - ${log.type}] ${msg}`)
+    }
+}
+function isErrorLog(log: RunLogEntryDTO): boolean {
+    return (log['level'] as string)?.toLowerCase?.() == 'error'
 }
 
 main().catch(err => {
