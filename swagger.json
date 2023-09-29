@@ -25,7 +25,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Get assets for the given application with type",
+            "description": "Get assets for the given application with type task",
             "content": {
               "application/json": {
                 "schema": {
@@ -106,19 +106,16 @@
             }
           },
           {
+            "name": "status",
             "required": false,
-            "name": "isActive",
             "in": "query",
             "schema": {
-              "type": "boolean"
-            }
-          },
-          {
-            "required": false,
-            "name": "isValid",
-            "in": "query",
-            "schema": {
-              "type": "boolean"
+              "enum": [
+                "active",
+                "inactive",
+                "invalid"
+              ],
+              "type": "string"
             }
           }
         ],
@@ -219,7 +216,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/AssetDto"
+                "$ref": "#/components/schemas/AssetDTO"
               }
             }
           }
@@ -335,6 +332,181 @@
           },
           "404": {
             "description": "Asset does not exist"
+          }
+        }
+      }
+    },
+    "/api/v2/assets/{appId}/rule/{id}": {
+      "get": {
+        "operationId": "AssetsController_getOneRule",
+        "parameters": [
+          {
+            "name": "appId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Get one rule with the given ID",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RuleAssetDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v2/assets/{appId}/flow/{id}": {
+      "get": {
+        "operationId": "AssetsController_getOneFlow",
+        "parameters": [
+          {
+            "name": "appId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Get one flow with the given ID",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TaskAssetDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v2/assets/{appId}/run_param/{id}": {
+      "get": {
+        "operationId": "AssetsController_getOneRunParam",
+        "parameters": [
+          {
+            "name": "appId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Get one run parameter with the given ID",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RunParametersAssetDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v2/assets/{appId}/dataset/{id}": {
+      "get": {
+        "operationId": "AssetsController_getOneDataset",
+        "parameters": [
+          {
+            "name": "appId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Get one dataset with the given ID",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DatasetAssetDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v2/assets/{appId}/form_spec/{id}": {
+      "get": {
+        "operationId": "AssetsController_getOneFormSpec",
+        "parameters": [
+          {
+            "name": "appId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Get one form spec with the given ID",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FormSpecAssetDto"
+                }
+              }
+            }
           }
         }
       }
@@ -1502,6 +1674,32 @@
         ]
       }
     },
+    "/api/v2/health/info": {
+      "get": {
+        "operationId": "HealthController_getInfo",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Information about the the repository service",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              },
+              "text/html": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "health"
+        ]
+      }
+    },
     "/api/v2/issues": {
       "post": {
         "operationId": "IssueController_create",
@@ -1822,17 +2020,7 @@
         "parameters": [],
         "responses": {
           "200": {
-            "description": "List run parameters.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/RunParametersDTO"
-                  }
-                }
-              }
-            }
+            "description": "List run paramters."
           }
         },
         "tags": [
@@ -1842,19 +2030,9 @@
       "post": {
         "operationId": "RunParametersController_create",
         "parameters": [],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/RunParametersDTO"
-              }
-            }
-          }
-        },
         "responses": {
           "201": {
-            "description": "Create run parameters."
+            "description": "Create run paramters."
           }
         },
         "tags": [
@@ -1877,14 +2055,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Get a set of run parameters by id.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/RunParametersDTO"
-                }
-              }
-            }
+            "description": "List run paramters."
           }
         },
         "tags": [
@@ -1903,16 +2074,6 @@
             }
           }
         ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/RunParametersDTO"
-              }
-            }
-          }
-        },
         "responses": {
           "200": {
             "description": ""
@@ -2274,7 +2435,27 @@
     "/api/v2/run/summaryStatistics/items": {
       "get": {
         "operationId": "RunsSummaryStatisticsController_getMultipleRunItemStats",
-        "parameters": [],
+        "parameters": [
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "default": 50,
+              "type": "number"
+            }
+          },
+          {
+            "name": "offset",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 0,
+              "type": "number"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "Summary statistics for the given runs.",
@@ -2632,6 +2813,25 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "default": 50,
+              "type": "number"
+            }
+          },
+          {
+            "name": "offset",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 0,
+              "type": "number"
+            }
           }
         ],
         "responses": {
@@ -2851,6 +3051,25 @@
             "in": "path",
             "schema": {
               "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "default": 50,
+              "type": "number"
+            }
+          },
+          {
+            "name": "offset",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 0,
+              "type": "number"
             }
           }
         ],
@@ -3404,6 +3623,25 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "default": 50,
+              "type": "number"
+            }
+          },
+          {
+            "name": "offset",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 0,
+              "type": "number"
+            }
           }
         ],
         "responses": {
@@ -3672,7 +3910,27 @@
       "get": {
         "operationId": "UserController_getUsers",
         "summary": "Get users",
-        "parameters": [],
+        "parameters": [
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "default": 50,
+              "type": "number"
+            }
+          },
+          {
+            "name": "offset",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 0,
+              "type": "number"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "Get all the users.",
@@ -3881,7 +4139,27 @@
     "/api/v2/workspace": {
       "get": {
         "operationId": "WorkspaceController_getWorkspaces",
-        "parameters": [],
+        "parameters": [
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "default": 50,
+              "type": "number"
+            }
+          },
+          {
+            "name": "offset",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 0,
+              "type": "number"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "Get all the workspaces.",
@@ -4062,7 +4340,27 @@
       "get": {
         "operationId": "InviteUserController_getUsers",
         "summary": "Get invitations",
-        "parameters": [],
+        "parameters": [
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "default": 50,
+              "type": "number"
+            }
+          },
+          {
+            "name": "offset",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 0,
+              "type": "number"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "Get all the invitations."
@@ -4317,6 +4615,60 @@
           "analytics"
         ]
       }
+    },
+    "/api/v2/analytics/app/{appId}/pages/performance": {
+      "get": {
+        "operationId": "AnalyticsController_getPagePerformanceStatistics",
+        "summary": "",
+        "description": "Get page performance statistics",
+        "parameters": [
+          {
+            "name": "appId",
+            "required": true,
+            "in": "path",
+            "description": "The ID of the application",
+            "example": "64dbf088a5d6e403b5ddbe65",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "runId",
+            "required": false,
+            "in": "query",
+            "description": "Only include statistics from a specific run",
+            "example": "6503740ca17807e0a04c3309",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "pageId",
+            "required": false,
+            "in": "query",
+            "description": "Only include statistics from a specific page",
+            "example": "8f09118a-b57a-4c5f-b592-45cc9f114e2b",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PerformanceResultsDTO"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "analytics"
+        ]
+      }
     }
   },
   "info": {
@@ -4381,7 +4733,23 @@
             "$ref": "#/components/schemas/CoverageDto"
           },
           "resource": {
-            "type": "object"
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/DatasetAssetDto"
+              },
+              {
+                "$ref": "#/components/schemas/FormSpecAssetDto"
+              },
+              {
+                "$ref": "#/components/schemas/RuleAssetDto"
+              },
+              {
+                "$ref": "#/components/schemas/RunParametersAssetDto"
+              },
+              {
+                "$ref": "#/components/schemas/TaskAssetDto"
+              }
+            ]
           },
           "parent": {
             "description": "The id referencing the application the asset belongs to",
@@ -4418,6 +4786,9 @@
               "type": "string"
             }
           },
+          "resource": {
+            "type": "object"
+          },
           "parent": {
             "type": "string",
             "description": "The id referencing the application the asset belongs to"
@@ -4427,10 +4798,153 @@
           "name",
           "desc",
           "tags",
+          "resource",
           "parent"
         ]
       },
-      "AssetDto": {
+      "RuleDto": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "accessibility-rule",
+              "functional-rule",
+              "resource-rule",
+              "webform-rule",
+              "link-rule"
+            ]
+          },
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "text": {
+            "type": "string"
+          },
+          "scenarios": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "isExecutable": {
+            "type": "boolean"
+          },
+          "data": {
+            "type": "object"
+          },
+          "status": {
+            "type": "string",
+            "default": "active"
+          }
+        },
+        "required": [
+          "type",
+          "id",
+          "name",
+          "text",
+          "scenarios"
+        ]
+      },
+      "RuleAssetDto": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "rule"
+            ]
+          },
+          "data": {
+            "$ref": "#/components/schemas/RuleDto"
+          }
+        },
+        "required": [
+          "type",
+          "data"
+        ]
+      },
+      "FlowParamDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          },
+          "defaultValue": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "name"
+        ]
+      },
+      "FlowDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "text": {
+            "type": "string"
+          },
+          "parseableText": {
+            "type": "string"
+          },
+          "abstractActivityId": {
+            "type": "string"
+          },
+          "applicationId": {
+            "type": "string"
+          },
+          "parameters": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FlowParamDto"
+            }
+          },
+          "status": {
+            "type": "string",
+            "default": "active"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "text",
+          "parseableText",
+          "abstractActivityId",
+          "applicationId",
+          "parameters"
+        ]
+      },
+      "TaskAssetDto": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "task"
+            ]
+          },
+          "data": {
+            "$ref": "#/components/schemas/FlowDto"
+          }
+        },
+        "required": [
+          "type",
+          "data"
+        ]
+      },
+      "RunParametersDto": {
         "type": "object",
         "properties": {
           "_id": {
@@ -4439,29 +4953,181 @@
           "name": {
             "type": "string"
           },
-          "desc": {
+          "isTemplate": {
+            "type": "boolean"
+          },
+          "app": {
             "type": "string"
           },
-          "tags": {
+          "path": {
+            "type": "string"
+          },
+          "depth": {
+            "type": "number",
+            "default": 3
+          },
+          "duration": {
+            "type": "number"
+          },
+          "stopAfterFlows": {
+            "type": "boolean"
+          },
+          "enableModeling": {
+            "type": "boolean"
+          },
+          "pageLoadTimeout": {
+            "type": "number"
+          },
+          "actionRetryAttempts": {
+            "type": "number"
+          },
+          "debugMode": {
+            "type": "boolean"
+          },
+          "assets": {
             "type": "array",
             "items": {
               "type": "string"
             }
           },
-          "coverage": {
-            "$ref": "#/components/schemas/CoverageDto"
+          "extensions": {
+            "type": "object"
           },
-          "parent": {
+          "status": {
             "type": "string",
-            "description": "The id referencing the application the asset belongs to"
+            "default": "active"
           }
         },
         "required": [
+          "_id",
           "name",
-          "desc",
-          "tags",
-          "coverage",
-          "parent"
+          "isTemplate",
+          "app",
+          "path",
+          "depth",
+          "duration",
+          "stopAfterFlows",
+          "enableModeling",
+          "assets",
+          "extensions"
+        ]
+      },
+      "RunParametersAssetDto": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "run_parameter"
+            ]
+          },
+          "data": {
+            "$ref": "#/components/schemas/RunParametersDto"
+          }
+        },
+        "required": [
+          "type",
+          "data"
+        ]
+      },
+      "DatasetDto": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "default": "active"
+          }
+        },
+        "required": [
+          "data"
+        ]
+      },
+      "DatasetAssetDto": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "dataset"
+            ]
+          },
+          "data": {
+            "$ref": "#/components/schemas/DatasetDto"
+          }
+        },
+        "required": [
+          "type",
+          "data"
+        ]
+      },
+      "FormSpecDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "formTitle": {
+            "type": "string"
+          },
+          "formId": {
+            "type": "string"
+          },
+          "formVersion": {
+            "type": "string"
+          },
+          "ombControlNumber": {
+            "type": "string"
+          },
+          "ombExpirationDate": {
+            "type": "string"
+          },
+          "formFamilies": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "fields": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "status": {
+            "type": "string",
+            "default": "active"
+          }
+        },
+        "required": [
+          "id",
+          "formTitle",
+          "formId",
+          "formVersion",
+          "ombControlNumber",
+          "ombExpirationDate",
+          "formFamilies",
+          "fields"
+        ]
+      },
+      "FormSpecAssetDto": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "form_spec"
+            ]
+          },
+          "data": {
+            "$ref": "#/components/schemas/FormSpecDto"
+          }
+        },
+        "required": [
+          "type",
+          "data"
         ]
       },
       "Coverage": {
@@ -5181,133 +5847,6 @@
           "removedRuns"
         ]
       },
-      "RunParameterAssetsDTO": {
-        "type": "object",
-        "properties": {
-          "rules": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "data": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "activities": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          }
-        },
-        "required": [
-          "rules",
-          "data",
-          "activities"
-        ]
-      },
-      "RunParameterExtensionsDTO": {
-        "type": "object",
-        "properties": {
-          "brokenLinks": {
-            "type": "boolean"
-          },
-          "resources": {
-            "type": "boolean"
-          },
-          "performance": {
-            "type": "boolean"
-          }
-        },
-        "required": [
-          "brokenLinks",
-          "resources",
-          "performance"
-        ]
-      },
-      "RunParametersDTO": {
-        "type": "object",
-        "properties": {
-          "_id": {
-            "type": "string",
-            "description": "",
-            "example": ""
-          },
-          "name": {
-            "type": "string"
-          },
-          "app": {
-            "type": "string"
-          },
-          "baseUrl": {
-            "type": "string"
-          },
-          "authUrl": {
-            "type": "string"
-          },
-          "path": {
-            "type": "string"
-          },
-          "depth": {
-            "type": "number"
-          },
-          "duration": {
-            "type": "number"
-          },
-          "stopAfterFlows": {
-            "type": "boolean"
-          },
-          "enableModeling": {
-            "type": "boolean"
-          },
-          "pageLoadTimeout": {
-            "type": "number"
-          },
-          "actionRetryAttempts": {
-            "type": "number"
-          },
-          "debugMode": {
-            "type": "object"
-          },
-          "assets": {
-            "$ref": "#/components/schemas/RunParameterAssetsDTO"
-          },
-          "extensions": {
-            "$ref": "#/components/schemas/RunParameterExtensionsDTO"
-          },
-          "workQueue": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "strategies": {
-            "type": "object"
-          }
-        },
-        "required": [
-          "_id",
-          "name",
-          "app",
-          "baseUrl",
-          "authUrl",
-          "path",
-          "depth",
-          "duration",
-          "stopAfterFlows",
-          "enableModeling",
-          "pageLoadTimeout",
-          "actionRetryAttempts",
-          "debugMode",
-          "assets",
-          "extensions",
-          "workQueue",
-          "strategies"
-        ]
-      },
       "RunLogDTO": {
         "type": "object",
         "properties": {
@@ -5477,72 +6016,6 @@
           "completedCount"
         ]
       },
-      "RunParametersDto": {
-        "type": "object",
-        "properties": {
-          "_id": {
-            "type": "string"
-          },
-          "name": {
-            "type": "string"
-          },
-          "isTemplate": {
-            "type": "boolean"
-          },
-          "app": {
-            "type": "string"
-          },
-          "path": {
-            "type": "string"
-          },
-          "depth": {
-            "type": "number"
-          },
-          "duration": {
-            "type": "number"
-          },
-          "stopAfterFlows": {
-            "type": "boolean"
-          },
-          "enableModeling": {
-            "type": "boolean"
-          },
-          "pageLoadTimeout": {
-            "type": "number"
-          },
-          "actionRetryAttempts": {
-            "type": "number"
-          },
-          "debugMode": {
-            "type": "boolean"
-          },
-          "assets": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "extensions": {
-            "type": "object"
-          }
-        },
-        "required": [
-          "_id",
-          "name",
-          "isTemplate",
-          "app",
-          "path",
-          "depth",
-          "duration",
-          "stopAfterFlows",
-          "enableModeling",
-          "pageLoadTimeout",
-          "actionRetryAttempts",
-          "debugMode",
-          "assets",
-          "extensions"
-        ]
-      },
       "StartRunRequestDTO": {
         "type": "object",
         "properties": {
@@ -5628,6 +6101,25 @@
         "type": "object",
         "properties": {}
       },
+      "LoggableAppStateDTO": {
+        "type": "object",
+        "properties": {
+          "prevPage": {
+            "type": "object"
+          },
+          "action": {
+            "type": "object"
+          },
+          "page": {
+            "type": "object"
+          }
+        },
+        "required": [
+          "prevPage",
+          "action",
+          "page"
+        ]
+      },
       "RunLogEntryDTO": {
         "type": "object",
         "properties": {
@@ -5644,7 +6136,8 @@
               "Rule",
               "Selector",
               "Work",
-              "Flow"
+              "Flow",
+              "Performance"
             ]
           },
           "level": {
@@ -5660,7 +6153,7 @@
             "type": "string"
           },
           "state": {
-            "type": "object"
+            "$ref": "#/components/schemas/LoggableAppStateDTO"
           },
           "msg": {
             "type": "string"
@@ -6230,28 +6723,6 @@
           "parent"
         ]
       },
-      "Plan": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string",
-            "example": "Free Plan"
-          },
-          "testItemsPerDay": {
-            "type": "number",
-            "example": 1500
-          },
-          "runHistoryDurationInDays": {
-            "type": "number",
-            "example": 14
-          }
-        },
-        "required": [
-          "name",
-          "testItemsPerDay",
-          "runHistoryDurationInDays"
-        ]
-      },
       "CreateWorkspaceDto": {
         "type": "object",
         "properties": {
@@ -6261,13 +6732,9 @@
             "description": "The name of the workspace"
           },
           "plan": {
+            "type": "string",
             "example": "test's workspace",
-            "description": "The name of the workspace",
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/Plan"
-              }
-            ]
+            "description": "The name of the workspace"
           }
         },
         "required": [
@@ -6284,13 +6751,9 @@
             "description": "The name of the workspace"
           },
           "plan": {
+            "type": "string",
             "example": "test's workspace",
-            "description": "The name of the workspace",
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/Plan"
-              }
-            ]
+            "description": "The name of the workspace"
           }
         }
       },
@@ -6333,10 +6796,32 @@
         "type": "object",
         "properties": {
           "runId": {
-            "type": "string"
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            ],
+            "description": "Only include results from a specific run, or a set of runs"
           },
           "ruleId": {
-            "type": "string"
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            ],
+            "description": "Filter for one or more rules by id"
           },
           "ruleType": {
             "type": "string",
@@ -6523,6 +7008,19 @@
               "Text Node",
               "Unclassified"
             ]
+          },
+          "runLogId": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "object"
+              }
+            ]
+          },
+          "runLogNumber": {
+            "type": "number"
           }
         },
         "required": [
@@ -6545,6 +7043,79 @@
         },
         "required": [
           "analytics"
+        ]
+      },
+      "PagePerformanceDTO": {
+        "type": "object",
+        "properties": {
+          "runId": {
+            "type": "string"
+          },
+          "applicationId": {
+            "type": "string"
+          },
+          "pageId": {
+            "type": "string"
+          },
+          "n": {
+            "type": "number",
+            "description": "Number of times statistics were collected for this page"
+          },
+          "ttl": {
+            "type": "number",
+            "description": "Time to load (TTL) in milliseconds"
+          },
+          "lcp": {
+            "type": "number",
+            "description": "Largest Contentful Paint (LCP) in milliseconds"
+          },
+          "loadTime": {
+            "type": "number",
+            "description": "Total page load time in milliseconds"
+          },
+          "fcp": {
+            "type": "number",
+            "description": "First Contentful Paint (FCP) in milliseconds"
+          },
+          "tti": {
+            "type": "number",
+            "description": "Time to Interactive (TTI) in milliseconds"
+          },
+          "cls": {
+            "type": "number",
+            "description": "Cumulative Layout Shift (CLS) score"
+          }
+        },
+        "required": [
+          "runId",
+          "applicationId",
+          "pageId",
+          "n",
+          "ttl",
+          "lcp",
+          "loadTime",
+          "fcp",
+          "tti",
+          "cls"
+        ]
+      },
+      "PerformanceResultsDTO": {
+        "type": "object",
+        "properties": {
+          "analytics": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PagePerformanceDTO"
+            }
+          },
+          "count": {
+            "type": "number",
+            "description": "The total number of results that match the query"
+          }
+        },
+        "required": [
+          "analytics",
+          "count"
         ]
       }
     }

@@ -21,7 +21,7 @@ export interface AssetDTO {
     desc: string
     tags: string[]
     coverage?: CoverageDto
-    resource: object
+    resource: DatasetAssetDto | FormSpecAssetDto | RuleAssetDto | RunParametersAssetDto | TaskAssetDto
     /** The id referencing the application the asset belongs to */
     parent: string | ApplicationResponse
 }
@@ -30,18 +30,103 @@ export interface CreateAssetDto {
     name: string
     desc: string
     tags: string[]
+    resource: object
     /** The id referencing the application the asset belongs to */
     parent: string
 }
 
-export interface AssetDto {
-    _id?: string
+export interface RuleDto {
+    type: 'accessibility-rule' | 'functional-rule' | 'resource-rule' | 'webform-rule' | 'link-rule'
+    id: string
     name: string
-    desc: string
-    tags: string[]
-    coverage: CoverageDto
-    /** The id referencing the application the asset belongs to */
-    parent: string
+    text: string
+    scenarios: string[]
+    isExecutable?: boolean
+    data?: object
+    /** @default "active" */
+    status?: string
+}
+
+export interface RuleAssetDto {
+    type: 'rule'
+    data: RuleDto
+}
+
+export interface FlowParamDto {
+    name: string
+    type?: string
+    defaultValue?: string
+}
+
+export interface FlowDto {
+    id: string
+    name: string
+    text: string
+    parseableText: string
+    abstractActivityId: string
+    applicationId: string
+    parameters: FlowParamDto[]
+    /** @default "active" */
+    status?: string
+}
+
+export interface TaskAssetDto {
+    type: 'task'
+    data: FlowDto
+}
+
+export interface RunParametersDto {
+    _id: string
+    name: string
+    isTemplate: boolean
+    app: string
+    path: string
+    /** @default 3 */
+    depth: number
+    duration: number
+    stopAfterFlows: boolean
+    enableModeling: boolean
+    pageLoadTimeout?: number
+    actionRetryAttempts?: number
+    debugMode?: boolean
+    assets: string[]
+    extensions: object
+    /** @default "active" */
+    status?: string
+}
+
+export interface RunParametersAssetDto {
+    type: 'run_parameter'
+    data: RunParametersDto
+}
+
+export interface DatasetDto {
+    data: string
+    /** @default "active" */
+    status?: string
+}
+
+export interface DatasetAssetDto {
+    type: 'dataset'
+    data: DatasetDto
+}
+
+export interface FormSpecDto {
+    id: string
+    formTitle: string
+    formId: string
+    formVersion: string
+    ombControlNumber: string
+    ombExpirationDate: string
+    formFamilies: string[]
+    fields: string[]
+    /** @default "active" */
+    status?: string
+}
+
+export interface FormSpecAssetDto {
+    type: 'form_spec'
+    data: FormSpecDto
 }
 
 export type Coverage = object
@@ -325,39 +410,6 @@ export interface RemoveRunsResponseDTO {
     removedRuns: string[]
 }
 
-export interface RunParameterAssetsDTO {
-    rules: string[]
-    data: string[]
-    activities: string[]
-}
-
-export interface RunParameterExtensionsDTO {
-    brokenLinks: boolean
-    resources: boolean
-    performance: boolean
-}
-
-export interface RunParametersDTO {
-    /** @example "" */
-    _id: string
-    name: string
-    app: string
-    baseUrl: string
-    authUrl: string
-    path: string
-    depth: number
-    duration: number
-    stopAfterFlows: boolean
-    enableModeling: boolean
-    pageLoadTimeout: number
-    actionRetryAttempts: number
-    debugMode: object
-    assets: RunParameterAssetsDTO
-    extensions: RunParameterExtensionsDTO
-    workQueue: string[]
-    strategies: object
-}
-
 export interface RunLogDTO {
     /** @example "" */
     runId: string
@@ -419,23 +471,6 @@ export interface WorkQueueDTO {
     completedCount: number
 }
 
-export interface RunParametersDto {
-    _id: string
-    name: string
-    isTemplate: boolean
-    app: string
-    path: string
-    depth: number
-    duration: number
-    stopAfterFlows: boolean
-    enableModeling: boolean
-    pageLoadTimeout: number
-    actionRetryAttempts: number
-    debugMode: boolean
-    assets: string[]
-    extensions: object
-}
-
 export interface StartRunRequestDTO {
     user: object
     /**
@@ -480,12 +515,18 @@ export interface StartRunSuccessResponseDTO {
 
 export type RunDocument = object
 
+export interface LoggableAppStateDTO {
+    prevPage: object
+    action: object
+    page: object
+}
+
 export interface RunLogEntryDTO {
     id: number
-    type: 'Agent' | 'Action' | 'Assertion' | 'Event' | 'Rule' | 'Selector' | 'Work' | 'Flow'
+    type: 'Agent' | 'Action' | 'Assertion' | 'Event' | 'Rule' | 'Selector' | 'Work' | 'Flow' | 'Performance'
     level: 'Info' | 'Error' | 'Warning' | 'Debug'
     timestamp: string
-    state: object
+    state: LoggableAppStateDTO
     msg: string
     data: object
 }
@@ -754,15 +795,6 @@ export interface WorkspaceResponse {
     parent: Entity
 }
 
-export interface Plan {
-    /** @example "Free Plan" */
-    name: string
-    /** @example 1500 */
-    testItemsPerDay: number
-    /** @example 14 */
-    runHistoryDurationInDays: number
-}
-
 export interface CreateWorkspaceDto {
     /**
      * The name of the workspace
@@ -773,7 +805,7 @@ export interface CreateWorkspaceDto {
      * The name of the workspace
      * @example "test's workspace"
      */
-    plan: Plan
+    plan: string
 }
 
 export interface UpdateWorkspaceDto {
@@ -786,7 +818,7 @@ export interface UpdateWorkspaceDto {
      * The name of the workspace
      * @example "test's workspace"
      */
-    plan?: Plan
+    plan?: string
 }
 
 export interface CreateInvitationTokenDto {
@@ -807,8 +839,10 @@ export interface CreateUserInvitationDto {
 }
 
 export interface AnalyticsFilterDTO {
-    runId?: string
-    ruleId?: string
+    /** Only include results from a specific run, or a set of runs */
+    runId?: string | string[]
+    /** Filter for one or more rules by id */
+    ruleId?: string | string[]
     ruleType?: 'accessibility-rule' | 'functional-rule' | 'resource-rule' | 'webform-rule' | 'link-rule'
     pageId?: string
     componentId?: string
@@ -908,6 +942,8 @@ export interface AnalyticsDTO {
         | 'Text Area'
         | 'Text Node'
         | 'Unclassified'
+    runLogId?: string | object
+    runLogNumber?: number
 }
 
 export interface AnalyticsResultsDTO {
@@ -920,6 +956,32 @@ export interface AnalyticsResultsDTO {
      * their respective, collections instead of an ObjectId or a UUID.
      */
     analytics: AnalyticsDTO[]
+}
+
+export interface PagePerformanceDTO {
+    runId: string
+    applicationId: string
+    pageId: string
+    /** Number of times statistics were collected for this page */
+    n: number
+    /** Time to load (TTL) in milliseconds */
+    ttl: number
+    /** Largest Contentful Paint (LCP) in milliseconds */
+    lcp: number
+    /** Total page load time in milliseconds */
+    loadTime: number
+    /** First Contentful Paint (FCP) in milliseconds */
+    fcp: number
+    /** Time to Interactive (TTI) in milliseconds */
+    tti: number
+    /** Cumulative Layout Shift (CLS) score */
+    cls: number
+}
+
+export interface PerformanceResultsDTO {
+    analytics: PagePerformanceDTO[]
+    /** The total number of results that match the query */
+    count: number
 }
 
 export type QueryParamsType = Record<string | number, any>
@@ -1188,8 +1250,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
             appId: string,
             type: string,
             query?: {
-                isActive?: boolean
-                isValid?: boolean
+                status?: 'active' | 'inactive' | 'invalid'
             },
             params: RequestParams = {}
         ) =>
@@ -1223,7 +1284,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
          * @summary Put asset with type
          * @request PUT:/api/v2/assets/{appId}/{type}/{id}
          */
-        assetsControllerUpdate: (appId: string, type: string, id: string, data: AssetDto, params: RequestParams = {}) =>
+        assetsControllerUpdate: (appId: string, type: string, id: string, data: AssetDTO, params: RequestParams = {}) =>
             this.request<AssetDTO, void>({
                 path: `/api/v2/assets/${appId}/${type}/${id}`,
                 method: 'PUT',
@@ -1259,6 +1320,76 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
             this.request<AssetDTO, void>({
                 path: `/api/v2/assets/${appId}/${type}/${id}/tags`,
                 method: 'PUT',
+                format: 'json',
+                ...params,
+            }),
+
+        /**
+         * No description
+         *
+         * @name AssetsControllerGetOneRule
+         * @request GET:/api/v2/assets/{appId}/rule/{id}
+         */
+        assetsControllerGetOneRule: (appId: string, id: string, params: RequestParams = {}) =>
+            this.request<RuleAssetDto, any>({
+                path: `/api/v2/assets/${appId}/rule/${id}`,
+                method: 'GET',
+                format: 'json',
+                ...params,
+            }),
+
+        /**
+         * No description
+         *
+         * @name AssetsControllerGetOneFlow
+         * @request GET:/api/v2/assets/{appId}/flow/{id}
+         */
+        assetsControllerGetOneFlow: (appId: string, id: string, params: RequestParams = {}) =>
+            this.request<TaskAssetDto, any>({
+                path: `/api/v2/assets/${appId}/flow/${id}`,
+                method: 'GET',
+                format: 'json',
+                ...params,
+            }),
+
+        /**
+         * No description
+         *
+         * @name AssetsControllerGetOneRunParam
+         * @request GET:/api/v2/assets/{appId}/run_param/{id}
+         */
+        assetsControllerGetOneRunParam: (appId: string, id: string, params: RequestParams = {}) =>
+            this.request<RunParametersAssetDto, any>({
+                path: `/api/v2/assets/${appId}/run_param/${id}`,
+                method: 'GET',
+                format: 'json',
+                ...params,
+            }),
+
+        /**
+         * No description
+         *
+         * @name AssetsControllerGetOneDataset
+         * @request GET:/api/v2/assets/{appId}/dataset/{id}
+         */
+        assetsControllerGetOneDataset: (appId: string, id: string, params: RequestParams = {}) =>
+            this.request<DatasetAssetDto, any>({
+                path: `/api/v2/assets/${appId}/dataset/${id}`,
+                method: 'GET',
+                format: 'json',
+                ...params,
+            }),
+
+        /**
+         * No description
+         *
+         * @name AssetsControllerGetOneFormSpec
+         * @request GET:/api/v2/assets/{appId}/form_spec/{id}
+         */
+        assetsControllerGetOneFormSpec: (appId: string, id: string, params: RequestParams = {}) =>
+            this.request<FormSpecAssetDto, any>({
+                path: `/api/v2/assets/${appId}/form_spec/${id}`,
+                method: 'GET',
                 format: 'json',
                 ...params,
             }),
@@ -1979,6 +2110,21 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         /**
          * No description
          *
+         * @tags health
+         * @name HealthControllerGetInfo
+         * @request GET:/api/v2/health/info
+         */
+        healthControllerGetInfo: (params: RequestParams = {}) =>
+            this.request<Coverage, any>({
+                path: `/api/v2/health/info`,
+                method: 'GET',
+                format: 'json',
+                ...params,
+            }),
+
+        /**
+         * No description
+         *
          * @tags issues
          * @name IssueControllerCreate
          * @request POST:/api/v2/issues
@@ -2174,10 +2320,9 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
          * @request GET:/api/v2/run/parameters
          */
         runParametersControllerGetAll: (params: RequestParams = {}) =>
-            this.request<RunParametersDTO[], any>({
+            this.request<void, any>({
                 path: `/api/v2/run/parameters`,
                 method: 'GET',
-                format: 'json',
                 ...params,
             }),
 
@@ -2188,12 +2333,10 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
          * @name RunParametersControllerCreate
          * @request POST:/api/v2/run/parameters
          */
-        runParametersControllerCreate: (data: RunParametersDTO, params: RequestParams = {}) =>
+        runParametersControllerCreate: (params: RequestParams = {}) =>
             this.request<void, any>({
                 path: `/api/v2/run/parameters`,
                 method: 'POST',
-                body: data,
-                type: ContentType.Json,
                 ...params,
             }),
 
@@ -2205,10 +2348,9 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
          * @request GET:/api/v2/run/parameters/{id}
          */
         runParametersControllerGet: (id: string, params: RequestParams = {}) =>
-            this.request<RunParametersDTO, any>({
+            this.request<void, any>({
                 path: `/api/v2/run/parameters/${id}`,
                 method: 'GET',
-                format: 'json',
                 ...params,
             }),
 
@@ -2219,12 +2361,10 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
          * @name RunParametersControllerUpdate
          * @request PUT:/api/v2/run/parameters/{id}
          */
-        runParametersControllerUpdate: (id: string, data: RunParametersDTO, params: RequestParams = {}) =>
+        runParametersControllerUpdate: (id: string, params: RequestParams = {}) =>
             this.request<void, any>({
                 path: `/api/v2/run/parameters/${id}`,
                 method: 'PUT',
-                body: data,
-                type: ContentType.Json,
                 ...params,
             }),
 
@@ -2396,10 +2536,22 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
          * @name RunsSummaryStatisticsControllerGetMultipleRunItemStats
          * @request GET:/api/v2/run/summaryStatistics/items
          */
-        runsSummaryStatisticsControllerGetMultipleRunItemStats: (params: RequestParams = {}) =>
+        runsSummaryStatisticsControllerGetMultipleRunItemStats: (
+            query?: {
+                /**
+                 * @min 1
+                 * @default 50
+                 */
+                limit?: number
+                /** @min 0 */
+                offset?: number
+            },
+            params: RequestParams = {}
+        ) =>
             this.request<SummaryStatisticsDTO, SummaryStatisticsDTO>({
                 path: `/api/v2/run/summaryStatistics/items`,
                 method: 'GET',
+                query: query,
                 format: 'json',
                 ...params,
             }),
@@ -2560,10 +2712,24 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
          * @name RunsLogControllerV2GetRunLog
          * @request GET:/api/v2/runs/{id}/log/{runNumber}
          */
-        runsLogControllerV2GetRunLog: (id: string, runNumber: string, params: RequestParams = {}) =>
+        runsLogControllerV2GetRunLog: (
+            id: string,
+            runNumber: string,
+            query?: {
+                /**
+                 * @min 1
+                 * @default 50
+                 */
+                limit?: number
+                /** @min 0 */
+                offset?: number
+            },
+            params: RequestParams = {}
+        ) =>
             this.request<RunLogEntryDTO[], any>({
                 path: `/api/v2/runs/${id}/log/${runNumber}`,
                 method: 'GET',
+                query: query,
                 format: 'json',
                 ...params,
             }),
@@ -2681,10 +2847,23 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
          * @name ModelControllerGetApplicationModel
          * @request GET:/api/v2/variants/{id}/model
          */
-        modelControllerGetApplicationModel: (id: string, params: RequestParams = {}) =>
+        modelControllerGetApplicationModel: (
+            id: string,
+            query?: {
+                /**
+                 * @min 1
+                 * @default 50
+                 */
+                limit?: number
+                /** @min 0 */
+                offset?: number
+            },
+            params: RequestParams = {}
+        ) =>
             this.request<void, any>({
                 path: `/api/v2/variants/${id}/model`,
                 method: 'GET',
+                query: query,
                 ...params,
             }),
 
@@ -2969,10 +3148,23 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
          * @name CoverageControllerGetCoverageWithFilters
          * @request GET:/api/v2/variants/{id}/model/coverage/filters
          */
-        coverageControllerGetCoverageWithFilters: (id: string, params: RequestParams = {}) =>
+        coverageControllerGetCoverageWithFilters: (
+            id: string,
+            query?: {
+                /**
+                 * @min 1
+                 * @default 50
+                 */
+                limit?: number
+                /** @min 0 */
+                offset?: number
+            },
+            params: RequestParams = {}
+        ) =>
             this.request<void, any>({
                 path: `/api/v2/variants/${id}/model/coverage/filters`,
                 method: 'GET',
+                query: query,
                 ...params,
             }),
 
@@ -3149,10 +3341,22 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
          * @summary Get users
          * @request GET:/api/v2/users
          */
-        userControllerGetUsers: (params: RequestParams = {}) =>
+        userControllerGetUsers: (
+            query?: {
+                /**
+                 * @min 1
+                 * @default 50
+                 */
+                limit?: number
+                /** @min 0 */
+                offset?: number
+            },
+            params: RequestParams = {}
+        ) =>
             this.request<UserResponse, any>({
                 path: `/api/v2/users`,
                 method: 'GET',
+                query: query,
                 format: 'json',
                 ...params,
             }),
@@ -3271,10 +3475,22 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
          * @name WorkspaceControllerGetWorkspaces
          * @request GET:/api/v2/workspace
          */
-        workspaceControllerGetWorkspaces: (params: RequestParams = {}) =>
+        workspaceControllerGetWorkspaces: (
+            query?: {
+                /**
+                 * @min 1
+                 * @default 50
+                 */
+                limit?: number
+                /** @min 0 */
+                offset?: number
+            },
+            params: RequestParams = {}
+        ) =>
             this.request<WorkspaceResponse, any>({
                 path: `/api/v2/workspace`,
                 method: 'GET',
+                query: query,
                 format: 'json',
                 ...params,
             }),
@@ -3380,10 +3596,22 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
          * @summary Get invitations
          * @request GET:/api/v2/invite-user
          */
-        inviteUserControllerGetUsers: (params: RequestParams = {}) =>
+        inviteUserControllerGetUsers: (
+            query?: {
+                /**
+                 * @min 1
+                 * @default 50
+                 */
+                limit?: number
+                /** @min 0 */
+                offset?: number
+            },
+            params: RequestParams = {}
+        ) =>
             this.request<void, any>({
                 path: `/api/v2/invite-user`,
                 method: 'GET',
+                query: query,
                 ...params,
             }),
 
@@ -3525,6 +3753,37 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
                 method: 'POST',
                 body: data,
                 type: ContentType.Json,
+                format: 'json',
+                ...params,
+            }),
+
+        /**
+         * @description Get page performance statistics
+         *
+         * @tags analytics
+         * @name AnalyticsControllerGetPagePerformanceStatistics
+         * @request GET:/api/v2/analytics/app/{appId}/pages/performance
+         */
+        analyticsControllerGetPagePerformanceStatistics: (
+            appId: string,
+            query?: {
+                /**
+                 * Only include statistics from a specific run
+                 * @example "6503740ca17807e0a04c3309"
+                 */
+                runId?: string
+                /**
+                 * Only include statistics from a specific page
+                 * @example "8f09118a-b57a-4c5f-b592-45cc9f114e2b"
+                 */
+                pageId?: string
+            },
+            params: RequestParams = {}
+        ) =>
+            this.request<PerformanceResultsDTO, any>({
+                path: `/api/v2/analytics/app/${appId}/pages/performance`,
+                method: 'GET',
+                query: query,
                 format: 'json',
                 ...params,
             }),
