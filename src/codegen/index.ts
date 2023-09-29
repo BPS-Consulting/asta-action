@@ -1,6 +1,6 @@
 import fetch from 'cross-fetch'
 import deepmerge from 'deepmerge'
-import { ActionInputs } from '../inputs'
+import { Inputs } from '../inputs'
 import {
     Api as ApiInternal,
     StartRunRequestDTO,
@@ -8,13 +8,13 @@ import {
 } from './api'
 import { PaginationParams } from './types'
 
-type ApiKeyData = Pick<ActionInputs, 'apiKey' | 'apiKeyId'>
+type ApiKeyData = Pick<Inputs, 'apiKey' | 'apiKeyId'>
 
 export class Api {
     private readonly _api: ApiInternal<ApiKeyData>
-    private readonly inputs: ActionInputs
+    private readonly inputs: Inputs
 
-    constructor(inputs: ActionInputs) {
+    constructor(inputs: Inputs) {
         this.authParams = this.authParams.bind(this)
         this.inputs = inputs
         this._api = new ApiInternal({
@@ -35,7 +35,10 @@ export class Api {
     }
 
     public async getVariant(variantId = this.inputs.variant) {
-        const res: any = await this._api.api.variantControllerGetVariant(variantId, { secure: true })
+        const res: any = await this._api.api.variantControllerGetVariant(
+            variantId,
+            { secure: true }
+        )
         return res
     }
 
@@ -45,7 +48,11 @@ export class Api {
      * @returns The ID of the started run
      */
     public async startRun(variantId = this.inputs.variant): Promise<string> {
-        const { runTemplate, application, parameters: parameterOverrides } = this.inputs
+        const {
+            runTemplate,
+            application,
+            parameters: parameterOverrides,
+        } = this.inputs
 
         console.log(`Getting parameters from run template ${runTemplate}`)
         const paramsFromRunTemplate =
@@ -107,10 +114,11 @@ export class Api {
         params: PaginationParams = {},
         applicationId = this.inputs.variant
     ) {
-        const requestParams = { query: params, secure: true  }
+        const requestParams = { query: params, secure: true }
         const res = await this._api.api.runsLogControllerV2GetRunLog(
             applicationId,
             runId,
+            requestParams.query,
             requestParams
         )
         return res.data

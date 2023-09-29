@@ -1,7 +1,7 @@
 import 'source-map-support/register'
 import * as core from '@actions/core'
 import { Api } from './codegen'
-import { getActionInputs, type ActionInputs } from './inputs'
+import { getInputs, type Inputs } from './inputs'
 import { sleep, toError } from './util'
 import { RunLogEntryDTO } from './codegen/api'
 
@@ -9,7 +9,7 @@ async function main() {
     const POLL_INTERVAL = 1_000
 
     core.debug(`Parsing inputs...`)
-    const inputs: ActionInputs = getActionInputs()
+    const inputs: Inputs = getInputs()
     const api = new Api(inputs)
 
     const runId = await startRun(api, inputs)
@@ -52,23 +52,33 @@ async function main() {
     core.debug(`Final run status: ${JSON.stringify(runStatus, null, 2)}`)
 
     if (numErrors > 0) {
-        core.setFailed(`Test run failed with ${numErrors} errors`)
+        if (inputs.expectFailure) {
+            core.notice(`Test run failed with ${numErrors} errors, as expected`)
+        } else {
+            core.setFailed(`Test run failed with ${numErrors} errors`)
+        }
     } else {
-        core.notice(`Test run completed successfully`)
+        if (inputs.expectFailure) {
+            core.setFailed(`Test run passed, but was expected to fail`)
+        } else {
+            core.notice(`Test run completed successfully`)
+        }
     }
 }
 
-async function startRun(api: Api, inputs: ActionInputs) {
-
+async function startRun(api: Api, inputs: Inputs) {
     // check that application exists
     const application = await api.getApplication()
-    console.log(`Found application:\n${JSON.stringify(application, null, 2)}`)
+    core.debug(`Found application:\n${JSON.stringify(application, null, 2)}`)
+    console.log(`Testing application "${application.data.name}"`)
     const variant = await api.getVariant()
-    console.log(`Found variant:\n${JSON.stringify(variant, null, 2)}`)
+    core.debug(`Found variant:\n${JSON.stringify(variant, null, 2)}`)
+    console.log(`Testing variant "${variant.name}"`)
 
     core.debug('Starting run...')
     const runId = await api.startRun()
-    core.notice(`
+    core.notice(
+        `
 Started run ${runId} for ${application.data.name} (${variant.name})
     
 View detailed logs here: https://companion.asta.grantsgovservices.com/app/${inputs.variant}/log?run=${runId}&filters%5Blevel%5D%5B%24ne%5D=Debug
@@ -79,8 +89,7 @@ View detailed logs here: https://companion.asta.grantsgovservices.com/app/${inpu
 }
 
 function onLog(log: RunLogEntryDTO) {
-    const msg =
-        log.msg || (log as Record<string, any>)['message']
+    const msg = log.msg || (log as Record<string, any>)['message']
 
     if (!msg) return
 

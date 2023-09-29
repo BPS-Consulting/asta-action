@@ -11029,6 +11029,66 @@ class Api extends HttpClient {
             /**
              * No description
              *
+             * @name AssetsControllerGetOneRule
+             * @request GET:/api/v2/assets/{appId}/rule/{id}
+             */
+            assetsControllerGetOneRule: (appId, id, params = {}) => this.request({
+                path: `/api/v2/assets/${appId}/rule/${id}`,
+                method: 'GET',
+                format: 'json',
+                ...params,
+            }),
+            /**
+             * No description
+             *
+             * @name AssetsControllerGetOneFlow
+             * @request GET:/api/v2/assets/{appId}/flow/{id}
+             */
+            assetsControllerGetOneFlow: (appId, id, params = {}) => this.request({
+                path: `/api/v2/assets/${appId}/flow/${id}`,
+                method: 'GET',
+                format: 'json',
+                ...params,
+            }),
+            /**
+             * No description
+             *
+             * @name AssetsControllerGetOneRunParam
+             * @request GET:/api/v2/assets/{appId}/run_param/{id}
+             */
+            assetsControllerGetOneRunParam: (appId, id, params = {}) => this.request({
+                path: `/api/v2/assets/${appId}/run_param/${id}`,
+                method: 'GET',
+                format: 'json',
+                ...params,
+            }),
+            /**
+             * No description
+             *
+             * @name AssetsControllerGetOneDataset
+             * @request GET:/api/v2/assets/{appId}/dataset/{id}
+             */
+            assetsControllerGetOneDataset: (appId, id, params = {}) => this.request({
+                path: `/api/v2/assets/${appId}/dataset/${id}`,
+                method: 'GET',
+                format: 'json',
+                ...params,
+            }),
+            /**
+             * No description
+             *
+             * @name AssetsControllerGetOneFormSpec
+             * @request GET:/api/v2/assets/{appId}/form_spec/{id}
+             */
+            assetsControllerGetOneFormSpec: (appId, id, params = {}) => this.request({
+                path: `/api/v2/assets/${appId}/form_spec/${id}`,
+                method: 'GET',
+                format: 'json',
+                ...params,
+            }),
+            /**
+             * No description
+             *
              * @tags auth
              * @name AuthControllerGetPermissions
              * @summary Get permissions
@@ -11641,6 +11701,19 @@ class Api extends HttpClient {
             /**
              * No description
              *
+             * @tags health
+             * @name HealthControllerGetInfo
+             * @request GET:/api/v2/health/info
+             */
+            healthControllerGetInfo: (params = {}) => this.request({
+                path: `/api/v2/health/info`,
+                method: 'GET',
+                format: 'json',
+                ...params,
+            }),
+            /**
+             * No description
+             *
              * @tags issues
              * @name IssueControllerCreate
              * @request POST:/api/v2/issues
@@ -11812,7 +11885,6 @@ class Api extends HttpClient {
             runParametersControllerGetAll: (params = {}) => this.request({
                 path: `/api/v2/run/parameters`,
                 method: 'GET',
-                format: 'json',
                 ...params,
             }),
             /**
@@ -11822,11 +11894,9 @@ class Api extends HttpClient {
              * @name RunParametersControllerCreate
              * @request POST:/api/v2/run/parameters
              */
-            runParametersControllerCreate: (data, params = {}) => this.request({
+            runParametersControllerCreate: (params = {}) => this.request({
                 path: `/api/v2/run/parameters`,
                 method: 'POST',
-                body: data,
-                type: ContentType.Json,
                 ...params,
             }),
             /**
@@ -11839,7 +11909,6 @@ class Api extends HttpClient {
             runParametersControllerGet: (id, params = {}) => this.request({
                 path: `/api/v2/run/parameters/${id}`,
                 method: 'GET',
-                format: 'json',
                 ...params,
             }),
             /**
@@ -11849,11 +11918,9 @@ class Api extends HttpClient {
              * @name RunParametersControllerUpdate
              * @request PUT:/api/v2/run/parameters/{id}
              */
-            runParametersControllerUpdate: (id, data, params = {}) => this.request({
+            runParametersControllerUpdate: (id, params = {}) => this.request({
                 path: `/api/v2/run/parameters/${id}`,
                 method: 'PUT',
-                body: data,
-                type: ContentType.Json,
                 ...params,
             }),
             /**
@@ -12000,9 +12067,10 @@ class Api extends HttpClient {
              * @name RunsSummaryStatisticsControllerGetMultipleRunItemStats
              * @request GET:/api/v2/run/summaryStatistics/items
              */
-            runsSummaryStatisticsControllerGetMultipleRunItemStats: (params = {}) => this.request({
+            runsSummaryStatisticsControllerGetMultipleRunItemStats: (query, params = {}) => this.request({
                 path: `/api/v2/run/summaryStatistics/items`,
                 method: 'GET',
+                query: query,
                 format: 'json',
                 ...params,
             }),
@@ -12142,9 +12210,10 @@ class Api extends HttpClient {
              * @name RunsLogControllerV2GetRunLog
              * @request GET:/api/v2/runs/{id}/log/{runNumber}
              */
-            runsLogControllerV2GetRunLog: (id, runNumber, params = {}) => this.request({
+            runsLogControllerV2GetRunLog: (id, runNumber, query, params = {}) => this.request({
                 path: `/api/v2/runs/${id}/log/${runNumber}`,
                 method: 'GET',
+                query: query,
                 format: 'json',
                 ...params,
             }),
@@ -12247,9 +12316,10 @@ class Api extends HttpClient {
              * @name ModelControllerGetApplicationModel
              * @request GET:/api/v2/variants/{id}/model
              */
-            modelControllerGetApplicationModel: (id, params = {}) => this.request({
+            modelControllerGetApplicationModel: (id, query, params = {}) => this.request({
                 path: `/api/v2/variants/${id}/model`,
                 method: 'GET',
+                query: query,
                 ...params,
             }),
             /**
@@ -12479,9 +12549,10 @@ class Api extends HttpClient {
              * @name CoverageControllerGetCoverageWithFilters
              * @request GET:/api/v2/variants/{id}/model/coverage/filters
              */
-            coverageControllerGetCoverageWithFilters: (id, params = {}) => this.request({
+            coverageControllerGetCoverageWithFilters: (id, query, params = {}) => this.request({
                 path: `/api/v2/variants/${id}/model/coverage/filters`,
                 method: 'GET',
+                query: query,
                 ...params,
             }),
             /**
@@ -12635,9 +12706,10 @@ class Api extends HttpClient {
              * @summary Get users
              * @request GET:/api/v2/users
              */
-            userControllerGetUsers: (params = {}) => this.request({
+            userControllerGetUsers: (query, params = {}) => this.request({
                 path: `/api/v2/users`,
                 method: 'GET',
+                query: query,
                 format: 'json',
                 ...params,
             }),
@@ -12741,9 +12813,10 @@ class Api extends HttpClient {
              * @name WorkspaceControllerGetWorkspaces
              * @request GET:/api/v2/workspace
              */
-            workspaceControllerGetWorkspaces: (params = {}) => this.request({
+            workspaceControllerGetWorkspaces: (query, params = {}) => this.request({
                 path: `/api/v2/workspace`,
                 method: 'GET',
+                query: query,
                 format: 'json',
                 ...params,
             }),
@@ -12836,9 +12909,10 @@ class Api extends HttpClient {
              * @summary Get invitations
              * @request GET:/api/v2/invite-user
              */
-            inviteUserControllerGetUsers: (params = {}) => this.request({
+            inviteUserControllerGetUsers: (query, params = {}) => this.request({
                 path: `/api/v2/invite-user`,
                 method: 'GET',
+                query: query,
                 ...params,
             }),
             /**
@@ -12954,6 +13028,20 @@ class Api extends HttpClient {
                 format: 'json',
                 ...params,
             }),
+            /**
+             * @description Get page performance statistics
+             *
+             * @tags analytics
+             * @name AnalyticsControllerGetPagePerformanceStatistics
+             * @request GET:/api/v2/analytics/app/{appId}/pages/performance
+             */
+            analyticsControllerGetPagePerformanceStatistics: (appId, query, params = {}) => this.request({
+                path: `/api/v2/analytics/app/${appId}/pages/performance`,
+                method: 'GET',
+                query: query,
+                format: 'json',
+                ...params,
+            }),
         };
     }
 }
@@ -13036,7 +13124,7 @@ class Api {
     }
     async getRunLogs(runId, params = {}, applicationId = this.inputs.variant) {
         const requestParams = { query: params, secure: true };
-        const res = await this._api.api.runsLogControllerV2GetRunLog(applicationId, runId, requestParams);
+        const res = await this._api.api.runsLogControllerV2GetRunLog(applicationId, runId, requestParams.query, requestParams);
         return res.data;
     }
     async getRunStatus(runId) {
@@ -13100,7 +13188,7 @@ const util_1 = __webpack_require__(/*! ./util */ "./src/util.ts");
 async function main() {
     const POLL_INTERVAL = 1000;
     core.debug(`Parsing inputs...`);
-    const inputs = (0, inputs_1.getActionInputs)();
+    const inputs = (0, inputs_1.getInputs)();
     const api = new codegen_1.Api(inputs);
     const runId = await startRun(api, inputs);
     core.setOutput('run-id', runId);
@@ -13133,18 +13221,30 @@ async function main() {
     }
     core.debug(`Final run status: ${JSON.stringify(runStatus, null, 2)}`);
     if (numErrors > 0) {
-        core.setFailed(`Test run failed with ${numErrors} errors`);
+        if (inputs.expectFailure) {
+            core.notice(`Test run failed with ${numErrors} errors, as expected`);
+        }
+        else {
+            core.setFailed(`Test run failed with ${numErrors} errors`);
+        }
     }
     else {
-        core.notice(`Test run completed successfully`);
+        if (inputs.expectFailure) {
+            core.setFailed(`Test run passed, but was expected to fail`);
+        }
+        else {
+            core.notice(`Test run completed successfully`);
+        }
     }
 }
 async function startRun(api, inputs) {
     // check that application exists
     const application = await api.getApplication();
-    console.log(`Found application:\n${JSON.stringify(application, null, 2)}`);
+    core.debug(`Found application:\n${JSON.stringify(application, null, 2)}`);
+    console.log(`Testing application "${application.data.name}"`);
     const variant = await api.getVariant();
-    console.log(`Found variant:\n${JSON.stringify(variant, null, 2)}`);
+    core.debug(`Found variant:\n${JSON.stringify(variant, null, 2)}`);
+    console.log(`Testing variant "${variant.name}"`);
     core.debug('Starting run...');
     const runId = await api.startRun();
     core.notice(`
@@ -13220,7 +13320,6 @@ exports.ActionInputsSchema = zod_1.z.object({
      * The ID of the api key. May also be set via the `ASTA_API_KEY_ID` environment variable.
      */
     apiKeyId: zod_1.z.string().nonempty(),
-    repositoryUrl: zod_1.z.string().url().default('https://asta.grantsgovservices.com')
 });
 // export const getActionInputs = (): ActionInputs => {
 //     const inputs: ActionInputs = {
@@ -13266,25 +13365,37 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.getActionInputs = void 0;
+exports.InputsSchema = exports.getInputs = void 0;
 // Inputs provided by the user to the action in their workflow via `with`.
+const zod_1 = __webpack_require__(/*! zod */ "./node_modules/zod/lib/index.js");
 const action_inputs_1 = __webpack_require__(/*! ./action.inputs */ "./src/inputs/action.inputs.ts");
 const core = __importStar(__webpack_require__(/*! @actions/core */ "./node_modules/@actions/core/lib/core.js"));
 const run_parameters_inputs_1 = __webpack_require__(/*! ./run-parameters.inputs */ "./src/inputs/run-parameters.inputs.ts");
-const getActionInputs = () => {
-    const { ASTA_REPOSITORY_URL, ASTA_API_KEY, ASTA_API_KEY_SECRET, ASTA_API_KEY_ID, } = process.env;
-    const inputs = action_inputs_1.ActionInputsSchema.parse({
+const InputsSchema = action_inputs_1.ActionInputsSchema.extend({
+    repositoryUrl: zod_1.z.string().url().default('https://asta.grantsgovservices.com'),
+    /**
+     * Non-public API. Causes the workflow to fail if the test run passes.
+     *
+     * @default false
+     */
+    expectFailure: zod_1.z.coerce.boolean().default(false)
+});
+exports.InputsSchema = InputsSchema;
+const getInputs = () => {
+    const { ASTA_REPOSITORY_URL, ASTA_API_KEY, ASTA_API_KEY_SECRET, ASTA_API_KEY_ID, ASTA_EXPECT_FAILURE } = process.env;
+    const inputs = InputsSchema.parse({
         application: core.getInput('application'),
         variant: core.getInput('variant'),
         runTemplate: core.getInput('run-template'),
         parameters: (0, run_parameters_inputs_1.getRunParameters)(core.getInput('parameters')),
         apiKey: core.getInput('api-key') || ASTA_API_KEY || ASTA_API_KEY_SECRET,
         apiKeyId: core.getInput('api-key-id') || ASTA_API_KEY_ID,
-        repositoryUrl: ASTA_REPOSITORY_URL
+        repositoryUrl: ASTA_REPOSITORY_URL,
+        expectFailure: ASTA_EXPECT_FAILURE,
     });
     return inputs;
 };
-exports.getActionInputs = getActionInputs;
+exports.getInputs = getInputs;
 
 
 /***/ }),

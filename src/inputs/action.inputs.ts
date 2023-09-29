@@ -1,10 +1,9 @@
 import { z } from 'zod'
 import { RunParametersSchema } from './run-parameters.inputs'
 
-
 /**
  * User inputs provided via Github Actions.
- * 
+ *
  * @note the properties here are correlated to the `inputs` in [`action.yml`](../../action.yml).
  * However, there are some settings here that are not publicly advertised to
  * consumers, e.g. changing the URL of the repository.
@@ -29,10 +28,9 @@ export const ActionInputsSchema = z.object({
      */
     apiKey: z.string().nonempty(),
     /**
-     * The ID of the api key. May also be set via the `ASTA_API_KEY_ID` environment variable. 
+     * The ID of the api key. May also be set via the `ASTA_API_KEY_ID` environment variable.
      */
     apiKeyId: z.string().nonempty(),
-    repositoryUrl: z.string().url().default('https://asta.grantsgovservices.com')
 })
 
 export type ActionInputs = z.infer<typeof ActionInputsSchema>

@@ -1,27 +1,29 @@
 import { z } from 'zod'
 import yaml from 'js-yaml'
 
-export const RunParametersSchema = z.object({
-    /**
-     * Stop the run immediately after executing all flows.
-     *
-     * @default false
-     */
-    stopAfterFlows: z.coerce.boolean().optional().default(false),
+export const RunParametersSchema = z
+    .object({
+        /**
+         * Stop the run immediately after executing all flows.
+         *
+         * @default false
+         */
+        stopAfterFlows: z.coerce.boolean().optional().default(false),
 
-    /**
-     * Time, in seconds, ASTA should wait for pages to load before timing out
-     * and labeling the page as failed.
-     * @default 15
-     */
-    pageLoadTimeout: z.coerce.number().optional().default(15),
+        /**
+         * Time, in seconds, ASTA should wait for pages to load before timing out
+         * and labeling the page as failed.
+         * @default 15
+         */
+        pageLoadTimeout: z.coerce.number().optional().default(15),
 
-    /**
-     * How many times ASTA should retry a failed action before giving up.
-     * @default 3
-     */
-    actionRetryAttempts: z.coerce.number().optional().default(3),
-}).default({})
+        /**
+         * How many times ASTA should retry a failed action before giving up.
+         * @default 3
+         */
+        actionRetryAttempts: z.coerce.number().optional().default(3),
+    })
+    .default({})
 
 export type RunParameters = z.infer<typeof RunParametersSchema>
 
