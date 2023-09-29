@@ -10803,8 +10803,13 @@ class HttpClient {
             this.securityData = data;
         };
         this.contentFormatters = {
-            [ContentType.Json]: (input) => input !== null && (typeof input === 'object' || typeof input === 'string') ? JSON.stringify(input) : input,
-            [ContentType.Text]: (input) => input !== null && typeof input !== 'string' ? JSON.stringify(input) : input,
+            [ContentType.Json]: (input) => input !== null &&
+                (typeof input === 'object' || typeof input === 'string')
+                ? JSON.stringify(input)
+                : input,
+            [ContentType.Text]: (input) => input !== null && typeof input !== 'string'
+                ? JSON.stringify(input)
+                : input,
             [ContentType.FormData]: (input) => Object.keys(input || {}).reduce((formData, key) => {
                 const property = input[key];
                 formData.append(key, property instanceof Blob
@@ -10836,7 +10841,9 @@ class HttpClient {
             }
         };
         this.request = async ({ body, secure, path, type, query, format, baseUrl, cancelToken, ...params }) => {
-            const secureParams = ((typeof secure === 'boolean' ? secure : this.baseApiParams.secure) &&
+            const secureParams = ((typeof secure === 'boolean'
+                ? secure
+                : this.baseApiParams.secure) &&
                 this.securityWorker &&
                 (await this.securityWorker(this.securityData))) ||
                 {};
@@ -10848,10 +10855,16 @@ class HttpClient {
                 ...requestParams,
                 headers: {
                     ...(requestParams.headers || {}),
-                    ...(type && type !== ContentType.FormData ? { 'Content-Type': type } : {}),
+                    ...(type && type !== ContentType.FormData
+                        ? { 'Content-Type': type }
+                        : {}),
                 },
-                signal: (cancelToken ? this.createAbortSignal(cancelToken) : requestParams.signal) || null,
-                body: typeof body === 'undefined' || body === null ? null : payloadFormatter(body),
+                signal: (cancelToken
+                    ? this.createAbortSignal(cancelToken)
+                    : requestParams.signal) || null,
+                body: typeof body === 'undefined' || body === null
+                    ? null
+                    : payloadFormatter(body),
             }).then(async (response) => {
                 const r = response;
                 r.data = null;
@@ -10897,7 +10910,9 @@ class HttpClient {
         const query = rawQuery || {};
         const keys = Object.keys(query).filter(key => 'undefined' !== typeof query[key]);
         return keys
-            .map(key => Array.isArray(query[key]) ? this.addArrayQueryParam(query, key) : this.addQueryParam(query, key))
+            .map(key => Array.isArray(query[key])
+            ? this.addArrayQueryParam(query, key)
+            : this.addQueryParam(query, key))
             .join('&');
     }
     addQueryParams(rawQuery) {
@@ -13092,7 +13107,7 @@ class Api {
      * @returns The ID of the started run
      */
     async startRun(variantId = this.inputs.variant) {
-        const { runTemplate, application, parameters: parameterOverrides } = this.inputs;
+        const { runTemplate, application, parameters: parameterOverrides, } = this.inputs;
         console.log(`Getting parameters from run template ${runTemplate}`);
         const paramsFromRunTemplate = await this._api.api.assetsControllerFindOne(application, 'run_parameter', runTemplate, { secure: true });
         const params = (0, deepmerge_1.default)(paramsFromRunTemplate.data.resource.data, parameterOverrides);
@@ -13372,17 +13387,20 @@ const action_inputs_1 = __webpack_require__(/*! ./action.inputs */ "./src/inputs
 const core = __importStar(__webpack_require__(/*! @actions/core */ "./node_modules/@actions/core/lib/core.js"));
 const run_parameters_inputs_1 = __webpack_require__(/*! ./run-parameters.inputs */ "./src/inputs/run-parameters.inputs.ts");
 const InputsSchema = action_inputs_1.ActionInputsSchema.extend({
-    repositoryUrl: zod_1.z.string().url().default('https://asta.grantsgovservices.com'),
+    repositoryUrl: zod_1.z
+        .string()
+        .url()
+        .default('https://asta.grantsgovservices.com'),
     /**
      * Non-public API. Causes the workflow to fail if the test run passes.
      *
      * @default false
      */
-    expectFailure: zod_1.z.coerce.boolean().default(false)
+    expectFailure: zod_1.z.coerce.boolean().default(false),
 });
 exports.InputsSchema = InputsSchema;
 const getInputs = () => {
-    const { ASTA_REPOSITORY_URL, ASTA_API_KEY, ASTA_API_KEY_SECRET, ASTA_API_KEY_ID, ASTA_EXPECT_FAILURE } = process.env;
+    const { ASTA_REPOSITORY_URL, ASTA_API_KEY, ASTA_API_KEY_SECRET, ASTA_API_KEY_ID, ASTA_EXPECT_FAILURE, } = process.env;
     const inputs = InputsSchema.parse({
         application: core.getInput('application'),
         variant: core.getInput('variant'),
@@ -13415,7 +13433,8 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.getRunParameters = exports.RunParametersSchema = void 0;
 const zod_1 = __webpack_require__(/*! zod */ "./node_modules/zod/lib/index.js");
 const js_yaml_1 = __importDefault(__webpack_require__(/*! js-yaml */ "./node_modules/js-yaml/index.js"));
-exports.RunParametersSchema = zod_1.z.object({
+exports.RunParametersSchema = zod_1.z
+    .object({
     /**
      * Stop the run immediately after executing all flows.
      *
@@ -13433,7 +13452,8 @@ exports.RunParametersSchema = zod_1.z.object({
      * @default 3
      */
     actionRetryAttempts: zod_1.z.coerce.number().optional().default(3),
-}).default({});
+})
+    .default({});
 /**
  * Parse and validate run parameters from a github actions workflow
  *
