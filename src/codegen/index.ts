@@ -91,7 +91,7 @@ export class Api {
             { secure: true }
         )
         const data: unknown = res.data
-        if (typeof data != 'object' && !data)
+        if (typeof data !== 'object' && !data)
             throw new TypeError(
                 `Missing or invalid data returned from start run; expected an object but got ${typeof data}`
             )
@@ -106,7 +106,7 @@ export class Api {
     }
 
     public async stopRun(runId: string) {
-        await this._api.api.stopRunControllerStopRun(runId, { secure: true })
+        await this._api.api.runsControllerPauseRun(runId, 'stop', { secure: true })
     }
 
     public async getRunLogs(

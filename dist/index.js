@@ -10803,13 +10803,8 @@ class HttpClient {
             this.securityData = data;
         };
         this.contentFormatters = {
-            [ContentType.Json]: (input) => input !== null &&
-                (typeof input === 'object' || typeof input === 'string')
-                ? JSON.stringify(input)
-                : input,
-            [ContentType.Text]: (input) => input !== null && typeof input !== 'string'
-                ? JSON.stringify(input)
-                : input,
+            [ContentType.Json]: (input) => input !== null && (typeof input === 'object' || typeof input === 'string') ? JSON.stringify(input) : input,
+            [ContentType.Text]: (input) => input !== null && typeof input !== 'string' ? JSON.stringify(input) : input,
             [ContentType.FormData]: (input) => Object.keys(input || {}).reduce((formData, key) => {
                 const property = input[key];
                 formData.append(key, property instanceof Blob
@@ -10841,9 +10836,7 @@ class HttpClient {
             }
         };
         this.request = async ({ body, secure, path, type, query, format, baseUrl, cancelToken, ...params }) => {
-            const secureParams = ((typeof secure === 'boolean'
-                ? secure
-                : this.baseApiParams.secure) &&
+            const secureParams = ((typeof secure === 'boolean' ? secure : this.baseApiParams.secure) &&
                 this.securityWorker &&
                 (await this.securityWorker(this.securityData))) ||
                 {};
@@ -10855,16 +10848,10 @@ class HttpClient {
                 ...requestParams,
                 headers: {
                     ...(requestParams.headers || {}),
-                    ...(type && type !== ContentType.FormData
-                        ? { 'Content-Type': type }
-                        : {}),
+                    ...(type && type !== ContentType.FormData ? { 'Content-Type': type } : {}),
                 },
-                signal: (cancelToken
-                    ? this.createAbortSignal(cancelToken)
-                    : requestParams.signal) || null,
-                body: typeof body === 'undefined' || body === null
-                    ? null
-                    : payloadFormatter(body),
+                signal: (cancelToken ? this.createAbortSignal(cancelToken) : requestParams.signal) || null,
+                body: typeof body === 'undefined' || body === null ? null : payloadFormatter(body),
             }).then(async (response) => {
                 const r = response;
                 r.data = null;
@@ -10910,9 +10897,7 @@ class HttpClient {
         const query = rawQuery || {};
         const keys = Object.keys(query).filter(key => 'undefined' !== typeof query[key]);
         return keys
-            .map(key => Array.isArray(query[key])
-            ? this.addArrayQueryParam(query, key)
-            : this.addQueryParam(query, key))
+            .map(key => Array.isArray(query[key]) ? this.addArrayQueryParam(query, key) : this.addQueryParam(query, key))
             .join('&');
     }
     addQueryParams(rawQuery) {
@@ -11280,18 +11265,6 @@ class Api extends HttpClient {
             /**
              * No description
              *
-             * @tags agents
-             * @name AgentsControllerGetAgents
-             * @request GET:/api/v2/agents
-             */
-            agentsControllerGetAgents: (params = {}) => this.request({
-                path: `/api/v2/agents`,
-                method: 'GET',
-                ...params,
-            }),
-            /**
-             * No description
-             *
              * @tags tags
              * @name TagsControllerGetTagsWithIds
              * @summary Get tags with ids
@@ -11556,118 +11529,6 @@ class Api extends HttpClient {
             /**
              * No description
              *
-             * @tags datasets
-             * @name DatasetControllerGetDatasets
-             * @request GET:/api/v2/datasets
-             */
-            datasetControllerGetDatasets: (params = {}) => this.request({
-                path: `/api/v2/datasets`,
-                method: 'GET',
-                ...params,
-            }),
-            /**
-             * No description
-             *
-             * @tags datasets
-             * @name DatasetControllerPostDatasets
-             * @request POST:/api/v2/datasets
-             */
-            datasetControllerPostDatasets: (params = {}) => this.request({
-                path: `/api/v2/datasets`,
-                method: 'POST',
-                ...params,
-            }),
-            /**
-             * No description
-             *
-             * @tags datasets
-             * @name DatasetControllerGetDataset
-             * @request GET:/api/v2/datasets/{id}
-             */
-            datasetControllerGetDataset: (id, params = {}) => this.request({
-                path: `/api/v2/datasets/${id}`,
-                method: 'GET',
-                ...params,
-            }),
-            /**
-             * No description
-             *
-             * @tags datasets
-             * @name DatasetControllerGenerateDataset
-             * @request POST:/api/v2/datasets/generate
-             */
-            datasetControllerGenerateDataset: (data, params = {}) => this.request({
-                path: `/api/v2/datasets/generate`,
-                method: 'POST',
-                body: data,
-                type: ContentType.Json,
-                ...params,
-            }),
-            /**
-             * No description
-             *
-             * @tags requirementsDocuments
-             * @name RequirementsDocumentsControllerGetRequirementsDocuments
-             * @request GET:/api/v2/requirementsDocuments
-             */
-            requirementsDocumentsControllerGetRequirementsDocuments: (params = {}) => this.request({
-                path: `/api/v2/requirementsDocuments`,
-                method: 'GET',
-                ...params,
-            }),
-            /**
-             * No description
-             *
-             * @tags requirementsDocuments
-             * @name RequirementsDocumentsControllerPostRequirementsDocument
-             * @request POST:/api/v2/requirementsDocuments
-             */
-            requirementsDocumentsControllerPostRequirementsDocument: (params = {}) => this.request({
-                path: `/api/v2/requirementsDocuments`,
-                method: 'POST',
-                ...params,
-            }),
-            /**
-             * No description
-             *
-             * @tags requirementsDocuments
-             * @name RequirementsDocumentsControllerGetRequirementsDocument
-             * @request GET:/api/v2/requirementsDocuments/{id}
-             */
-            requirementsDocumentsControllerGetRequirementsDocument: (id, params = {}) => this.request({
-                path: `/api/v2/requirementsDocuments/${id}`,
-                method: 'GET',
-                ...params,
-            }),
-            /**
-             * No description
-             *
-             * @tags requirementsDocuments
-             * @name RequirementsDocumentsControllerPostRequirementsDocumentV2
-             * @request POST:/api/v2/requirementsDocuments/v2
-             */
-            requirementsDocumentsControllerPostRequirementsDocumentV2: (params = {}) => this.request({
-                path: `/api/v2/requirementsDocuments/v2`,
-                method: 'POST',
-                ...params,
-            }),
-            /**
-             * No description
-             *
-             * @tags drivers
-             * @name DriversControllerGetDrivers
-             * @request GET:/api/v2/drivers
-             */
-            driversControllerGetDrivers: (data, params = {}) => this.request({
-                path: `/api/v2/drivers`,
-                method: 'GET',
-                body: data,
-                type: ContentType.Json,
-                ...params,
-            }),
-            /**
-             * No description
-             *
              * @tags Files
              * @name FileControllerCreateFileEntity
              * @request POST:/api/v2/files
@@ -11888,6 +11749,30 @@ class Api extends HttpClient {
                 path: `/api/v2/run/${variantId}`,
                 method: 'DELETE',
                 format: 'json',
+                ...params,
+            }),
+            /**
+             * No description
+             *
+             * @tags run
+             * @name RunsControllerRunStopped
+             * @request POST:/api/v2/run/{runId}/stopComplete
+             */
+            runsControllerRunStopped: (runId, params = {}) => this.request({
+                path: `/api/v2/run/${runId}/stopComplete`,
+                method: 'POST',
+                ...params,
+            }),
+            /**
+             * No description
+             *
+             * @tags run
+             * @name RunsControllerPauseRun
+             * @request POST:/api/v2/run/{runId}/{command}
+             */
+            runsControllerPauseRun: (runId, command, params = {}) => this.request({
+                path: `/api/v2/run/${runId}/${command}`,
+                method: 'POST',
                 ...params,
             }),
             /**
@@ -12133,21 +12018,6 @@ class Api extends HttpClient {
             /**
              * No description
              *
-             * @tags start
-             * @name StartRunControllerStartRun
-             * @request POST:/api/v2/start/variant/{id}
-             */
-            startRunControllerStartRun: (id, data, params = {}) => this.request({
-                path: `/api/v2/start/variant/${id}`,
-                method: 'POST',
-                body: data,
-                type: ContentType.Json,
-                format: 'json',
-                ...params,
-            }),
-            /**
-             * No description
-             *
              * @tags run
              * @name StartOptionsControllerGetStartOptions
              * @request GET:/api/v2/run/options
@@ -12155,54 +12025,6 @@ class Api extends HttpClient {
             startOptionsControllerGetStartOptions: (params = {}) => this.request({
                 path: `/api/v2/run/options`,
                 method: 'GET',
-                ...params,
-            }),
-            /**
-             * No description
-             *
-             * @tags run
-             * @name StopRunControllerPauseRun
-             * @request POST:/api/v2/run/{runId}/pause
-             */
-            stopRunControllerPauseRun: (runId, params = {}) => this.request({
-                path: `/api/v2/run/${runId}/pause`,
-                method: 'POST',
-                ...params,
-            }),
-            /**
-             * No description
-             *
-             * @tags run
-             * @name StopRunControllerResumeRun
-             * @request POST:/api/v2/run/{runId}/resume
-             */
-            stopRunControllerResumeRun: (runId, params = {}) => this.request({
-                path: `/api/v2/run/${runId}/resume`,
-                method: 'POST',
-                ...params,
-            }),
-            /**
-             * No description
-             *
-             * @tags run
-             * @name StopRunControllerStopComplete
-             * @request POST:/api/v2/run/{runId}/stopComplete
-             */
-            stopRunControllerStopComplete: (runId, params = {}) => this.request({
-                path: `/api/v2/run/${runId}/stopComplete`,
-                method: 'POST',
-                ...params,
-            }),
-            /**
-             * No description
-             *
-             * @tags run
-             * @name StopRunControllerStopRun
-             * @request POST:/api/v2/run/{runId}/stop
-             */
-            stopRunControllerStopRun: (runId, params = {}) => this.request({
-                path: `/api/v2/run/${runId}/stop`,
-                method: 'POST',
                 ...params,
             }),
             /**
@@ -12223,12 +12045,28 @@ class Api extends HttpClient {
              *
              * @tags runs
              * @name RunsLogControllerV2GetRunLog
+             * @summary Get the logs for the given run
              * @request GET:/api/v2/runs/{id}/log/{runNumber}
              */
             runsLogControllerV2GetRunLog: (id, runNumber, query, params = {}) => this.request({
                 path: `/api/v2/runs/${id}/log/${runNumber}`,
                 method: 'GET',
                 query: query,
+                format: 'json',
+                ...params,
+            }),
+            /**
+             * No description
+             *
+             * @tags start
+             * @name StartRunControllerStartRun
+             * @request POST:/api/v2/start/variant/{id}
+             */
+            startRunControllerStartRun: (id, data, params = {}) => this.request({
+                path: `/api/v2/start/variant/${id}`,
+                method: 'POST',
+                body: data,
+                type: ContentType.Json,
                 format: 'json',
                 ...params,
             }),
@@ -12335,6 +12173,7 @@ class Api extends HttpClient {
                 path: `/api/v2/variants/${id}/model`,
                 method: 'GET',
                 query: query,
+                format: 'json',
                 ...params,
             }),
             /**
@@ -12620,6 +12459,54 @@ class Api extends HttpClient {
                 method: 'PUT',
                 body: data,
                 type: ContentType.Json,
+                ...params,
+            }),
+            /**
+             * No description
+             *
+             * @tags requirementsDocuments
+             * @name RequirementsDocumentsControllerGetRequirementsDocuments
+             * @request GET:/api/v2/requirementsDocuments
+             */
+            requirementsDocumentsControllerGetRequirementsDocuments: (params = {}) => this.request({
+                path: `/api/v2/requirementsDocuments`,
+                method: 'GET',
+                ...params,
+            }),
+            /**
+             * No description
+             *
+             * @tags requirementsDocuments
+             * @name RequirementsDocumentsControllerPostRequirementsDocument
+             * @request POST:/api/v2/requirementsDocuments
+             */
+            requirementsDocumentsControllerPostRequirementsDocument: (params = {}) => this.request({
+                path: `/api/v2/requirementsDocuments`,
+                method: 'POST',
+                ...params,
+            }),
+            /**
+             * No description
+             *
+             * @tags requirementsDocuments
+             * @name RequirementsDocumentsControllerGetRequirementsDocument
+             * @request GET:/api/v2/requirementsDocuments/{id}
+             */
+            requirementsDocumentsControllerGetRequirementsDocument: (id, params = {}) => this.request({
+                path: `/api/v2/requirementsDocuments/${id}`,
+                method: 'GET',
+                ...params,
+            }),
+            /**
+             * No description
+             *
+             * @tags requirementsDocuments
+             * @name RequirementsDocumentsControllerPostRequirementsDocumentV2
+             * @request POST:/api/v2/requirementsDocuments/v2
+             */
+            requirementsDocumentsControllerPostRequirementsDocumentV2: (params = {}) => this.request({
+                path: `/api/v2/requirementsDocuments/v2`,
+                method: 'POST',
                 ...params,
             }),
             /**
@@ -13127,7 +13014,7 @@ class Api {
         console.log(`Start run request:\n${JSON.stringify(body, null, 2)}`);
         const res = await this._api.api.startRunControllerStartRun(variantId, body, { secure: true });
         const data = res.data;
-        if (typeof data != 'object' && !data)
+        if (typeof data !== 'object' && !data)
             throw new TypeError(`Missing or invalid data returned from start run; expected an object but got ${typeof data}`);
         const runId = data['runId'];
         if (typeof runId !== 'string')
@@ -13135,7 +13022,7 @@ class Api {
         return runId;
     }
     async stopRun(runId) {
-        await this._api.api.stopRunControllerStopRun(runId, { secure: true });
+        await this._api.api.runsControllerPauseRun(runId, 'stop', { secure: true });
     }
     async getRunLogs(runId, params = {}, applicationId = this.inputs.variant) {
         const requestParams = { query: params, secure: true };
@@ -13282,7 +13169,7 @@ function onLog(log) {
     }
 }
 function isErrorLog(log) {
-    return log['level']?.toLowerCase?.() == 'error';
+    return log['level']?.toLowerCase?.() === 'error';
 }
 main().catch(err => {
     core.debug(err.stack);

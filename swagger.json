@@ -855,20 +855,6 @@
         }
       }
     },
-    "/api/v2/agents": {
-      "get": {
-        "operationId": "AgentsController_getAgents",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "Get all active agents available to the user"
-          }
-        },
-        "tags": [
-          "agents"
-        ]
-      }
-    },
     "/api/v2/tags": {
       "get": {
         "operationId": "TagsController_getTagsWithIds",
@@ -1420,172 +1406,6 @@
         ]
       }
     },
-    "/api/v2/datasets": {
-      "get": {
-        "operationId": "DatasetController_getDatasets",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "Get all datasets"
-          }
-        },
-        "tags": [
-          "datasets"
-        ]
-      },
-      "post": {
-        "operationId": "DatasetController_postDatasets",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "Post a dataset"
-          }
-        },
-        "tags": [
-          "datasets"
-        ]
-      }
-    },
-    "/api/v2/datasets/{id}": {
-      "get": {
-        "operationId": "DatasetController_getDataset",
-        "parameters": [
-          {
-            "name": "id",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Dataset found with id."
-          },
-          "404": {
-            "description": "Dataset not found."
-          }
-        },
-        "tags": [
-          "datasets"
-        ]
-      }
-    },
-    "/api/v2/datasets/generate": {
-      "post": {
-        "operationId": "DatasetController_generateDataset",
-        "parameters": [],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/GenerateDatasetDTO"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Generated a dataset with the requirements document."
-          },
-          "400": {
-            "description": "Invalid requirements document provided."
-          }
-        },
-        "tags": [
-          "datasets"
-        ]
-      }
-    },
-    "/api/v2/requirementsDocuments": {
-      "get": {
-        "operationId": "RequirementsDocumentsController_getRequirementsDocuments",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "Get all requirements documents"
-          }
-        },
-        "tags": [
-          "requirementsDocuments"
-        ]
-      },
-      "post": {
-        "operationId": "RequirementsDocumentsController_postRequirementsDocument",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "Post a Requirements Document and return the Requirements Document with its internal id"
-          }
-        },
-        "tags": [
-          "requirementsDocuments"
-        ]
-      }
-    },
-    "/api/v2/requirementsDocuments/{id}": {
-      "get": {
-        "operationId": "RequirementsDocumentsController_getRequirementsDocument",
-        "parameters": [
-          {
-            "name": "id",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Get all requirements documents"
-          }
-        },
-        "tags": [
-          "requirementsDocuments"
-        ]
-      }
-    },
-    "/api/v2/requirementsDocuments/v2": {
-      "post": {
-        "operationId": "RequirementsDocumentsController_postRequirementsDocumentV2",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "Post a Requirements Document and return the Requirements Document with its internal id"
-          }
-        },
-        "tags": [
-          "requirementsDocuments"
-        ]
-      }
-    },
-    "/api/v2/drivers": {
-      "get": {
-        "operationId": "DriversController_getDrivers",
-        "parameters": [],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/RequestWithUserDTO"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Get all drivers available to the user"
-          }
-        },
-        "tags": [
-          "drivers"
-        ]
-      }
-    },
     "/api/v2/files": {
       "post": {
         "operationId": "FileController_createFileEntity",
@@ -2007,6 +1827,60 @@
                 }
               }
             }
+          }
+        },
+        "tags": [
+          "run"
+        ]
+      }
+    },
+    "/api/v2/run/{runId}/stopComplete": {
+      "post": {
+        "operationId": "RunsController_runStopped",
+        "parameters": [
+          {
+            "name": "runId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Command was successful"
+          }
+        },
+        "tags": [
+          "run"
+        ]
+      }
+    },
+    "/api/v2/run/{runId}/{command}": {
+      "post": {
+        "operationId": "RunsController_pauseRun",
+        "parameters": [
+          {
+            "name": "runId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "command",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Command was successful"
           }
         },
         "tags": [
@@ -2601,55 +2475,6 @@
         ]
       }
     },
-    "/api/v2/start/variant/{id}": {
-      "post": {
-        "operationId": "StartRunController_startRun",
-        "parameters": [
-          {
-            "name": "id",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/StartRunRequestDTO"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Run was started successfully.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/StartRunSuccessResponseDTO"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Some error occured so the run was not started."
-          },
-          "403": {
-            "description": "The user does not have permission to use the driver requested."
-          },
-          "500": {
-            "description": "An unknown error occured which prevented the run from starting."
-          }
-        },
-        "tags": [
-          "start"
-        ]
-      }
-    },
     "/api/v2/run/options": {
       "get": {
         "operationId": "StartOptionsController_getStartOptions",
@@ -2657,98 +2482,6 @@
         "responses": {
           "200": {
             "description": "The start options available to the user."
-          }
-        },
-        "tags": [
-          "run"
-        ]
-      }
-    },
-    "/api/v2/run/{runId}/pause": {
-      "post": {
-        "operationId": "StopRunController_pauseRun",
-        "parameters": [
-          {
-            "name": "runId",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "201": {
-            "description": "Command was successful"
-          }
-        },
-        "tags": [
-          "run"
-        ]
-      }
-    },
-    "/api/v2/run/{runId}/resume": {
-      "post": {
-        "operationId": "StopRunController_resumeRun",
-        "parameters": [
-          {
-            "name": "runId",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "201": {
-            "description": "Command was successful"
-          }
-        },
-        "tags": [
-          "run"
-        ]
-      }
-    },
-    "/api/v2/run/{runId}/stopComplete": {
-      "post": {
-        "operationId": "StopRunController_stopComplete",
-        "parameters": [
-          {
-            "name": "runId",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Run's associated resources (agent, driver) are freed"
-          }
-        },
-        "tags": [
-          "run"
-        ]
-      }
-    },
-    "/api/v2/run/{runId}/stop": {
-      "post": {
-        "operationId": "StopRunController_stopRun",
-        "parameters": [
-          {
-            "name": "runId",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Run was stopped successfully."
           }
         },
         "tags": [
@@ -2797,6 +2530,7 @@
     "/api/v2/runs/{id}/log/{runNumber}": {
       "get": {
         "operationId": "RunsLogControllerV2_getRunLog",
+        "summary": "Get the logs for the given run",
         "parameters": [
           {
             "name": "id",
@@ -2832,11 +2566,20 @@
               "minimum": 0,
               "type": "number"
             }
+          },
+          {
+            "name": "sort",
+            "required": false,
+            "in": "query",
+            "description": "String sort",
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
           "200": {
-            "description": "",
+            "description": "Get the logs for the given run",
             "content": {
               "application/json": {
                 "schema": {
@@ -2851,6 +2594,55 @@
         },
         "tags": [
           "runs"
+        ]
+      }
+    },
+    "/api/v2/start/variant/{id}": {
+      "post": {
+        "operationId": "StartRunController_startRun",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/StartRunRequestDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Run was started successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StartRunSuccessResponseDTO"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Some error occured so the run was not started."
+          },
+          "403": {
+            "description": "The user does not have permission to use the driver requested."
+          },
+          "500": {
+            "description": "An unknown error occured which prevented the run from starting."
+          }
+        },
+        "tags": [
+          "start"
         ]
       }
     },
@@ -3075,7 +2867,14 @@
         ],
         "responses": {
           "200": {
-            "description": "Get the application's model."
+            "description": "Get the application's model.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApplicationModelDTO"
+                }
+              }
+            }
           }
         },
         "tags": [
@@ -3741,6 +3540,69 @@
         },
         "tags": [
           "rules"
+        ]
+      }
+    },
+    "/api/v2/requirementsDocuments": {
+      "get": {
+        "operationId": "RequirementsDocumentsController_getRequirementsDocuments",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Get all requirements documents"
+          }
+        },
+        "tags": [
+          "requirementsDocuments"
+        ]
+      },
+      "post": {
+        "operationId": "RequirementsDocumentsController_postRequirementsDocument",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Post a Requirements Document and return the Requirements Document with its internal id"
+          }
+        },
+        "tags": [
+          "requirementsDocuments"
+        ]
+      }
+    },
+    "/api/v2/requirementsDocuments/{id}": {
+      "get": {
+        "operationId": "RequirementsDocumentsController_getRequirementsDocument",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Get all requirements documents"
+          }
+        },
+        "tags": [
+          "requirementsDocuments"
+        ]
+      }
+    },
+    "/api/v2/requirementsDocuments/v2": {
+      "post": {
+        "operationId": "RequirementsDocumentsController_postRequirementsDocumentV2",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Post a Requirements Document and return the Requirements Document with its internal id"
+          }
+        },
+        "tags": [
+          "requirementsDocuments"
         ]
       }
     },
@@ -4944,6 +4806,61 @@
           "data"
         ]
       },
+      "RunParametersAssetsDTO": {
+        "type": "object",
+        "properties": {
+          "rules": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "activities": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "rules",
+          "data",
+          "activities"
+        ]
+      },
+      "RunParametersExtensionsDTO": {
+        "type": "object",
+        "properties": {
+          "accessibility": {
+            "type": "boolean"
+          },
+          "brokenLinks": {
+            "type": "boolean"
+          },
+          "resources": {
+            "type": "boolean"
+          },
+          "performance": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "accessibility",
+          "brokenLinks",
+          "resources",
+          "performance"
+        ]
+      },
+      "ExperimentalRunParametersDTO": {
+        "type": "object",
+        "properties": {}
+      },
       "RunParametersDto": {
         "type": "object",
         "properties": {
@@ -4985,17 +4902,17 @@
             "type": "boolean"
           },
           "assets": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
+            "$ref": "#/components/schemas/RunParametersAssetsDTO"
           },
           "extensions": {
-            "type": "object"
+            "$ref": "#/components/schemas/RunParametersExtensionsDTO"
           },
           "status": {
             "type": "string",
             "default": "active"
+          },
+          "experimental": {
+            "$ref": "#/components/schemas/ExperimentalRunParametersDTO"
           }
         },
         "required": [
@@ -5537,36 +5454,6 @@
           "role"
         ]
       },
-      "GenerateDatasetDTO": {
-        "type": "object",
-        "properties": {
-          "requirementsDocumentId": {
-            "type": "string",
-            "description": ""
-          },
-          "options": {
-            "type": "object",
-            "description": "",
-            "example": ""
-          }
-        },
-        "required": [
-          "requirementsDocumentId",
-          "options"
-        ]
-      },
-      "RequestWithUserDTO": {
-        "type": "object",
-        "properties": {
-          "user": {
-            "type": "object",
-            "description": ""
-          }
-        },
-        "required": [
-          "user"
-        ]
-      },
       "IssueDto": {
         "type": "object",
         "properties": {
@@ -6016,6 +5903,81 @@
           "completedCount"
         ]
       },
+      "RunDocument": {
+        "type": "object",
+        "properties": {}
+      },
+      "LoggableAppStateDTO": {
+        "type": "object",
+        "properties": {
+          "prevPage": {
+            "type": "object"
+          },
+          "action": {
+            "type": "object"
+          },
+          "page": {
+            "type": "object"
+          }
+        },
+        "required": [
+          "prevPage",
+          "action",
+          "page"
+        ]
+      },
+      "RunLogEntryDTO": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "Agent",
+              "Action",
+              "Assertion",
+              "Event",
+              "Rule",
+              "Selector",
+              "Work",
+              "Flow",
+              "Performance"
+            ]
+          },
+          "level": {
+            "type": "string",
+            "enum": [
+              "Info",
+              "Error",
+              "Warning",
+              "Debug"
+            ]
+          },
+          "timestamp": {
+            "type": "string"
+          },
+          "state": {
+            "$ref": "#/components/schemas/LoggableAppStateDTO"
+          },
+          "msg": {
+            "type": "string"
+          },
+          "data": {
+            "type": "object"
+          }
+        },
+        "required": [
+          "id",
+          "type",
+          "level",
+          "timestamp",
+          "state",
+          "msg",
+          "data"
+        ]
+      },
       "StartRunRequestDTO": {
         "type": "object",
         "properties": {
@@ -6095,81 +6057,6 @@
         },
         "required": [
           "runId"
-        ]
-      },
-      "RunDocument": {
-        "type": "object",
-        "properties": {}
-      },
-      "LoggableAppStateDTO": {
-        "type": "object",
-        "properties": {
-          "prevPage": {
-            "type": "object"
-          },
-          "action": {
-            "type": "object"
-          },
-          "page": {
-            "type": "object"
-          }
-        },
-        "required": [
-          "prevPage",
-          "action",
-          "page"
-        ]
-      },
-      "RunLogEntryDTO": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "number"
-          },
-          "type": {
-            "type": "string",
-            "enum": [
-              "Agent",
-              "Action",
-              "Assertion",
-              "Event",
-              "Rule",
-              "Selector",
-              "Work",
-              "Flow",
-              "Performance"
-            ]
-          },
-          "level": {
-            "type": "string",
-            "enum": [
-              "Info",
-              "Error",
-              "Warning",
-              "Debug"
-            ]
-          },
-          "timestamp": {
-            "type": "string"
-          },
-          "state": {
-            "$ref": "#/components/schemas/LoggableAppStateDTO"
-          },
-          "msg": {
-            "type": "string"
-          },
-          "data": {
-            "type": "object"
-          }
-        },
-        "required": [
-          "id",
-          "type",
-          "level",
-          "timestamp",
-          "state",
-          "msg",
-          "data"
         ]
       },
       "VariantData": {
@@ -6258,8 +6145,12 @@
             "description": "The id referencing the application"
           },
           "data": {
-            "type": "object",
-            "description": "The variants data such as defaultUrl or activitySets"
+            "description": "The variants data such as defaultUrl or activitySets",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/VariantData"
+              }
+            ]
           }
         },
         "required": [
@@ -6276,8 +6167,12 @@
             "description": "The name of the variant"
           },
           "data": {
-            "type": "object",
-            "description": "The variants data such as defaultUrl or activitySets"
+            "description": "The variants data such as defaultUrl or activitySets",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/VariantData"
+              }
+            ]
           }
         },
         "required": [
@@ -6295,23 +6190,21 @@
           },
           "applicationId": {
             "type": "string",
-            "description": "",
+            "description": "The variant this model belongs to",
             "example": ""
           },
           "nodes": {
             "description": "Nodes in the application mode",
-            "example": "",
             "type": "array",
             "items": {
-              "type": "string"
+              "type": "object"
             }
           },
           "edges": {
             "description": "Edges in the application mode",
-            "example": "",
             "type": "array",
             "items": {
-              "type": "string"
+              "type": "object"
             }
           }
         },

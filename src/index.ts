@@ -101,7 +101,7 @@ function onLog(log: RunLogEntryDTO) {
     }
 }
 function isErrorLog(log: RunLogEntryDTO): boolean {
-    return (log['level'] as string)?.toLowerCase?.() == 'error'
+    return (log['level'] as string)?.toLowerCase?.() === 'error'
 }
 
 main().catch(err => {

@@ -15,7 +15,7 @@
     "build": "webpack",
     "typecheck": "tsc --noEmit",
     "format": "prettier --write src",
-    "lint": "yarn dlx oxlint src",
+    "lint": "yarn dlx oxlint -D correctness -D restriction -D suspicious -D pedantic -A no-console -A no-explicit-any src",
     "codegen": "yarn swagger-typescript-api --path swagger.json --output src/codegen --name api.ts",
     "test": "jest"
   },
