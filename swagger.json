@@ -286,6 +286,66 @@
         }
       }
     },
+    "/api/v2/assets/{appId}/{type}/{id}/updateParent": {
+      "put": {
+        "operationId": "AssetsController_updateParent",
+        "summary": "Update Assets parent",
+        "parameters": [
+          {
+            "name": "appId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "type",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateAssetParentDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Assets parent updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AssetDTO"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "ApplicationId and parentId do not match for the given asset"
+          },
+          "401": {
+            "description": "The user does not have the required permissions on the new parent"
+          }
+        }
+      }
+    },
     "/api/v2/assets/{appId}/{type}/{id}/tags": {
       "put": {
         "operationId": "AssetsController_updateTags",
@@ -1713,7 +1773,17 @@
         ],
         "responses": {
           "200": {
-            "description": ""
+            "description": "Search for runs against a variant",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/RunMetadataDto"
+                  }
+                }
+              }
+            }
           }
         },
         "tags": [
@@ -1874,7 +1944,12 @@
             "required": true,
             "in": "path",
             "schema": {
-              "type": "string"
+              "type": "string",
+              "enum": [
+                "pause",
+                "resume",
+                "stop"
+              ]
             }
           }
         ],
@@ -2833,12 +2908,12 @@
         ]
       }
     },
-    "/api/v2/variants/{id}/model": {
+    "/api/v2/variants/{appId}/model": {
       "get": {
-        "operationId": "ModelController_getApplicationModel",
+        "operationId": "ModelController_get",
         "parameters": [
           {
-            "name": "id",
+            "name": "appId",
             "required": true,
             "in": "path",
             "schema": {
@@ -2867,7 +2942,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Get the application's model.",
+            "description": "Get the model for the application",
             "content": {
               "application/json": {
                 "schema": {
@@ -2881,42 +2956,11 @@
           "variants"
         ]
       },
-      "post": {
-        "operationId": "ModelController_createApplicationModel",
-        "parameters": [
-          {
-            "name": "id",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ApplicationModelDTO"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Create an application's model."
-          }
-        },
-        "tags": [
-          "variants"
-        ]
-      },
       "delete": {
-        "operationId": "ModelController_removeModel",
+        "operationId": "ModelController_delete",
         "parameters": [
           {
-            "name": "id",
+            "name": "appId",
             "required": true,
             "in": "path",
             "schema": {
@@ -2926,7 +2970,7 @@
         ],
         "responses": {
           "200": {
-            "description": ""
+            "description": "Delete the model for the application"
           }
         },
         "tags": [
@@ -2934,327 +2978,12 @@
         ]
       }
     },
-    "/api/v2/variants/{id}/model/components": {
+    "/api/v2/variants/{appId}/model/update": {
       "post": {
-        "operationId": "ModelController_addComponent",
+        "operationId": "ModelController_applyUpdates",
         "parameters": [
           {
-            "name": "id",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ApplicationComponentDTO"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Get the application's model."
-          }
-        },
-        "tags": [
-          "variants"
-        ]
-      }
-    },
-    "/api/v2/variants/{id}/model/components/{compId}": {
-      "put": {
-        "operationId": "ModelController_updateComponent",
-        "parameters": [
-          {
-            "name": "id",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "compId",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ApplicationComponentDTO"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Component was updated"
-          },
-          "403": {
-            "description": "Component was BROWSER_NODE or COMMON_COMPONENTS_NODE and cannot be updated"
-          }
-        },
-        "tags": [
-          "variants"
-        ]
-      },
-      "delete": {
-        "operationId": "ModelController_deleteComponent",
-        "parameters": [
-          {
-            "name": "id",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "compId",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Component, descendants, and relationships deleted from the model."
-          },
-          "403": {
-            "description": "Component was BROWSER_NODE or COMMON_COMPONENTS_NODE and cannot be updated."
-          }
-        },
-        "tags": [
-          "variants"
-        ]
-      }
-    },
-    "/api/v2/variants/{id}/model/componentAssociations": {
-      "get": {
-        "operationId": "ModelController_getComponentsAssociations",
-        "parameters": [
-          {
-            "name": "id",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "List of this application's component's assocations with entities"
-          }
-        },
-        "tags": [
-          "variants"
-        ]
-      }
-    },
-    "/api/v2/variants/{id}/model/componentAssociations/{compId}": {
-      "get": {
-        "operationId": "ModelController_getComponentAssociations",
-        "parameters": [
-          {
-            "name": "id",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "compId",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "List of entities associated with this component"
-          }
-        },
-        "tags": [
-          "variants"
-        ]
-      },
-      "post": {
-        "operationId": "ModelController_addComponentAssociations",
-        "parameters": [
-          {
-            "name": "id",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "compId",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ApplicationComponentsAssociationsDTO"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Component's associations were appended."
-          }
-        },
-        "tags": [
-          "variants"
-        ]
-      },
-      "put": {
-        "operationId": "ModelController_updateComponentsAssociation",
-        "parameters": [
-          {
-            "name": "id",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "compId",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ApplicationComponentsAssociationsDTO"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Component's assocaited were updated."
-          }
-        },
-        "tags": [
-          "variants"
-        ]
-      }
-    },
-    "/api/v2/variants/{id}/model/relationships": {
-      "post": {
-        "operationId": "ModelController_addRelationship",
-        "parameters": [
-          {
-            "name": "id",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ApplicationRelationshipDTO"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Add a relationship to the model"
-          }
-        },
-        "tags": [
-          "variants"
-        ]
-      }
-    },
-    "/api/v2/variants/{id}/model/relationships/{relId}": {
-      "put": {
-        "operationId": "ModelController_updateRelationship",
-        "parameters": [
-          {
-            "name": "id",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "relId",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ApplicationRelationshipDTO"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Update an existing relationship in the model"
-          }
-        },
-        "tags": [
-          "variants"
-        ]
-      }
-    },
-    "/api/v2/variants/{id}/model/update": {
-      "post": {
-        "operationId": "ModelController_updateModel",
-        "parameters": [
-          {
-            "name": "id",
+            "name": "appId",
             "required": true,
             "in": "path",
             "schema": {
@@ -3274,7 +3003,92 @@
         },
         "responses": {
           "200": {
-            "description": "Make a set of updates to the application model"
+            "description": "Apply updates to the model"
+          }
+        },
+        "tags": [
+          "variants"
+        ]
+      }
+    },
+    "/api/v2/variants/{appId}/model/pages": {
+      "post": {
+        "operationId": "ModelController_savePageModel",
+        "parameters": [
+          {
+            "name": "appId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PageModelDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Save a page model"
+          }
+        },
+        "tags": [
+          "variants"
+        ]
+      },
+      "get": {
+        "operationId": "ModelController_listPageModels",
+        "parameters": [
+          {
+            "name": "appId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "variants"
+        ]
+      }
+    },
+    "/api/v2/variants/{appId}/model/pages/{pageId}/model": {
+      "get": {
+        "operationId": "ModelController_getPageModel",
+        "parameters": [
+          {
+            "name": "appId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "pageId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
           }
         },
         "tags": [
@@ -4329,7 +4143,7 @@
     },
     "/api/v2/subscription/manage-subscriptions": {
       "post": {
-        "operationId": "SubscriptionController_validatePayment",
+        "operationId": "SubscriptionController_manageSubscriptions",
         "parameters": [],
         "responses": {
           "201": {
@@ -4531,6 +4345,163 @@
           "analytics"
         ]
       }
+    },
+    "/api/v2/view/{parentId}": {
+      "get": {
+        "operationId": "ViewController_getViews",
+        "parameters": [
+          {
+            "name": "parentId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "url",
+            "required": false,
+            "in": "query",
+            "description": "The url the view should be displayed",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Get views.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ViewDTO"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "view"
+        ]
+      },
+      "post": {
+        "operationId": "ViewController_createView",
+        "parameters": [
+          {
+            "name": "parentId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateViewDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Create a view.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ViewDTO"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "view"
+        ]
+      }
+    },
+    "/api/v2/view/{parentId}/{viewId}": {
+      "put": {
+        "operationId": "ViewController_updateView",
+        "parameters": [
+          {
+            "name": "parentId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "viewId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateViewDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Update an existing view.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ViewDTO"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "view"
+        ]
+      },
+      "delete": {
+        "operationId": "ViewController_deleteView",
+        "parameters": [
+          {
+            "name": "parentId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "viewId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Delete view."
+          }
+        },
+        "tags": [
+          "view"
+        ]
+      }
     }
   },
   "info": {
@@ -4662,6 +4633,17 @@
           "tags",
           "resource",
           "parent"
+        ]
+      },
+      "UpdateAssetParentDTO": {
+        "type": "object",
+        "properties": {
+          "newParent": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "newParent"
         ]
       },
       "RuleDto": {
@@ -4826,6 +4808,10 @@
             "items": {
               "type": "string"
             }
+          },
+          "datasets": {
+            "type": "object",
+            "description": "Mapping of dataset IDs (referable to in flows and rules) to resolved dataset IDs (data from these will actually be used)"
           }
         },
         "required": [
@@ -4901,6 +4887,13 @@
           "debugMode": {
             "type": "boolean"
           },
+          "testableDomains": {
+            "description": "Domains that will be tested by the agent.",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
           "assets": {
             "$ref": "#/components/schemas/RunParametersAssetsDTO"
           },
@@ -4925,6 +4918,7 @@
           "duration",
           "stopAfterFlows",
           "enableModeling",
+          "testableDomains",
           "assets",
           "extensions"
         ]
@@ -4951,11 +4945,18 @@
         "type": "object",
         "properties": {
           "data": {
-            "type": "string"
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
           },
           "status": {
             "type": "string",
-            "default": "active"
+            "default": "active",
+            "enum": [
+              "active",
+              "inactive"
+            ]
           }
         },
         "required": [
@@ -5810,6 +5811,11 @@
             "description": "",
             "example": ""
           },
+          "currentPageUrl": {
+            "type": "string",
+            "description": "URL of the current page the Agent is on",
+            "example": "https://example.com/foo/bar"
+          },
           "currentComponentLabel": {
             "type": "string",
             "description": "",
@@ -5820,10 +5826,11 @@
             "description": "",
             "example": "",
             "enum": [
+              "starting",
               "running",
               "paused",
-              "stopped",
-              "finished"
+              "stopping",
+              "stopped"
             ]
           },
           "currentScreenshotId": {
@@ -5842,6 +5849,7 @@
           "startTime",
           "endTime",
           "currentPageTitle",
+          "currentPageUrl",
           "currentComponentLabel",
           "runningState"
         ]
@@ -5966,6 +5974,9 @@
           },
           "data": {
             "type": "object"
+          },
+          "error": {
+            "type": "string"
           }
         },
         "required": [
@@ -6215,83 +6226,6 @@
           "edges"
         ]
       },
-      "ApplicationComponentsAssociationsDTO": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "description": "A unique identifier for the component.",
-            "example": "1231-asdf-123d-asdf"
-          },
-          "applicationId": {
-            "type": "string",
-            "description": "A unique identifier for the application.",
-            "example": "1231-asdf-123d-asdf"
-          },
-          "componentId": {
-            "type": "string",
-            "description": "A unique identifier for the component.",
-            "example": "1231-asdf-123d-asdf"
-          },
-          "associatedEntities": {
-            "description": "The entities associated with the component",
-            "example": "",
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          }
-        },
-        "required": [
-          "id",
-          "applicationId",
-          "componentId",
-          "associatedEntities"
-        ]
-      },
-      "ApplicationRelationshipDTO": {
-        "type": "object",
-        "properties": {
-          "applicationId": {
-            "type": "string",
-            "description": "",
-            "example": ""
-          },
-          "id": {
-            "type": "string",
-            "description": "",
-            "example": ""
-          },
-          "type": {
-            "type": "string",
-            "description": "",
-            "example": ""
-          },
-          "to": {
-            "type": "string",
-            "description": "",
-            "example": ""
-          },
-          "from": {
-            "type": "string",
-            "description": "",
-            "example": ""
-          },
-          "data": {
-            "type": "object",
-            "description": "",
-            "example": ""
-          }
-        },
-        "required": [
-          "applicationId",
-          "id",
-          "type",
-          "to",
-          "from",
-          "data"
-        ]
-      },
       "ApplicationModelUpdateRequestDTO": {
         "type": "object",
         "properties": {
@@ -6312,6 +6246,41 @@
         "required": [
           "applicationId",
           "updates"
+        ]
+      },
+      "ObjectId": {
+        "type": "object",
+        "properties": {}
+      },
+      "PageModelDto": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "$ref": "#/components/schemas/ObjectId"
+          },
+          "variantId": {
+            "$ref": "#/components/schemas/ObjectId"
+          },
+          "pageTitle": {
+            "type": "string"
+          },
+          "pageUrl": {
+            "type": "string"
+          },
+          "screenshotId": {
+            "type": "string"
+          },
+          "modelId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "_id",
+          "variantId",
+          "pageTitle",
+          "pageUrl",
+          "screenshotId",
+          "modelId"
         ]
       },
       "AddRuleResponseDTO": {
@@ -6765,6 +6734,12 @@
               "Select Option",
               "Text Area",
               "Text Node",
+              "Image",
+              "Icon",
+              "Grid",
+              "Grid Item",
+              "List",
+              "List Item",
               "Unclassified"
             ]
           }
@@ -6899,6 +6874,12 @@
               "Select Option",
               "Text Area",
               "Text Node",
+              "Image",
+              "Icon",
+              "Grid",
+              "Grid Item",
+              "List",
+              "List Item",
               "Unclassified"
             ]
           },
@@ -7010,6 +6991,121 @@
           "analytics",
           "count"
         ]
+      },
+      "ViewConfigDTO": {
+        "type": "object",
+        "properties": {
+          "filters": {
+            "type": "object",
+            "description": "The filters configuration of the view"
+          },
+          "groupBy": {
+            "type": "object",
+            "description": "The group configuration of the view"
+          },
+          "sortBy": {
+            "type": "object",
+            "description": "The sort configuration of the view"
+          },
+          "columnVisibility": {
+            "type": "object",
+            "description": "The column visibility configuration of the view"
+          }
+        }
+      },
+      "ViewDTO": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string",
+            "example": "Errors",
+            "description": "The name of the workspace"
+          },
+          "parentId": {
+            "type": "string",
+            "description": "The parent of the view, usually the workspaceId"
+          },
+          "url": {
+            "type": "string",
+            "description": "The url the view should be displayed"
+          },
+          "config": {
+            "description": "The configuration of the view",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ViewConfigDTO"
+              }
+            ]
+          }
+        },
+        "required": [
+          "_id",
+          "name",
+          "parentId",
+          "url",
+          "config"
+        ]
+      },
+      "CreateViewDTO": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Errors",
+            "description": "The name of the workspace"
+          },
+          "parentId": {
+            "type": "string",
+            "description": "The parent of the view, usually the workspaceId"
+          },
+          "url": {
+            "type": "string",
+            "description": "The url the view should be displayed"
+          },
+          "config": {
+            "description": "The configuration of the view",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ViewConfigDTO"
+              }
+            ]
+          }
+        },
+        "required": [
+          "name",
+          "parentId",
+          "url",
+          "config"
+        ]
+      },
+      "UpdateViewDTO": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Errors",
+            "description": "The name of the workspace"
+          },
+          "parentId": {
+            "type": "string",
+            "description": "The parent of the view, usually the workspaceId"
+          },
+          "url": {
+            "type": "string",
+            "description": "The url the view should be displayed"
+          },
+          "config": {
+            "description": "The configuration of the view",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ViewConfigDTO"
+              }
+            ]
+          }
+        }
       }
     }
   }

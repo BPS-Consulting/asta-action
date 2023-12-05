@@ -35,6 +35,10 @@ export interface CreateAssetDto {
     parent: string
 }
 
+export interface UpdateAssetParentDTO {
+    newParent: string
+}
+
 export interface RuleDto {
     type: 'accessibility-rule' | 'functional-rule' | 'resource-rule' | 'webform-rule' | 'link-rule'
     id: string
@@ -79,6 +83,8 @@ export interface RunParametersAssetsDTO {
     rules: string[]
     data: string[]
     activities: string[]
+    /** Mapping of dataset IDs (referable to in flows and rules) to resolved dataset IDs (data from these will actually be used) */
+    datasets?: object
 }
 
 export interface RunParametersExtensionsDTO {
@@ -104,6 +110,8 @@ export interface RunParametersDto {
     pageLoadTimeout?: number
     actionRetryAttempts?: number
     debugMode?: boolean
+    /** Domains that will be tested by the agent. */
+    testableDomains: string[]
     assets: RunParametersAssetsDTO
     extensions: RunParametersExtensionsDTO
     /** @default "active" */
@@ -117,9 +125,9 @@ export interface RunParametersAssetDto {
 }
 
 export interface DatasetDto {
-    data: string
+    data: object[]
     /** @default "active" */
-    status?: string
+    status?: 'active' | 'inactive'
 }
 
 export interface DatasetAssetDto {
@@ -444,10 +452,15 @@ export interface RunStatusDTO {
     endTime: string
     /** @example "" */
     currentPageTitle: string
+    /**
+     * URL of the current page the Agent is on
+     * @example "https://example.com/foo/bar"
+     */
+    currentPageUrl: string
     /** @example "" */
     currentComponentLabel: string
     /** @example "" */
-    runningState: 'running' | 'paused' | 'stopped' | 'finished'
+    runningState: 'starting' | 'running' | 'paused' | 'stopping' | 'stopped'
     /** @example "" */
     currentScreenshotId?: string
 }
@@ -493,6 +506,7 @@ export interface RunLogEntryDTO {
     state: LoggableAppStateDTO
     msg: string
     data: object
+    error?: string
 }
 
 export interface StartRunRequestDTO {
@@ -604,49 +618,22 @@ export interface ApplicationModelDTO {
     edges: object[]
 }
 
-export interface ApplicationComponentsAssociationsDTO {
-    /**
-     * A unique identifier for the component.
-     * @example "1231-asdf-123d-asdf"
-     */
-    id: string
-    /**
-     * A unique identifier for the application.
-     * @example "1231-asdf-123d-asdf"
-     */
-    applicationId: string
-    /**
-     * A unique identifier for the component.
-     * @example "1231-asdf-123d-asdf"
-     */
-    componentId: string
-    /**
-     * The entities associated with the component
-     * @example ""
-     */
-    associatedEntities: string[]
-}
-
-export interface ApplicationRelationshipDTO {
-    /** @example "" */
-    applicationId: string
-    /** @example "" */
-    id: string
-    /** @example "" */
-    type: string
-    /** @example "" */
-    to: string
-    /** @example "" */
-    from: string
-    /** @example "" */
-    data: object
-}
-
 export interface ApplicationModelUpdateRequestDTO {
     /** @example "" */
     applicationId: string
     /** @example "" */
     updates: string[]
+}
+
+export type ObjectId = object
+
+export interface PageModelDto {
+    _id: ObjectId
+    variantId: ObjectId
+    pageTitle: string
+    pageUrl: string
+    screenshotId: string
+    modelId: string
 }
 
 export interface AddRuleResponseDTO {
@@ -880,6 +867,12 @@ export interface AnalyticsFilterDTO {
         | 'Select Option'
         | 'Text Area'
         | 'Text Node'
+        | 'Image'
+        | 'Icon'
+        | 'Grid'
+        | 'Grid Item'
+        | 'List'
+        | 'List Item'
         | 'Unclassified'
 }
 
@@ -944,6 +937,12 @@ export interface AnalyticsDTO {
         | 'Select Option'
         | 'Text Area'
         | 'Text Node'
+        | 'Image'
+        | 'Icon'
+        | 'Grid'
+        | 'Grid Item'
+        | 'List'
+        | 'List Item'
         | 'Unclassified'
     runLogId?: string | object
     runLogNumber?: number
@@ -985,6 +984,60 @@ export interface PerformanceResultsDTO {
     analytics: PagePerformanceDTO[]
     /** The total number of results that match the query */
     count: number
+}
+
+export interface ViewConfigDTO {
+    /** The filters configuration of the view */
+    filters?: object
+    /** The group configuration of the view */
+    groupBy?: object
+    /** The sort configuration of the view */
+    sortBy?: object
+    /** The column visibility configuration of the view */
+    columnVisibility?: object
+}
+
+export interface ViewDTO {
+    _id: string
+    /**
+     * The name of the workspace
+     * @example "Errors"
+     */
+    name: string
+    /** The parent of the view, usually the workspaceId */
+    parentId: string
+    /** The url the view should be displayed */
+    url: string
+    /** The configuration of the view */
+    config: ViewConfigDTO
+}
+
+export interface CreateViewDTO {
+    /**
+     * The name of the workspace
+     * @example "Errors"
+     */
+    name: string
+    /** The parent of the view, usually the workspaceId */
+    parentId: string
+    /** The url the view should be displayed */
+    url: string
+    /** The configuration of the view */
+    config: ViewConfigDTO
+}
+
+export interface UpdateViewDTO {
+    /**
+     * The name of the workspace
+     * @example "Errors"
+     */
+    name?: string
+    /** The parent of the view, usually the workspaceId */
+    parentId?: string
+    /** The url the view should be displayed */
+    url?: string
+    /** The configuration of the view */
+    config?: ViewConfigDTO
 }
 
 export type QueryParamsType = Record<string | number, any>
@@ -1308,6 +1361,29 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
             this.request<string, void>({
                 path: `/api/v2/assets/${appId}/${type}/${id}`,
                 method: 'DELETE',
+                format: 'json',
+                ...params,
+            }),
+
+        /**
+         * No description
+         *
+         * @name AssetsControllerUpdateParent
+         * @summary Update Assets parent
+         * @request PUT:/api/v2/assets/{appId}/{type}/{id}/updateParent
+         */
+        assetsControllerUpdateParent: (
+            appId: string,
+            type: string,
+            id: string,
+            data: UpdateAssetParentDTO,
+            params: RequestParams = {}
+        ) =>
+            this.request<AssetDTO, void>({
+                path: `/api/v2/assets/${appId}/${type}/${id}/updateParent`,
+                method: 'PUT',
+                body: data,
+                type: ContentType.Json,
                 format: 'json',
                 ...params,
             }),
@@ -2106,9 +2182,10 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
          * @request GET:/api/v2/run/{id}
          */
         runsControllerGetVariantRuns: (id: string, params: RequestParams = {}) =>
-            this.request<void, any>({
+            this.request<RunMetadataDto[], any>({
                 path: `/api/v2/run/${id}`,
                 method: 'GET',
+                format: 'json',
                 ...params,
             }),
 
@@ -2192,7 +2269,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
          * @name RunsControllerPauseRun
          * @request POST:/api/v2/run/{runId}/{command}
          */
-        runsControllerPauseRun: (runId: string, command: string, params: RequestParams = {}) =>
+        runsControllerPauseRun: (runId: string, command: 'pause' | 'resume' | 'stop', params: RequestParams = {}) =>
             this.request<void, any>({
                 path: `/api/v2/run/${runId}/${command}`,
                 method: 'POST',
@@ -2678,11 +2755,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
          * No description
          *
          * @tags variants
-         * @name ModelControllerGetApplicationModel
-         * @request GET:/api/v2/variants/{id}/model
+         * @name ModelControllerGet
+         * @request GET:/api/v2/variants/{appId}/model
          */
-        modelControllerGetApplicationModel: (
-            id: string,
+        modelControllerGet: (
+            appId: string,
             query?: {
                 /**
                  * @min 1
@@ -2695,7 +2772,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
             params: RequestParams = {}
         ) =>
             this.request<ApplicationModelDTO, any>({
-                path: `/api/v2/variants/${id}/model`,
+                path: `/api/v2/variants/${appId}/model`,
                 method: 'GET',
                 query: query,
                 format: 'json',
@@ -2706,28 +2783,12 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
          * No description
          *
          * @tags variants
-         * @name ModelControllerCreateApplicationModel
-         * @request POST:/api/v2/variants/{id}/model
+         * @name ModelControllerDelete
+         * @request DELETE:/api/v2/variants/{appId}/model
          */
-        modelControllerCreateApplicationModel: (id: string, data: ApplicationModelDTO, params: RequestParams = {}) =>
+        modelControllerDelete: (appId: string, params: RequestParams = {}) =>
             this.request<void, any>({
-                path: `/api/v2/variants/${id}/model`,
-                method: 'POST',
-                body: data,
-                type: ContentType.Json,
-                ...params,
-            }),
-
-        /**
-         * No description
-         *
-         * @tags variants
-         * @name ModelControllerRemoveModel
-         * @request DELETE:/api/v2/variants/{id}/model
-         */
-        modelControllerRemoveModel: (id: string, params: RequestParams = {}) =>
-            this.request<void, any>({
-                path: `/api/v2/variants/${id}/model`,
+                path: `/api/v2/variants/${appId}/model`,
                 method: 'DELETE',
                 ...params,
             }),
@@ -2736,12 +2797,16 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
          * No description
          *
          * @tags variants
-         * @name ModelControllerAddComponent
-         * @request POST:/api/v2/variants/{id}/model/components
+         * @name ModelControllerApplyUpdates
+         * @request POST:/api/v2/variants/{appId}/model/update
          */
-        modelControllerAddComponent: (id: string, data: ApplicationComponentDTO, params: RequestParams = {}) =>
+        modelControllerApplyUpdates: (
+            appId: string,
+            data: ApplicationModelUpdateRequestDTO,
+            params: RequestParams = {}
+        ) =>
             this.request<void, any>({
-                path: `/api/v2/variants/${id}/model/components`,
+                path: `/api/v2/variants/${appId}/model/update`,
                 method: 'POST',
                 body: data,
                 type: ContentType.Json,
@@ -2752,18 +2817,13 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
          * No description
          *
          * @tags variants
-         * @name ModelControllerUpdateComponent
-         * @request PUT:/api/v2/variants/{id}/model/components/{compId}
+         * @name ModelControllerSavePageModel
+         * @request POST:/api/v2/variants/{appId}/model/pages
          */
-        modelControllerUpdateComponent: (
-            id: string,
-            compId: string,
-            data: ApplicationComponentDTO,
-            params: RequestParams = {}
-        ) =>
-            this.request<void, void>({
-                path: `/api/v2/variants/${id}/model/components/${compId}`,
-                method: 'PUT',
+        modelControllerSavePageModel: (appId: string, data: PageModelDto, params: RequestParams = {}) =>
+            this.request<void, any>({
+                path: `/api/v2/variants/${appId}/model/pages`,
+                method: 'POST',
                 body: data,
                 type: ContentType.Json,
                 ...params,
@@ -2773,26 +2833,12 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
          * No description
          *
          * @tags variants
-         * @name ModelControllerDeleteComponent
-         * @request DELETE:/api/v2/variants/{id}/model/components/{compId}
+         * @name ModelControllerListPageModels
+         * @request GET:/api/v2/variants/{appId}/model/pages
          */
-        modelControllerDeleteComponent: (id: string, compId: string, params: RequestParams = {}) =>
-            this.request<void, void>({
-                path: `/api/v2/variants/${id}/model/components/${compId}`,
-                method: 'DELETE',
-                ...params,
-            }),
-
-        /**
-         * No description
-         *
-         * @tags variants
-         * @name ModelControllerGetComponentsAssociations
-         * @request GET:/api/v2/variants/{id}/model/componentAssociations
-         */
-        modelControllerGetComponentsAssociations: (id: string, params: RequestParams = {}) =>
+        modelControllerListPageModels: (appId: string, params: RequestParams = {}) =>
             this.request<void, any>({
-                path: `/api/v2/variants/${id}/model/componentAssociations`,
+                path: `/api/v2/variants/${appId}/model/pages`,
                 method: 'GET',
                 ...params,
             }),
@@ -2801,108 +2847,13 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
          * No description
          *
          * @tags variants
-         * @name ModelControllerGetComponentAssociations
-         * @request GET:/api/v2/variants/{id}/model/componentAssociations/{compId}
+         * @name ModelControllerGetPageModel
+         * @request GET:/api/v2/variants/{appId}/model/pages/{pageId}/model
          */
-        modelControllerGetComponentAssociations: (id: string, compId: string, params: RequestParams = {}) =>
+        modelControllerGetPageModel: (appId: string, pageId: string, params: RequestParams = {}) =>
             this.request<void, any>({
-                path: `/api/v2/variants/${id}/model/componentAssociations/${compId}`,
+                path: `/api/v2/variants/${appId}/model/pages/${pageId}/model`,
                 method: 'GET',
-                ...params,
-            }),
-
-        /**
-         * No description
-         *
-         * @tags variants
-         * @name ModelControllerAddComponentAssociations
-         * @request POST:/api/v2/variants/{id}/model/componentAssociations/{compId}
-         */
-        modelControllerAddComponentAssociations: (
-            id: string,
-            compId: string,
-            data: ApplicationComponentsAssociationsDTO,
-            params: RequestParams = {}
-        ) =>
-            this.request<void, any>({
-                path: `/api/v2/variants/${id}/model/componentAssociations/${compId}`,
-                method: 'POST',
-                body: data,
-                type: ContentType.Json,
-                ...params,
-            }),
-
-        /**
-         * No description
-         *
-         * @tags variants
-         * @name ModelControllerUpdateComponentsAssociation
-         * @request PUT:/api/v2/variants/{id}/model/componentAssociations/{compId}
-         */
-        modelControllerUpdateComponentsAssociation: (
-            id: string,
-            compId: string,
-            data: ApplicationComponentsAssociationsDTO,
-            params: RequestParams = {}
-        ) =>
-            this.request<void, any>({
-                path: `/api/v2/variants/${id}/model/componentAssociations/${compId}`,
-                method: 'PUT',
-                body: data,
-                type: ContentType.Json,
-                ...params,
-            }),
-
-        /**
-         * No description
-         *
-         * @tags variants
-         * @name ModelControllerAddRelationship
-         * @request POST:/api/v2/variants/{id}/model/relationships
-         */
-        modelControllerAddRelationship: (id: string, data: ApplicationRelationshipDTO, params: RequestParams = {}) =>
-            this.request<void, any>({
-                path: `/api/v2/variants/${id}/model/relationships`,
-                method: 'POST',
-                body: data,
-                type: ContentType.Json,
-                ...params,
-            }),
-
-        /**
-         * No description
-         *
-         * @tags variants
-         * @name ModelControllerUpdateRelationship
-         * @request PUT:/api/v2/variants/{id}/model/relationships/{relId}
-         */
-        modelControllerUpdateRelationship: (
-            id: string,
-            relId: string,
-            data: ApplicationRelationshipDTO,
-            params: RequestParams = {}
-        ) =>
-            this.request<void, any>({
-                path: `/api/v2/variants/${id}/model/relationships/${relId}`,
-                method: 'PUT',
-                body: data,
-                type: ContentType.Json,
-                ...params,
-            }),
-
-        /**
-         * No description
-         *
-         * @tags variants
-         * @name ModelControllerUpdateModel
-         * @request POST:/api/v2/variants/{id}/model/update
-         */
-        modelControllerUpdateModel: (id: string, data: ApplicationModelUpdateRequestDTO, params: RequestParams = {}) =>
-            this.request<void, any>({
-                path: `/api/v2/variants/${id}/model/update`,
-                method: 'POST',
-                body: data,
-                type: ContentType.Json,
                 ...params,
             }),
 
@@ -3571,10 +3522,10 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
          * No description
          *
          * @tags subscription
-         * @name SubscriptionControllerValidatePayment
+         * @name SubscriptionControllerManageSubscriptions
          * @request POST:/api/v2/subscription/manage-subscriptions
          */
-        subscriptionControllerValidatePayment: (params: RequestParams = {}) =>
+        subscriptionControllerManageSubscriptions: (params: RequestParams = {}) =>
             this.request<void, any>({
                 path: `/api/v2/subscription/manage-subscriptions`,
                 method: 'POST',
@@ -3676,6 +3627,77 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
                 method: 'GET',
                 query: query,
                 format: 'json',
+                ...params,
+            }),
+
+        /**
+         * No description
+         *
+         * @tags view
+         * @name ViewControllerGetViews
+         * @request GET:/api/v2/view/{parentId}
+         */
+        viewControllerGetViews: (
+            parentId: string,
+            query?: {
+                /** The url the view should be displayed */
+                url?: string
+            },
+            params: RequestParams = {}
+        ) =>
+            this.request<ViewDTO[], any>({
+                path: `/api/v2/view/${parentId}`,
+                method: 'GET',
+                query: query,
+                format: 'json',
+                ...params,
+            }),
+
+        /**
+         * No description
+         *
+         * @tags view
+         * @name ViewControllerCreateView
+         * @request POST:/api/v2/view/{parentId}
+         */
+        viewControllerCreateView: (parentId: string, data: CreateViewDTO, params: RequestParams = {}) =>
+            this.request<ViewDTO, any>({
+                path: `/api/v2/view/${parentId}`,
+                method: 'POST',
+                body: data,
+                type: ContentType.Json,
+                format: 'json',
+                ...params,
+            }),
+
+        /**
+         * No description
+         *
+         * @tags view
+         * @name ViewControllerUpdateView
+         * @request PUT:/api/v2/view/{parentId}/{viewId}
+         */
+        viewControllerUpdateView: (parentId: string, viewId: string, data: UpdateViewDTO, params: RequestParams = {}) =>
+            this.request<ViewDTO, any>({
+                path: `/api/v2/view/${parentId}/${viewId}`,
+                method: 'PUT',
+                body: data,
+                type: ContentType.Json,
+                format: 'json',
+                ...params,
+            }),
+
+        /**
+         * No description
+         *
+         * @tags view
+         * @name ViewControllerDeleteView
+         * @request DELETE:/api/v2/view/{parentId}/{viewId}
+         */
+        viewControllerDeleteView: (parentId: string, viewId: string, params: RequestParams = {}) =>
+            this.request<void, any>({
+                path: `/api/v2/view/${parentId}/${viewId}`,
+                method: 'DELETE',
                 ...params,
             }),
     }

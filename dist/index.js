@@ -11016,6 +11016,21 @@ class Api extends HttpClient {
             /**
              * No description
              *
+             * @name AssetsControllerUpdateParent
+             * @summary Update Assets parent
+             * @request PUT:/api/v2/assets/{appId}/{type}/{id}/updateParent
+             */
+            assetsControllerUpdateParent: (appId, type, id, data, params = {}) => this.request({
+                path: `/api/v2/assets/${appId}/${type}/${id}/updateParent`,
+                method: 'PUT',
+                body: data,
+                type: ContentType.Json,
+                format: 'json',
+                ...params,
+            }),
+            /**
+             * No description
+             *
              * @name AssetsControllerUpdateTags
              * @summary Update assets tags
              * @request PUT:/api/v2/assets/{appId}/{type}/{id}/tags
@@ -11698,6 +11713,7 @@ class Api extends HttpClient {
             runsControllerGetVariantRuns: (id, params = {}) => this.request({
                 path: `/api/v2/run/${id}`,
                 method: 'GET',
+                format: 'json',
                 ...params,
             }),
             /**
@@ -12166,11 +12182,11 @@ class Api extends HttpClient {
              * No description
              *
              * @tags variants
-             * @name ModelControllerGetApplicationModel
-             * @request GET:/api/v2/variants/{id}/model
+             * @name ModelControllerGet
+             * @request GET:/api/v2/variants/{appId}/model
              */
-            modelControllerGetApplicationModel: (id, query, params = {}) => this.request({
-                path: `/api/v2/variants/${id}/model`,
+            modelControllerGet: (appId, query, params = {}) => this.request({
+                path: `/api/v2/variants/${appId}/model`,
                 method: 'GET',
                 query: query,
                 format: 'json',
@@ -12180,25 +12196,11 @@ class Api extends HttpClient {
              * No description
              *
              * @tags variants
-             * @name ModelControllerCreateApplicationModel
-             * @request POST:/api/v2/variants/{id}/model
+             * @name ModelControllerDelete
+             * @request DELETE:/api/v2/variants/{appId}/model
              */
-            modelControllerCreateApplicationModel: (id, data, params = {}) => this.request({
-                path: `/api/v2/variants/${id}/model`,
-                method: 'POST',
-                body: data,
-                type: ContentType.Json,
-                ...params,
-            }),
-            /**
-             * No description
-             *
-             * @tags variants
-             * @name ModelControllerRemoveModel
-             * @request DELETE:/api/v2/variants/{id}/model
-             */
-            modelControllerRemoveModel: (id, params = {}) => this.request({
-                path: `/api/v2/variants/${id}/model`,
+            modelControllerDelete: (appId, params = {}) => this.request({
+                path: `/api/v2/variants/${appId}/model`,
                 method: 'DELETE',
                 ...params,
             }),
@@ -12206,11 +12208,11 @@ class Api extends HttpClient {
              * No description
              *
              * @tags variants
-             * @name ModelControllerAddComponent
-             * @request POST:/api/v2/variants/{id}/model/components
+             * @name ModelControllerApplyUpdates
+             * @request POST:/api/v2/variants/{appId}/model/update
              */
-            modelControllerAddComponent: (id, data, params = {}) => this.request({
-                path: `/api/v2/variants/${id}/model/components`,
+            modelControllerApplyUpdates: (appId, data, params = {}) => this.request({
+                path: `/api/v2/variants/${appId}/model/update`,
                 method: 'POST',
                 body: data,
                 type: ContentType.Json,
@@ -12220,12 +12222,12 @@ class Api extends HttpClient {
              * No description
              *
              * @tags variants
-             * @name ModelControllerUpdateComponent
-             * @request PUT:/api/v2/variants/{id}/model/components/{compId}
+             * @name ModelControllerSavePageModel
+             * @request POST:/api/v2/variants/{appId}/model/pages
              */
-            modelControllerUpdateComponent: (id, compId, data, params = {}) => this.request({
-                path: `/api/v2/variants/${id}/model/components/${compId}`,
-                method: 'PUT',
+            modelControllerSavePageModel: (appId, data, params = {}) => this.request({
+                path: `/api/v2/variants/${appId}/model/pages`,
+                method: 'POST',
                 body: data,
                 type: ContentType.Json,
                 ...params,
@@ -12234,23 +12236,11 @@ class Api extends HttpClient {
              * No description
              *
              * @tags variants
-             * @name ModelControllerDeleteComponent
-             * @request DELETE:/api/v2/variants/{id}/model/components/{compId}
+             * @name ModelControllerListPageModels
+             * @request GET:/api/v2/variants/{appId}/model/pages
              */
-            modelControllerDeleteComponent: (id, compId, params = {}) => this.request({
-                path: `/api/v2/variants/${id}/model/components/${compId}`,
-                method: 'DELETE',
-                ...params,
-            }),
-            /**
-             * No description
-             *
-             * @tags variants
-             * @name ModelControllerGetComponentsAssociations
-             * @request GET:/api/v2/variants/{id}/model/componentAssociations
-             */
-            modelControllerGetComponentsAssociations: (id, params = {}) => this.request({
-                path: `/api/v2/variants/${id}/model/componentAssociations`,
+            modelControllerListPageModels: (appId, params = {}) => this.request({
+                path: `/api/v2/variants/${appId}/model/pages`,
                 method: 'GET',
                 ...params,
             }),
@@ -12258,82 +12248,12 @@ class Api extends HttpClient {
              * No description
              *
              * @tags variants
-             * @name ModelControllerGetComponentAssociations
-             * @request GET:/api/v2/variants/{id}/model/componentAssociations/{compId}
+             * @name ModelControllerGetPageModel
+             * @request GET:/api/v2/variants/{appId}/model/pages/{pageId}/model
              */
-            modelControllerGetComponentAssociations: (id, compId, params = {}) => this.request({
-                path: `/api/v2/variants/${id}/model/componentAssociations/${compId}`,
+            modelControllerGetPageModel: (appId, pageId, params = {}) => this.request({
+                path: `/api/v2/variants/${appId}/model/pages/${pageId}/model`,
                 method: 'GET',
-                ...params,
-            }),
-            /**
-             * No description
-             *
-             * @tags variants
-             * @name ModelControllerAddComponentAssociations
-             * @request POST:/api/v2/variants/{id}/model/componentAssociations/{compId}
-             */
-            modelControllerAddComponentAssociations: (id, compId, data, params = {}) => this.request({
-                path: `/api/v2/variants/${id}/model/componentAssociations/${compId}`,
-                method: 'POST',
-                body: data,
-                type: ContentType.Json,
-                ...params,
-            }),
-            /**
-             * No description
-             *
-             * @tags variants
-             * @name ModelControllerUpdateComponentsAssociation
-             * @request PUT:/api/v2/variants/{id}/model/componentAssociations/{compId}
-             */
-            modelControllerUpdateComponentsAssociation: (id, compId, data, params = {}) => this.request({
-                path: `/api/v2/variants/${id}/model/componentAssociations/${compId}`,
-                method: 'PUT',
-                body: data,
-                type: ContentType.Json,
-                ...params,
-            }),
-            /**
-             * No description
-             *
-             * @tags variants
-             * @name ModelControllerAddRelationship
-             * @request POST:/api/v2/variants/{id}/model/relationships
-             */
-            modelControllerAddRelationship: (id, data, params = {}) => this.request({
-                path: `/api/v2/variants/${id}/model/relationships`,
-                method: 'POST',
-                body: data,
-                type: ContentType.Json,
-                ...params,
-            }),
-            /**
-             * No description
-             *
-             * @tags variants
-             * @name ModelControllerUpdateRelationship
-             * @request PUT:/api/v2/variants/{id}/model/relationships/{relId}
-             */
-            modelControllerUpdateRelationship: (id, relId, data, params = {}) => this.request({
-                path: `/api/v2/variants/${id}/model/relationships/${relId}`,
-                method: 'PUT',
-                body: data,
-                type: ContentType.Json,
-                ...params,
-            }),
-            /**
-             * No description
-             *
-             * @tags variants
-             * @name ModelControllerUpdateModel
-             * @request POST:/api/v2/variants/{id}/model/update
-             */
-            modelControllerUpdateModel: (id, data, params = {}) => this.request({
-                path: `/api/v2/variants/${id}/model/update`,
-                method: 'POST',
-                body: data,
-                type: ContentType.Json,
                 ...params,
             }),
             /**
@@ -12874,10 +12794,10 @@ class Api extends HttpClient {
              * No description
              *
              * @tags subscription
-             * @name SubscriptionControllerValidatePayment
+             * @name SubscriptionControllerManageSubscriptions
              * @request POST:/api/v2/subscription/manage-subscriptions
              */
-            subscriptionControllerValidatePayment: (params = {}) => this.request({
+            subscriptionControllerManageSubscriptions: (params = {}) => this.request({
                 path: `/api/v2/subscription/manage-subscriptions`,
                 method: 'POST',
                 ...params,
@@ -12942,6 +12862,62 @@ class Api extends HttpClient {
                 method: 'GET',
                 query: query,
                 format: 'json',
+                ...params,
+            }),
+            /**
+             * No description
+             *
+             * @tags view
+             * @name ViewControllerGetViews
+             * @request GET:/api/v2/view/{parentId}
+             */
+            viewControllerGetViews: (parentId, query, params = {}) => this.request({
+                path: `/api/v2/view/${parentId}`,
+                method: 'GET',
+                query: query,
+                format: 'json',
+                ...params,
+            }),
+            /**
+             * No description
+             *
+             * @tags view
+             * @name ViewControllerCreateView
+             * @request POST:/api/v2/view/{parentId}
+             */
+            viewControllerCreateView: (parentId, data, params = {}) => this.request({
+                path: `/api/v2/view/${parentId}`,
+                method: 'POST',
+                body: data,
+                type: ContentType.Json,
+                format: 'json',
+                ...params,
+            }),
+            /**
+             * No description
+             *
+             * @tags view
+             * @name ViewControllerUpdateView
+             * @request PUT:/api/v2/view/{parentId}/{viewId}
+             */
+            viewControllerUpdateView: (parentId, viewId, data, params = {}) => this.request({
+                path: `/api/v2/view/${parentId}/${viewId}`,
+                method: 'PUT',
+                body: data,
+                type: ContentType.Json,
+                format: 'json',
+                ...params,
+            }),
+            /**
+             * No description
+             *
+             * @tags view
+             * @name ViewControllerDeleteView
+             * @request DELETE:/api/v2/view/{parentId}/{viewId}
+             */
+            viewControllerDeleteView: (parentId, viewId, params = {}) => this.request({
+                path: `/api/v2/view/${parentId}/${viewId}`,
+                method: 'DELETE',
                 ...params,
             }),
         };
