@@ -11978,6 +11978,7 @@ async function main() {
     core.debug(`Parsing inputs...`);
     const inputs = (0, inputs_1.getInputs)();
     const api = new codegen_1.Api(inputs);
+    core.debug(`Starting run for application "${inputs.application}"`);
     const runId = await startRun(api, inputs);
     core.setOutput('run-id', runId);
     process.on('SIGINT', () => {
