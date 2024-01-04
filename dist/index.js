@@ -10768,16 +10768,6 @@ exports.SourceNode = __webpack_require__(/*! ./lib/source-node */ "./node_module
 
 "use strict";
 
-/* eslint-disable */
-/* tslint:disable */
-/*
- * ---------------------------------------------------------------
- * ## THIS FILE WAS GENERATED VIA SWAGGER-TYPESCRIPT-API        ##
- * ##                                                           ##
- * ## AUTHOR: acacode                                           ##
- * ## SOURCE: https://github.com/acacode/swagger-typescript-api ##
- * ---------------------------------------------------------------
- */
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.Api = exports.HttpClient = exports.ContentType = void 0;
 var ContentType;
@@ -10918,38 +10908,16 @@ class HttpClient {
     }
 }
 exports.HttpClient = HttpClient;
-/**
- * @title ASTA Repository API
- * @version 0.0.1
- * @baseUrl http://localhost:4000
- * @contact
- *
- * API used for the agent and companion
- */
 class Api extends HttpClient {
     constructor() {
         super(...arguments);
         this.api = {
-            /**
-             * No description
-             *
-             * @name AssetsControllerFindAll
-             * @summary Get assets for the given application with type
-             * @request GET:/api/v2/assets/{appId}/{type}
-             */
             assetsControllerFindAll: (appId, type, params = {}) => this.request({
                 path: `/api/v2/assets/${appId}/${type}`,
                 method: 'GET',
                 format: 'json',
                 ...params,
             }),
-            /**
-             * No description
-             *
-             * @name AssetsControllerCreate
-             * @summary Create asset
-             * @request POST:/api/v2/assets/{appId}/{type}
-             */
             assetsControllerCreate: (appId, type, data, params = {}) => this.request({
                 path: `/api/v2/assets/${appId}/${type}`,
                 method: 'POST',
@@ -10958,13 +10926,6 @@ class Api extends HttpClient {
                 format: 'json',
                 ...params,
             }),
-            /**
-             * No description
-             *
-             * @name AssetsControllerFindAllByApplication
-             * @summary Get assets for the given application
-             * @request GET:/api/v2/assets/{appId}/{type}/application
-             */
             assetsControllerFindAllByApplication: (appId, type, query, params = {}) => this.request({
                 path: `/api/v2/assets/${appId}/${type}/application`,
                 method: 'GET',
@@ -10972,26 +10933,12 @@ class Api extends HttpClient {
                 format: 'json',
                 ...params,
             }),
-            /**
-             * No description
-             *
-             * @name AssetsControllerFindOne
-             * @summary Get asset with type and id
-             * @request GET:/api/v2/assets/{appId}/{type}/{id}
-             */
             assetsControllerFindOne: (appId, type, id, params = {}) => this.request({
                 path: `/api/v2/assets/${appId}/${type}/${id}`,
                 method: 'GET',
                 format: 'json',
                 ...params,
             }),
-            /**
-             * No description
-             *
-             * @name AssetsControllerUpdate
-             * @summary Put asset with type
-             * @request PUT:/api/v2/assets/{appId}/{type}/{id}
-             */
             assetsControllerUpdate: (appId, type, id, data, params = {}) => this.request({
                 path: `/api/v2/assets/${appId}/${type}/${id}`,
                 method: 'PUT',
@@ -11000,26 +10947,12 @@ class Api extends HttpClient {
                 format: 'json',
                 ...params,
             }),
-            /**
-             * No description
-             *
-             * @name AssetsControllerRemove
-             * @summary Delete asset
-             * @request DELETE:/api/v2/assets/{appId}/{type}/{id}
-             */
             assetsControllerRemove: (appId, type, id, params = {}) => this.request({
                 path: `/api/v2/assets/${appId}/${type}/${id}`,
                 method: 'DELETE',
                 format: 'json',
                 ...params,
             }),
-            /**
-             * No description
-             *
-             * @name AssetsControllerUpdateParent
-             * @summary Update Assets parent
-             * @request PUT:/api/v2/assets/{appId}/{type}/{id}/updateParent
-             */
             assetsControllerUpdateParent: (appId, type, id, data, params = {}) => this.request({
                 path: `/api/v2/assets/${appId}/${type}/${id}/updateParent`,
                 method: 'PUT',
@@ -11028,121 +10961,57 @@ class Api extends HttpClient {
                 format: 'json',
                 ...params,
             }),
-            /**
-             * No description
-             *
-             * @name AssetsControllerUpdateTags
-             * @summary Update assets tags
-             * @request PUT:/api/v2/assets/{appId}/{type}/{id}/tags
-             */
             assetsControllerUpdateTags: (appId, type, id, params = {}) => this.request({
                 path: `/api/v2/assets/${appId}/${type}/${id}/tags`,
                 method: 'PUT',
                 format: 'json',
                 ...params,
             }),
-            /**
-             * No description
-             *
-             * @name AssetsControllerGetOneRule
-             * @request GET:/api/v2/assets/{appId}/rule/{id}
-             */
             assetsControllerGetOneRule: (appId, id, params = {}) => this.request({
                 path: `/api/v2/assets/${appId}/rule/${id}`,
                 method: 'GET',
                 format: 'json',
                 ...params,
             }),
-            /**
-             * No description
-             *
-             * @name AssetsControllerGetOneFlow
-             * @request GET:/api/v2/assets/{appId}/flow/{id}
-             */
             assetsControllerGetOneFlow: (appId, id, params = {}) => this.request({
                 path: `/api/v2/assets/${appId}/flow/${id}`,
                 method: 'GET',
                 format: 'json',
                 ...params,
             }),
-            /**
-             * No description
-             *
-             * @name AssetsControllerGetOneRunParam
-             * @request GET:/api/v2/assets/{appId}/run_param/{id}
-             */
             assetsControllerGetOneRunParam: (appId, id, params = {}) => this.request({
                 path: `/api/v2/assets/${appId}/run_param/${id}`,
                 method: 'GET',
                 format: 'json',
                 ...params,
             }),
-            /**
-             * No description
-             *
-             * @name AssetsControllerGetOneDataset
-             * @request GET:/api/v2/assets/{appId}/dataset/{id}
-             */
             assetsControllerGetOneDataset: (appId, id, params = {}) => this.request({
                 path: `/api/v2/assets/${appId}/dataset/${id}`,
                 method: 'GET',
                 format: 'json',
                 ...params,
             }),
-            /**
-             * No description
-             *
-             * @name AssetsControllerGetOneFormSpec
-             * @request GET:/api/v2/assets/{appId}/form_spec/{id}
-             */
             assetsControllerGetOneFormSpec: (appId, id, params = {}) => this.request({
                 path: `/api/v2/assets/${appId}/form_spec/${id}`,
                 method: 'GET',
                 format: 'json',
                 ...params,
             }),
-            /**
-             * No description
-             *
-             * @tags auth
-             * @name AuthControllerGetPermissions
-             * @summary Get permissions
-             * @request GET:/api/v2/auth/whoami
-             */
             authControllerGetPermissions: (params = {}) => this.request({
                 path: `/api/v2/auth/whoami`,
                 method: 'GET',
                 ...params,
             }),
-            /**
-             * No description
-             *
-             * @tags auth
-             * @name AuthControllerLogOut
-             * @request POST:/api/v2/auth/logout
-             */
             authControllerLogOut: (params = {}) => this.request({
                 path: `/api/v2/auth/logout`,
                 method: 'POST',
                 ...params,
             }),
-            /**
-             * No description
-             *
-             * @name CoverageControllerGetAllCoverages
-             * @request GET:/api/v2/coverage
-             */
             coverageControllerGetAllCoverages: (params = {}) => this.request({
                 path: `/api/v2/coverage`,
                 method: 'GET',
                 ...params,
             }),
-            /**
-             * No description
-             *
-             * @name CoverageControllerCreateCoverage
-             * @request POST:/api/v2/coverage
-             */
             coverageControllerCreateCoverage: (data, params = {}) => this.request({
                 path: `/api/v2/coverage`,
                 method: 'POST',
@@ -11150,23 +11019,11 @@ class Api extends HttpClient {
                 type: ContentType.Json,
                 ...params,
             }),
-            /**
-             * No description
-             *
-             * @name CoverageControllerGetCoverageById
-             * @request GET:/api/v2/coverage/{id}
-             */
             coverageControllerGetCoverageById: (id, params = {}) => this.request({
                 path: `/api/v2/coverage/${id}`,
                 method: 'GET',
                 ...params,
             }),
-            /**
-             * No description
-             *
-             * @name CoverageControllerUpdateCoverage
-             * @request PUT:/api/v2/coverage/{id}
-             */
             coverageControllerUpdateCoverage: (id, data, params = {}) => this.request({
                 path: `/api/v2/coverage/${id}`,
                 method: 'PUT',
@@ -11174,56 +11031,26 @@ class Api extends HttpClient {
                 type: ContentType.Json,
                 ...params,
             }),
-            /**
-             * No description
-             *
-             * @name CoverageControllerDeleteCoverage
-             * @request DELETE:/api/v2/coverage/{id}
-             */
             coverageControllerDeleteCoverage: (id, params = {}) => this.request({
                 path: `/api/v2/coverage/${id}`,
                 method: 'DELETE',
                 ...params,
             }),
-            /**
-             * No description
-             *
-             * @name CoverageControllerGetVariantCoverageStatistics
-             * @request GET:/api/v2/coverage/variants/{id}/statistics
-             */
             coverageControllerGetVariantCoverageStatistics: (id, params = {}) => this.request({
                 path: `/api/v2/coverage/variants/${id}/statistics`,
                 method: 'GET',
                 ...params,
             }),
-            /**
-             * No description
-             *
-             * @name CoverageControllerGetComponentCoverage
-             * @request GET:/api/v2/coverage/variants/{id}/elems/{cid}
-             */
             coverageControllerGetComponentCoverage: (id, cid, params = {}) => this.request({
                 path: `/api/v2/coverage/variants/${id}/elems/${cid}`,
                 method: 'GET',
                 ...params,
             }),
-            /**
-             * No description
-             *
-             * @name CoverageControllerGetVariantCoverage
-             * @request GET:/api/v2/coverage/variants/{id}/{assetType}
-             */
             coverageControllerGetVariantCoverage: (id, assetType, params = {}) => this.request({
                 path: `/api/v2/coverage/variants/${id}/${assetType}`,
                 method: 'GET',
                 ...params,
             }),
-            /**
-             * No description
-             *
-             * @name CoverageControllerPatchFlowCoverage
-             * @request PATCH:/api/v2/coverage/variants/{id}/flows/{fid}
-             */
             coverageControllerPatchFlowCoverage: (id, fid, data, params = {}) => this.request({
                 path: `/api/v2/coverage/variants/${id}/flows/${fid}`,
                 method: 'PATCH',
@@ -11231,87 +11058,39 @@ class Api extends HttpClient {
                 type: ContentType.Json,
                 ...params,
             }),
-            /**
-             * No description
-             *
-             * @name CoverageControllerPatchModelCoverage
-             * @request PATCH:/api/v2/coverage/variants/{id}/model/coverage
-             */
             coverageControllerPatchModelCoverage: (id, params = {}) => this.request({
                 path: `/api/v2/coverage/variants/${id}/model/coverage`,
                 method: 'PATCH',
                 ...params,
             }),
-            /**
-             * No description
-             *
-             * @name CoverageControllerGetAssetsCoverage
-             * @request GET:/api/v2/coverage/{id}/assets
-             */
             coverageControllerGetAssetsCoverage: (id, params = {}) => this.request({
                 path: `/api/v2/coverage/${id}/assets`,
                 method: 'GET',
                 format: 'json',
                 ...params,
             }),
-            /**
-             * No description
-             *
-             * @name CoverageControllerGetPagesCoverage
-             * @request GET:/api/v2/coverage/{id}/pages
-             */
             coverageControllerGetPagesCoverage: (id, params = {}) => this.request({
                 path: `/api/v2/coverage/${id}/pages`,
                 method: 'GET',
                 ...params,
             }),
-            /**
-             * No description
-             *
-             * @name CoverageControllerGetRunsFullCoverage
-             * @request GET:/api/v2/coverage/{id}/run/{runId}
-             */
             coverageControllerGetRunsFullCoverage: (id, runId, params = {}) => this.request({
                 path: `/api/v2/coverage/${id}/run/${runId}`,
                 method: 'GET',
                 format: 'json',
                 ...params,
             }),
-            /**
-             * No description
-             *
-             * @tags tags
-             * @name TagsControllerGetTagsWithIds
-             * @summary Get tags with ids
-             * @request GET:/api/v2/tags
-             */
             tagsControllerGetTagsWithIds: (query, params = {}) => this.request({
                 path: `/api/v2/tags`,
                 method: 'GET',
                 query: query,
                 ...params,
             }),
-            /**
-             * No description
-             *
-             * @tags tags
-             * @name TagsControllerGetAppTags
-             * @summary Get applications tags
-             * @request GET:/api/v2/tags/{id}
-             */
             tagsControllerGetAppTags: (id, params = {}) => this.request({
                 path: `/api/v2/tags/${id}`,
                 method: 'GET',
                 ...params,
             }),
-            /**
-             * No description
-             *
-             * @tags tags
-             * @name TagsControllerCreate
-             * @summary Create tag
-             * @request POST:/api/v2/tags/{id}
-             */
             tagsControllerCreate: (id, data, params = {}) => this.request({
                 path: `/api/v2/tags/${id}`,
                 method: 'POST',
@@ -11319,13 +11098,6 @@ class Api extends HttpClient {
                 type: ContentType.Json,
                 ...params,
             }),
-            /**
-             * No description
-             *
-             * @tags tags
-             * @name TagsControllerUpdateTag
-             * @request PUT:/api/v2/tags/{id}
-             */
             tagsControllerUpdateTag: (id, data, params = {}) => this.request({
                 path: `/api/v2/tags/${id}`,
                 method: 'PUT',
@@ -11333,39 +11105,17 @@ class Api extends HttpClient {
                 type: ContentType.Json,
                 ...params,
             }),
-            /**
-             * No description
-             *
-             * @tags tags
-             * @name TagsControllerRemoveTag
-             * @request DELETE:/api/v2/tags/{id}/{tagId}
-             */
             tagsControllerRemoveTag: (id, tagId, params = {}) => this.request({
                 path: `/api/v2/tags/${id}/${tagId}`,
                 method: 'DELETE',
                 ...params,
             }),
-            /**
-             * No description
-             *
-             * @tags applications
-             * @name ApplicationControllerGetApplications
-             * @summary Get applications
-             * @request GET:/api/v2/applications
-             */
             applicationControllerGetApplications: (params = {}) => this.request({
                 path: `/api/v2/applications`,
                 method: 'GET',
                 format: 'json',
                 ...params,
             }),
-            /**
-             * No description
-             *
-             * @tags applications
-             * @name ApplicationControllerCreateApplication
-             * @request POST:/api/v2/applications
-             */
             applicationControllerCreateApplication: (data, params = {}) => this.request({
                 path: `/api/v2/applications`,
                 method: 'POST',
@@ -11374,27 +11124,12 @@ class Api extends HttpClient {
                 format: 'json',
                 ...params,
             }),
-            /**
-             * No description
-             *
-             * @tags applications
-             * @name ApplicationControllerGetApplication
-             * @summary Get application with id
-             * @request GET:/api/v2/applications/{id}
-             */
             applicationControllerGetApplication: (id, params = {}) => this.request({
                 path: `/api/v2/applications/${id}`,
                 method: 'GET',
                 format: 'json',
                 ...params,
             }),
-            /**
-             * No description
-             *
-             * @tags applications
-             * @name ApplicationControllerUpdate
-             * @request PUT:/api/v2/applications/{id}
-             */
             applicationControllerUpdate: (id, data, params = {}) => this.request({
                 path: `/api/v2/applications/${id}`,
                 method: 'PUT',
@@ -11402,67 +11137,29 @@ class Api extends HttpClient {
                 type: ContentType.Json,
                 ...params,
             }),
-            /**
-             * No description
-             *
-             * @tags applications
-             * @name ApplicationControllerRemove
-             * @request DELETE:/api/v2/applications/{id}
-             */
             applicationControllerRemove: (id, params = {}) => this.request({
                 path: `/api/v2/applications/${id}`,
                 method: 'DELETE',
                 ...params,
             }),
-            /**
-             * No description
-             *
-             * @tags applications
-             * @name ApplicationControllerGetApplicationsTags
-             * @summary Get the application's tags
-             * @request GET:/api/v2/applications/{id}/tags
-             */
             applicationControllerGetApplicationsTags: (id, params = {}) => this.request({
                 path: `/api/v2/applications/${id}/tags`,
                 method: 'GET',
                 format: 'json',
                 ...params,
             }),
-            /**
-             * No description
-             *
-             * @tags applications
-             * @name ApplicationControllerGetApplicationWithParent
-             * @summary Get applications with given parent
-             * @request GET:/api/v2/applications/parent/{id}
-             */
             applicationControllerGetApplicationWithParent: (id, params = {}) => this.request({
                 path: `/api/v2/applications/parent/${id}`,
                 method: 'GET',
                 format: 'json',
                 ...params,
             }),
-            /**
-             * No description
-             *
-             * @tags permissions
-             * @name PermissionControllerGetPermissions
-             * @summary Get permissions
-             * @request GET:/api/v2/permissions
-             */
             permissionControllerGetPermissions: (params = {}) => this.request({
                 path: `/api/v2/permissions`,
                 method: 'GET',
                 format: 'json',
                 ...params,
             }),
-            /**
-             * No description
-             *
-             * @tags permissions
-             * @name PermissionControllerCreatePermission
-             * @request POST:/api/v2/permissions
-             */
             permissionControllerCreatePermission: (data, params = {}) => this.request({
                 path: `/api/v2/permissions`,
                 method: 'POST',
@@ -11471,27 +11168,12 @@ class Api extends HttpClient {
                 format: 'json',
                 ...params,
             }),
-            /**
-             * No description
-             *
-             * @tags permissions
-             * @name PermissionControllerGetPermission
-             * @summary Get permission with id
-             * @request GET:/api/v2/permissions/{id}
-             */
             permissionControllerGetPermission: (id, params = {}) => this.request({
                 path: `/api/v2/permissions/${id}`,
                 method: 'GET',
                 format: 'json',
                 ...params,
             }),
-            /**
-             * No description
-             *
-             * @tags permissions
-             * @name PermissionControllerUpdate
-             * @request PUT:/api/v2/permissions/{id}
-             */
             permissionControllerUpdate: (id, data, params = {}) => this.request({
                 path: `/api/v2/permissions/${id}`,
                 method: 'PUT',
@@ -11500,139 +11182,60 @@ class Api extends HttpClient {
                 format: 'json',
                 ...params,
             }),
-            /**
-             * No description
-             *
-             * @tags permissions
-             * @name PermissionControllerRemove
-             * @request DELETE:/api/v2/permissions/{id}
-             */
             permissionControllerRemove: (id, params = {}) => this.request({
                 path: `/api/v2/permissions/${id}`,
                 method: 'DELETE',
                 format: 'json',
                 ...params,
             }),
-            /**
-             * No description
-             *
-             * @tags permissions
-             * @name PermissionControllerGetResourcePermissions
-             * @summary Get permission of the resource with id
-             * @request GET:/api/v2/permissions/resource/{id}
-             */
             permissionControllerGetResourcePermissions: (id, params = {}) => this.request({
                 path: `/api/v2/permissions/resource/${id}`,
                 method: 'GET',
                 format: 'json',
                 ...params,
             }),
-            /**
-             * No description
-             *
-             * @tags permissions
-             * @name PermissionControllerGetUserPermissions
-             * @summary Get all the permissions of the user with id
-             * @request GET:/api/v2/permissions/user/{id}
-             */
             permissionControllerGetUserPermissions: (id, params = {}) => this.request({
                 path: `/api/v2/permissions/user/${id}`,
                 method: 'GET',
                 format: 'json',
                 ...params,
             }),
-            /**
-             * No description
-             *
-             * @tags Files
-             * @name FileControllerCreateFileEntity
-             * @request POST:/api/v2/files
-             */
             fileControllerCreateFileEntity: (params = {}) => this.request({
                 path: `/api/v2/files`,
                 method: 'POST',
                 ...params,
             }),
-            /**
-             * No description
-             *
-             * @tags Files
-             * @name FileControllerUploadFile
-             * @request POST:/api/v2/files/{fileId}
-             */
             fileControllerUploadFile: (fileId, params = {}) => this.request({
                 path: `/api/v2/files/${fileId}`,
                 method: 'POST',
                 ...params,
             }),
-            /**
-             * No description
-             *
-             * @tags Files
-             * @name FileControllerGetFile
-             * @request GET:/api/v2/files/{fileId}
-             */
             fileControllerGetFile: (fileId, params = {}) => this.request({
                 path: `/api/v2/files/${fileId}`,
                 method: 'GET',
                 ...params,
             }),
-            /**
-             * No description
-             *
-             * @tags health
-             * @name HealthControllerGetHealth
-             * @request GET:/api/v2/health
-             */
             healthControllerGetHealth: (params = {}) => this.request({
                 path: `/api/v2/health`,
                 method: 'GET',
                 ...params,
             }),
-            /**
-             * No description
-             *
-             * @tags health
-             * @name HealthControllerGetInfo
-             * @request GET:/api/v2/health/info
-             */
             healthControllerGetInfo: (params = {}) => this.request({
                 path: `/api/v2/health/info`,
                 method: 'GET',
                 format: 'json',
                 ...params,
             }),
-            /**
-             * No description
-             *
-             * @tags issues
-             * @name IssueControllerCreate
-             * @request POST:/api/v2/issues
-             */
             issueControllerCreate: (params = {}) => this.request({
                 path: `/api/v2/issues`,
                 method: 'POST',
                 ...params,
             }),
-            /**
-             * No description
-             *
-             * @tags issues
-             * @name IssueControllerGetAll
-             * @request GET:/api/v2/issues
-             */
             issueControllerGetAll: (params = {}) => this.request({
                 path: `/api/v2/issues`,
                 method: 'GET',
                 ...params,
             }),
-            /**
-             * No description
-             *
-             * @tags issues
-             * @name IssueControllerUpdateOne
-             * @request PUT:/api/v2/issues
-             */
             issueControllerUpdateOne: (data, params = {}) => this.request({
                 path: `/api/v2/issues`,
                 method: 'PUT',
@@ -11640,37 +11243,16 @@ class Api extends HttpClient {
                 type: ContentType.Json,
                 ...params,
             }),
-            /**
-             * No description
-             *
-             * @tags issues
-             * @name IssueControllerGet
-             * @request GET:/api/v2/issues/{id}
-             */
             issueControllerGet: (id, params = {}) => this.request({
                 path: `/api/v2/issues/${id}`,
                 method: 'GET',
                 ...params,
             }),
-            /**
-             * No description
-             *
-             * @tags issues
-             * @name IssueControllerDelete
-             * @request DELETE:/api/v2/issues/{id}
-             */
             issueControllerDelete: (id, params = {}) => this.request({
                 path: `/api/v2/issues/${id}`,
                 method: 'DELETE',
                 ...params,
             }),
-            /**
-             * No description
-             *
-             * @tags issues
-             * @name IssueControllerUpdate
-             * @request PUT:/api/v2/issues/{id}
-             */
             issueControllerUpdate: (id, data, params = {}) => this.request({
                 path: `/api/v2/issues/${id}`,
                 method: 'PUT',
@@ -11678,199 +11260,87 @@ class Api extends HttpClient {
                 type: ContentType.Json,
                 ...params,
             }),
-            /**
-             * No description
-             *
-             * @tags issues
-             * @name IssueControllerGetLogs
-             * @request GET:/api/v2/issues/{id}/logs/{appId}
-             */
             issueControllerGetLogs: (id, appId, params = {}) => this.request({
                 path: `/api/v2/issues/${id}/logs/${appId}`,
                 method: 'GET',
                 ...params,
             }),
-            /**
-             * No description
-             *
-             * @tags run
-             * @name RunsControllerGetRuns
-             * @request GET:/api/v2/run
-             */
             runsControllerGetRuns: (params = {}) => this.request({
                 path: `/api/v2/run`,
                 method: 'GET',
                 format: 'json',
                 ...params,
             }),
-            /**
-             * No description
-             *
-             * @tags run
-             * @name RunsControllerGetVariantRuns
-             * @request GET:/api/v2/run/{id}
-             */
             runsControllerGetVariantRuns: (id, params = {}) => this.request({
                 path: `/api/v2/run/${id}`,
                 method: 'GET',
                 format: 'json',
                 ...params,
             }),
-            /**
-             * No description
-             *
-             * @tags run
-             * @name RunsControllerHasRuns
-             * @request GET:/api/v2/run/variant/{id}/hasRuns
-             */
             runsControllerHasRuns: (id, params = {}) => this.request({
                 path: `/api/v2/run/variant/${id}/hasRuns`,
                 method: 'GET',
                 ...params,
             }),
-            /**
-             * No description
-             *
-             * @tags run
-             * @name RunsControllerGetSummaryStatistics
-             * @request GET:/api/v2/run/{runId}/statistics
-             */
             runsControllerGetSummaryStatistics: (runId, params = {}) => this.request({
                 path: `/api/v2/run/${runId}/statistics`,
                 method: 'GET',
                 format: 'json',
                 ...params,
             }),
-            /**
-             * No description
-             *
-             * @tags run
-             * @name RunsControllerGetCurrentPage
-             * @request GET:/api/v2/run/{runId}/currentPage
-             */
             runsControllerGetCurrentPage: (runId, params = {}) => this.request({
                 path: `/api/v2/run/${runId}/currentPage`,
                 method: 'GET',
                 format: 'json',
                 ...params,
             }),
-            /**
-             * No description
-             *
-             * @tags run
-             * @name RunsControllerRemove
-             * @request DELETE:/api/v2/run/{variantId}
-             */
             runsControllerRemove: (variantId, params = {}) => this.request({
                 path: `/api/v2/run/${variantId}`,
                 method: 'DELETE',
                 format: 'json',
                 ...params,
             }),
-            /**
-             * No description
-             *
-             * @tags run
-             * @name RunsControllerRunStopped
-             * @request POST:/api/v2/run/{runId}/stopComplete
-             */
             runsControllerRunStopped: (runId, params = {}) => this.request({
                 path: `/api/v2/run/${runId}/stopComplete`,
                 method: 'POST',
                 ...params,
             }),
-            /**
-             * No description
-             *
-             * @tags run
-             * @name RunsControllerPauseRun
-             * @request POST:/api/v2/run/{runId}/{command}
-             */
             runsControllerPauseRun: (runId, command, params = {}) => this.request({
                 path: `/api/v2/run/${runId}/${command}`,
                 method: 'POST',
                 ...params,
             }),
-            /**
-             * No description
-             *
-             * @tags run
-             * @name RunParametersControllerGetAll
-             * @request GET:/api/v2/run/parameters
-             */
             runParametersControllerGetAll: (params = {}) => this.request({
                 path: `/api/v2/run/parameters`,
                 method: 'GET',
                 ...params,
             }),
-            /**
-             * No description
-             *
-             * @tags run
-             * @name RunParametersControllerCreate
-             * @request POST:/api/v2/run/parameters
-             */
             runParametersControllerCreate: (params = {}) => this.request({
                 path: `/api/v2/run/parameters`,
                 method: 'POST',
                 ...params,
             }),
-            /**
-             * No description
-             *
-             * @tags run
-             * @name RunParametersControllerGet
-             * @request GET:/api/v2/run/parameters/{id}
-             */
             runParametersControllerGet: (id, params = {}) => this.request({
                 path: `/api/v2/run/parameters/${id}`,
                 method: 'GET',
                 ...params,
             }),
-            /**
-             * No description
-             *
-             * @tags run
-             * @name RunParametersControllerUpdate
-             * @request PUT:/api/v2/run/parameters/{id}
-             */
             runParametersControllerUpdate: (id, params = {}) => this.request({
                 path: `/api/v2/run/parameters/${id}`,
                 method: 'PUT',
                 ...params,
             }),
-            /**
-             * No description
-             *
-             * @tags run
-             * @name RunParametersControllerDelete
-             * @request POST:/api/v2/run/parameters/{id}/delete
-             */
             runParametersControllerDelete: (id, params = {}) => this.request({
                 path: `/api/v2/run/parameters/${id}/delete`,
                 method: 'POST',
                 ...params,
             }),
-            /**
-             * No description
-             *
-             * @tags run
-             * @name RunsLogControllerGetRunLog
-             * @request GET:/api/v2/run/{runId}/log
-             */
             runsLogControllerGetRunLog: (runId, params = {}) => this.request({
                 path: `/api/v2/run/${runId}/log`,
                 method: 'GET',
                 format: 'json',
                 ...params,
             }),
-            /**
-             * No description
-             *
-             * @tags run
-             * @name RunsLogControllerUpdateRunLog
-             * @request PUT:/api/v2/run/{runId}/log
-             */
             runsLogControllerUpdateRunLog: (runId, data, params = {}) => this.request({
                 path: `/api/v2/run/${runId}/log`,
                 method: 'PUT',
@@ -11879,26 +11349,12 @@ class Api extends HttpClient {
                 format: 'json',
                 ...params,
             }),
-            /**
-             * No description
-             *
-             * @tags run
-             * @name RunsLogControllerGetLogs
-             * @request GET:/api/v2/run/log
-             */
             runsLogControllerGetLogs: (params = {}) => this.request({
                 path: `/api/v2/run/log`,
                 method: 'GET',
                 format: 'json',
                 ...params,
             }),
-            /**
-             * No description
-             *
-             * @tags run
-             * @name RunsLogControllerAppendRunLog
-             * @request POST:/api/v2/run/{runId}/log/append
-             */
             runsLogControllerAppendRunLog: (runId, data, params = {}) => this.request({
                 path: `/api/v2/run/${runId}/log/append`,
                 method: 'POST',
@@ -11907,26 +11363,12 @@ class Api extends HttpClient {
                 format: 'json',
                 ...params,
             }),
-            /**
-             * No description
-             *
-             * @tags run
-             * @name RunsStatusControllerGetStatus
-             * @request GET:/api/v2/run/{id}/status
-             */
             runsStatusControllerGetStatus: (id, params = {}) => this.request({
                 path: `/api/v2/run/${id}/status`,
                 method: 'GET',
                 format: 'json',
                 ...params,
             }),
-            /**
-             * No description
-             *
-             * @tags run
-             * @name RunsStatusControllerUpdateStatus
-             * @request PUT:/api/v2/run/{id}/status
-             */
             runsStatusControllerUpdateStatus: (id, data, params = {}) => this.request({
                 path: `/api/v2/run/${id}/status`,
                 method: 'PUT',
@@ -11935,26 +11377,12 @@ class Api extends HttpClient {
                 format: 'json',
                 ...params,
             }),
-            /**
-             * No description
-             *
-             * @tags run
-             * @name RunsSummaryStatisticsControllerGet
-             * @request GET:/api/v2/run/{runId}/summaryStatistics
-             */
             runsSummaryStatisticsControllerGet: (runId, params = {}) => this.request({
                 path: `/api/v2/run/${runId}/summaryStatistics`,
                 method: 'GET',
                 format: 'json',
                 ...params,
             }),
-            /**
-             * No description
-             *
-             * @tags run
-             * @name RunsSummaryStatisticsControllerUpdateSummaryStatistics
-             * @request PUT:/api/v2/run/{runId}/summaryStatistics
-             */
             runsSummaryStatisticsControllerUpdateSummaryStatistics: (runId, data, params = {}) => this.request({
                 path: `/api/v2/run/${runId}/summaryStatistics`,
                 method: 'PUT',
@@ -11963,26 +11391,12 @@ class Api extends HttpClient {
                 format: 'json',
                 ...params,
             }),
-            /**
-             * No description
-             *
-             * @tags run
-             * @name RunsSummaryStatisticsControllerGetItemStats
-             * @request GET:/api/v2/run/{runId}/summaryStatistics/items
-             */
             runsSummaryStatisticsControllerGetItemStats: (runId, params = {}) => this.request({
                 path: `/api/v2/run/${runId}/summaryStatistics/items`,
                 method: 'GET',
                 format: 'json',
                 ...params,
             }),
-            /**
-             * No description
-             *
-             * @tags run
-             * @name RunsSummaryStatisticsControllerGetMultipleRunItemStats
-             * @request GET:/api/v2/run/summaryStatistics/items
-             */
             runsSummaryStatisticsControllerGetMultipleRunItemStats: (query, params = {}) => this.request({
                 path: `/api/v2/run/summaryStatistics/items`,
                 method: 'GET',
@@ -11990,39 +11404,18 @@ class Api extends HttpClient {
                 format: 'json',
                 ...params,
             }),
-            /**
-             * No description
-             *
-             * @tags run
-             * @name RunsSummaryStatisticsControllerGetRuleStats
-             * @request GET:/api/v2/run/{runId}/summaryStatistics/rules
-             */
             runsSummaryStatisticsControllerGetRuleStats: (runId, params = {}) => this.request({
                 path: `/api/v2/run/${runId}/summaryStatistics/rules`,
                 method: 'GET',
                 format: 'json',
                 ...params,
             }),
-            /**
-             * No description
-             *
-             * @tags run
-             * @name RunsWorkQueueControllerGet
-             * @request GET:/api/v2/run/{runId}/workQueue
-             */
             runsWorkQueueControllerGet: (runId, params = {}) => this.request({
                 path: `/api/v2/run/${runId}/workQueue`,
                 method: 'GET',
                 format: 'json',
                 ...params,
             }),
-            /**
-             * No description
-             *
-             * @tags run
-             * @name RunsWorkQueueControllerUpdate
-             * @request PUT:/api/v2/run/{runId}/workQueue
-             */
             runsWorkQueueControllerUpdate: (runId, data, params = {}) => this.request({
                 path: `/api/v2/run/${runId}/workQueue`,
                 method: 'PUT',
@@ -12031,39 +11424,17 @@ class Api extends HttpClient {
                 format: 'json',
                 ...params,
             }),
-            /**
-             * No description
-             *
-             * @tags run
-             * @name StartOptionsControllerGetStartOptions
-             * @request GET:/api/v2/run/options
-             */
             startOptionsControllerGetStartOptions: (params = {}) => this.request({
                 path: `/api/v2/run/options`,
                 method: 'GET',
                 ...params,
             }),
-            /**
-             * No description
-             *
-             * @tags runs
-             * @name RunsLogControllerV2GetRun
-             * @request GET:/api/v2/runs/{id}/run/{runNumber}
-             */
             runsLogControllerV2GetRun: (id, runNumber, params = {}) => this.request({
                 path: `/api/v2/runs/${id}/run/${runNumber}`,
                 method: 'GET',
                 format: 'json',
                 ...params,
             }),
-            /**
-             * No description
-             *
-             * @tags runs
-             * @name RunsLogControllerV2GetRunLog
-             * @summary Get the logs for the given run
-             * @request GET:/api/v2/runs/{id}/log/{runNumber}
-             */
             runsLogControllerV2GetRunLog: (id, runNumber, query, params = {}) => this.request({
                 path: `/api/v2/runs/${id}/log/${runNumber}`,
                 method: 'GET',
@@ -12071,13 +11442,6 @@ class Api extends HttpClient {
                 format: 'json',
                 ...params,
             }),
-            /**
-             * No description
-             *
-             * @tags start
-             * @name StartRunControllerStartRun
-             * @request POST:/api/v2/start/variant/{id}
-             */
             startRunControllerStartRun: (id, data, params = {}) => this.request({
                 path: `/api/v2/start/variant/${id}`,
                 method: 'POST',
@@ -12086,26 +11450,12 @@ class Api extends HttpClient {
                 format: 'json',
                 ...params,
             }),
-            /**
-             * No description
-             *
-             * @tags variants
-             * @name VariantControllerGetVariants
-             * @request GET:/api/v2/variants
-             */
             variantControllerGetVariants: (params = {}) => this.request({
                 path: `/api/v2/variants`,
                 method: 'GET',
                 format: 'json',
                 ...params,
             }),
-            /**
-             * No description
-             *
-             * @tags variants
-             * @name VariantControllerCreateVariant
-             * @request POST:/api/v2/variants
-             */
             variantControllerCreateVariant: (data, params = {}) => this.request({
                 path: `/api/v2/variants`,
                 method: 'POST',
@@ -12114,25 +11464,11 @@ class Api extends HttpClient {
                 format: 'json',
                 ...params,
             }),
-            /**
-             * No description
-             *
-             * @tags variants
-             * @name VariantControllerGetVariant
-             * @request GET:/api/v2/variants/{id}
-             */
             variantControllerGetVariant: (id, params = {}) => this.request({
                 path: `/api/v2/variants/${id}`,
                 method: 'GET',
                 ...params,
             }),
-            /**
-             * No description
-             *
-             * @tags variants
-             * @name VariantControllerUpdateVariant
-             * @request PUT:/api/v2/variants/{id}
-             */
             variantControllerUpdateVariant: (id, data, params = {}) => this.request({
                 path: `/api/v2/variants/${id}`,
                 method: 'PUT',
@@ -12141,50 +11477,22 @@ class Api extends HttpClient {
                 format: 'json',
                 ...params,
             }),
-            /**
-             * No description
-             *
-             * @tags variants
-             * @name VariantControllerGetVariantsWithParent
-             * @request GET:/api/v2/variants/parent/{id}
-             */
             variantControllerGetVariantsWithParent: (id, params = {}) => this.request({
                 path: `/api/v2/variants/parent/${id}`,
                 method: 'GET',
                 format: 'json',
                 ...params,
             }),
-            /**
-             * No description
-             *
-             * @tags variants
-             * @name VariantControllerGetVariantsWorkspace
-             * @request GET:/api/v2/variants/{id}/workspace
-             */
             variantControllerGetVariantsWorkspace: (id, params = {}) => this.request({
                 path: `/api/v2/variants/${id}/workspace`,
                 method: 'GET',
                 ...params,
             }),
-            /**
-             * No description
-             *
-             * @tags variants
-             * @name VariantControllerGetVariantsApplication
-             * @request GET:/api/v2/variants/{id}/application
-             */
             variantControllerGetVariantsApplication: (id, params = {}) => this.request({
                 path: `/api/v2/variants/${id}/application`,
                 method: 'GET',
                 ...params,
             }),
-            /**
-             * No description
-             *
-             * @tags variants
-             * @name ModelControllerGet
-             * @request GET:/api/v2/variants/{appId}/model
-             */
             modelControllerGet: (appId, query, params = {}) => this.request({
                 path: `/api/v2/variants/${appId}/model`,
                 method: 'GET',
@@ -12192,25 +11500,16 @@ class Api extends HttpClient {
                 format: 'json',
                 ...params,
             }),
-            /**
-             * No description
-             *
-             * @tags variants
-             * @name ModelControllerDelete
-             * @request DELETE:/api/v2/variants/{appId}/model
-             */
             modelControllerDelete: (appId, params = {}) => this.request({
                 path: `/api/v2/variants/${appId}/model`,
                 method: 'DELETE',
                 ...params,
             }),
-            /**
-             * No description
-             *
-             * @tags variants
-             * @name ModelControllerApplyUpdates
-             * @request POST:/api/v2/variants/{appId}/model/update
-             */
+            modelControllerDeleteComponent: (id, compId, params = {}) => this.request({
+                path: `/api/v2/variants/${id}/model/components/${compId}`,
+                method: 'DELETE',
+                ...params,
+            }),
             modelControllerApplyUpdates: (appId, data, params = {}) => this.request({
                 path: `/api/v2/variants/${appId}/model/update`,
                 method: 'POST',
@@ -12218,13 +11517,6 @@ class Api extends HttpClient {
                 type: ContentType.Json,
                 ...params,
             }),
-            /**
-             * No description
-             *
-             * @tags variants
-             * @name ModelControllerSavePageModel
-             * @request POST:/api/v2/variants/{appId}/model/pages
-             */
             modelControllerSavePageModel: (appId, data, params = {}) => this.request({
                 path: `/api/v2/variants/${appId}/model/pages`,
                 method: 'POST',
@@ -12232,122 +11524,53 @@ class Api extends HttpClient {
                 type: ContentType.Json,
                 ...params,
             }),
-            /**
-             * No description
-             *
-             * @tags variants
-             * @name ModelControllerListPageModels
-             * @request GET:/api/v2/variants/{appId}/model/pages
-             */
             modelControllerListPageModels: (appId, params = {}) => this.request({
                 path: `/api/v2/variants/${appId}/model/pages`,
                 method: 'GET',
+                format: 'json',
                 ...params,
             }),
-            /**
-             * No description
-             *
-             * @tags variants
-             * @name ModelControllerGetPageModel
-             * @request GET:/api/v2/variants/{appId}/model/pages/{pageId}/model
-             */
             modelControllerGetPageModel: (appId, pageId, params = {}) => this.request({
                 path: `/api/v2/variants/${appId}/model/pages/${pageId}/model`,
                 method: 'GET',
                 ...params,
             }),
-            /**
-             * No description
-             *
-             * @tags variants
-             * @name CoverageControllerPatchComponentCoverage
-             * @request PATCH:/api/v2/variants/{id}/model/components/{cId}/coverage
-             */
             coverageControllerPatchComponentCoverage: (id, cId, params = {}) => this.request({
                 path: `/api/v2/variants/${id}/model/components/${cId}/coverage`,
                 method: 'PATCH',
                 ...params,
             }),
-            /**
-             * No description
-             *
-             * @tags variants
-             * @name CoverageControllerGetComponentsCoverage
-             * @request GET:/api/v2/variants/{id}/model/components/{cId}/coverage
-             */
             coverageControllerGetComponentsCoverage: (id, cId, params = {}) => this.request({
                 path: `/api/v2/variants/${id}/model/components/${cId}/coverage`,
                 method: 'GET',
                 ...params,
             }),
-            /**
-             * No description
-             *
-             * @tags variants
-             * @name CoverageControllerGetVariantsCoverage
-             * @request GET:/api/v2/variants/{id}/model/coverage
-             */
             coverageControllerGetVariantsCoverage: (id, params = {}) => this.request({
                 path: `/api/v2/variants/${id}/model/coverage`,
                 method: 'GET',
                 ...params,
             }),
-            /**
-             * No description
-             *
-             * @tags variants
-             * @name CoverageControllerGetCoverage
-             * @request GET:/api/v2/variants/{id}/coverage/rules
-             */
             coverageControllerGetCoverage: (id, params = {}) => this.request({
                 path: `/api/v2/variants/${id}/coverage/rules`,
                 method: 'GET',
                 ...params,
             }),
-            /**
-             * No description
-             *
-             * @tags variants
-             * @name CoverageControllerGetSimpleVariantCoverage
-             * @request GET:/api/v2/variants/{id}/model/coverage/simple
-             */
             coverageControllerGetSimpleVariantCoverage: (id, params = {}) => this.request({
                 path: `/api/v2/variants/${id}/model/coverage/simple`,
                 method: 'GET',
                 ...params,
             }),
-            /**
-             * No description
-             *
-             * @tags variants
-             * @name CoverageControllerGetCoverageWithFilters
-             * @request GET:/api/v2/variants/{id}/model/coverage/filters
-             */
             coverageControllerGetCoverageWithFilters: (id, query, params = {}) => this.request({
                 path: `/api/v2/variants/${id}/model/coverage/filters`,
                 method: 'GET',
                 query: query,
                 ...params,
             }),
-            /**
-             * No description
-             *
-             * @tags rules
-             * @name RulesControllerGetRules
-             * @request GET:/api/v2/rules
-             */
             rulesControllerGetRules: (params = {}) => this.request({
                 path: `/api/v2/rules`,
                 method: 'GET',
                 ...params,
             }),
-            /**
-             * No description
-             *
-             * @tags rules
-             * @name RulesControllerAddRule
-             * @request POST:/api/v2/rules
-             */
             rulesControllerAddRule: (data, params = {}) => this.request({
                 path: `/api/v2/rules`,
                 method: 'POST',
@@ -12355,25 +11578,11 @@ class Api extends HttpClient {
                 type: ContentType.Json,
                 ...params,
             }),
-            /**
-             * No description
-             *
-             * @tags rules
-             * @name RulesControllerGetRuleById
-             * @request GET:/api/v2/rules/{id}
-             */
             rulesControllerGetRuleById: (id, params = {}) => this.request({
                 path: `/api/v2/rules/${id}`,
                 method: 'GET',
                 ...params,
             }),
-            /**
-             * No description
-             *
-             * @tags rules
-             * @name RulesControllerUpdateRule
-             * @request PUT:/api/v2/rules/{id}
-             */
             rulesControllerUpdateRule: (id, data, params = {}) => this.request({
                 path: `/api/v2/rules/${id}`,
                 method: 'PUT',
@@ -12381,110 +11590,46 @@ class Api extends HttpClient {
                 type: ContentType.Json,
                 ...params,
             }),
-            /**
-             * No description
-             *
-             * @tags requirementsDocuments
-             * @name RequirementsDocumentsControllerGetRequirementsDocuments
-             * @request GET:/api/v2/requirementsDocuments
-             */
             requirementsDocumentsControllerGetRequirementsDocuments: (params = {}) => this.request({
                 path: `/api/v2/requirementsDocuments`,
                 method: 'GET',
                 ...params,
             }),
-            /**
-             * No description
-             *
-             * @tags requirementsDocuments
-             * @name RequirementsDocumentsControllerPostRequirementsDocument
-             * @request POST:/api/v2/requirementsDocuments
-             */
             requirementsDocumentsControllerPostRequirementsDocument: (params = {}) => this.request({
                 path: `/api/v2/requirementsDocuments`,
                 method: 'POST',
                 ...params,
             }),
-            /**
-             * No description
-             *
-             * @tags requirementsDocuments
-             * @name RequirementsDocumentsControllerGetRequirementsDocument
-             * @request GET:/api/v2/requirementsDocuments/{id}
-             */
             requirementsDocumentsControllerGetRequirementsDocument: (id, params = {}) => this.request({
                 path: `/api/v2/requirementsDocuments/${id}`,
                 method: 'GET',
                 ...params,
             }),
-            /**
-             * No description
-             *
-             * @tags requirementsDocuments
-             * @name RequirementsDocumentsControllerPostRequirementsDocumentV2
-             * @request POST:/api/v2/requirementsDocuments/v2
-             */
             requirementsDocumentsControllerPostRequirementsDocumentV2: (params = {}) => this.request({
                 path: `/api/v2/requirementsDocuments/v2`,
                 method: 'POST',
                 ...params,
             }),
-            /**
-             * No description
-             *
-             * @tags Screenshots
-             * @name ScreenshotControllerCreateScreenshotEntity
-             * @request POST:/api/v2/screenshots
-             */
             screenshotControllerCreateScreenshotEntity: (params = {}) => this.request({
                 path: `/api/v2/screenshots`,
                 method: 'POST',
                 ...params,
             }),
-            /**
-             * No description
-             *
-             * @tags Screenshots
-             * @name ScreenshotControllerAddPublicScreenshot
-             * @request POST:/api/v2/screenshots/public/{id}
-             */
             screenshotControllerAddPublicScreenshot: (id, params = {}) => this.request({
                 path: `/api/v2/screenshots/public/${id}`,
                 method: 'POST',
                 ...params,
             }),
-            /**
-             * No description
-             *
-             * @tags Screenshots
-             * @name ScreenshotControllerUploadScreenshot
-             * @request POST:/api/v2/screenshots/{screenshotId}
-             */
             screenshotControllerUploadScreenshot: (screenshotId, params = {}) => this.request({
                 path: `/api/v2/screenshots/${screenshotId}`,
                 method: 'POST',
                 ...params,
             }),
-            /**
-             * No description
-             *
-             * @tags Screenshots
-             * @name ScreenshotControllerGetScreenshot
-             * @request GET:/api/v2/screenshots/{screenshotId}
-             */
             screenshotControllerGetScreenshot: (screenshotId, params = {}) => this.request({
                 path: `/api/v2/screenshots/${screenshotId}`,
                 method: 'GET',
                 ...params,
             }),
-            /**
-             * @description Creates a new Personal Access Token (PAT) for the user making this request.
-             *
-             * @tags users
-             * @name UserControllerCreatePat
-             * @summary Create a new PAT.
-             * @request POST:/api/v2/users/pat
-             */
             userControllerCreatePat: (data, params = {}) => this.request({
                 path: `/api/v2/users/pat`,
                 method: 'POST',
@@ -12493,41 +11638,17 @@ class Api extends HttpClient {
                 format: 'json',
                 ...params,
             }),
-            /**
-             * No description
-             *
-             * @tags users
-             * @name UserControllerFindPaTs
-             * @summary Get all PATs for the current user.
-             * @request GET:/api/v2/users/pat
-             */
             userControllerFindPaTs: (params = {}) => this.request({
                 path: `/api/v2/users/pat`,
                 method: 'GET',
                 format: 'json',
                 ...params,
             }),
-            /**
-             * @description Delete one of the current user's PATs by its ID. This is a no-op if the PAT does not exist or if it belongs to another user.
-             *
-             * @tags users
-             * @name UserControllerRevokePat
-             * @summary Delete a PAT.
-             * @request DELETE:/api/v2/users/pat/{id}
-             */
             userControllerRevokePat: (id, params = {}) => this.request({
                 path: `/api/v2/users/pat/${id}`,
                 method: 'DELETE',
                 ...params,
             }),
-            /**
-             * No description
-             *
-             * @tags users
-             * @name UserControllerGetUsers
-             * @summary Get users
-             * @request GET:/api/v2/users
-             */
             userControllerGetUsers: (query, params = {}) => this.request({
                 path: `/api/v2/users`,
                 method: 'GET',
@@ -12535,27 +11656,12 @@ class Api extends HttpClient {
                 format: 'json',
                 ...params,
             }),
-            /**
-             * No description
-             *
-             * @tags users
-             * @name UserControllerGetUser
-             * @summary Get user with id
-             * @request GET:/api/v2/users/{id}
-             */
             userControllerGetUser: (id, params = {}) => this.request({
                 path: `/api/v2/users/${id}`,
                 method: 'GET',
                 format: 'json',
                 ...params,
             }),
-            /**
-             * No description
-             *
-             * @tags users
-             * @name UserControllerUpdate
-             * @request PUT:/api/v2/users/{id}
-             */
             userControllerUpdate: (id, data, params = {}) => this.request({
                 path: `/api/v2/users/${id}`,
                 method: 'PUT',
@@ -12564,37 +11670,16 @@ class Api extends HttpClient {
                 format: 'json',
                 ...params,
             }),
-            /**
-             * No description
-             *
-             * @tags users
-             * @name UserControllerRemove
-             * @request DELETE:/api/v2/users/{id}
-             */
             userControllerRemove: (id, params = {}) => this.request({
                 path: `/api/v2/users/${id}`,
                 method: 'DELETE',
                 ...params,
             }),
-            /**
-             * No description
-             *
-             * @tags users
-             * @name UserControllerGetSession
-             * @request GET:/api/v2/users/session
-             */
             userControllerGetSession: (params = {}) => this.request({
                 path: `/api/v2/users/session`,
                 method: 'GET',
                 ...params,
             }),
-            /**
-             * No description
-             *
-             * @tags users
-             * @name UserControllerValidateUser
-             * @request POST:/api/v2/users/validateUser
-             */
             userControllerValidateUser: (data, params = {}) => this.request({
                 path: `/api/v2/users/validateUser`,
                 method: 'POST',
@@ -12602,39 +11687,18 @@ class Api extends HttpClient {
                 type: ContentType.Json,
                 ...params,
             }),
-            /**
-             * No description
-             *
-             * @tags users
-             * @name UserControllerActivateUser
-             * @request POST:/api/v2/users/activateUser/{id}
-             */
             userControllerActivateUser: (id, params = {}) => this.request({
                 path: `/api/v2/users/activateUser/${id}`,
                 method: 'POST',
                 format: 'json',
                 ...params,
             }),
-            /**
-             * No description
-             *
-             * @tags users
-             * @name UserControllerDeactivateUser
-             * @request POST:/api/v2/users/deactivateUser/{id}
-             */
             userControllerDeactivateUser: (id, params = {}) => this.request({
                 path: `/api/v2/users/deactivateUser/${id}`,
                 method: 'POST',
                 format: 'json',
                 ...params,
             }),
-            /**
-             * No description
-             *
-             * @tags workspace
-             * @name WorkspaceControllerGetWorkspaces
-             * @request GET:/api/v2/workspace
-             */
             workspaceControllerGetWorkspaces: (query, params = {}) => this.request({
                 path: `/api/v2/workspace`,
                 method: 'GET',
@@ -12642,13 +11706,6 @@ class Api extends HttpClient {
                 format: 'json',
                 ...params,
             }),
-            /**
-             * No description
-             *
-             * @tags workspace
-             * @name WorkspaceControllerCreateWorkspace
-             * @request POST:/api/v2/workspace
-             */
             workspaceControllerCreateWorkspace: (data, params = {}) => this.request({
                 path: `/api/v2/workspace`,
                 method: 'POST',
@@ -12657,26 +11714,12 @@ class Api extends HttpClient {
                 format: 'json',
                 ...params,
             }),
-            /**
-             * No description
-             *
-             * @tags workspace
-             * @name WorkspaceControllerGetWorkspace
-             * @request GET:/api/v2/workspace/{id}
-             */
             workspaceControllerGetWorkspace: (id, params = {}) => this.request({
                 path: `/api/v2/workspace/${id}`,
                 method: 'GET',
                 format: 'json',
                 ...params,
             }),
-            /**
-             * No description
-             *
-             * @tags workspace
-             * @name WorkspaceControllerUpdateWorkspace
-             * @request PUT:/api/v2/workspace/{id}
-             */
             workspaceControllerUpdateWorkspace: (id, data, params = {}) => this.request({
                 path: `/api/v2/workspace/${id}`,
                 method: 'PUT',
@@ -12684,38 +11727,16 @@ class Api extends HttpClient {
                 type: ContentType.Json,
                 ...params,
             }),
-            /**
-             * No description
-             *
-             * @tags workspace
-             * @name WorkspaceControllerDeleteWorkspace
-             * @request DELETE:/api/v2/workspace/{id}
-             */
             workspaceControllerDeleteWorkspace: (id, params = {}) => this.request({
                 path: `/api/v2/workspace/${id}`,
                 method: 'DELETE',
                 ...params,
             }),
-            /**
-             * No description
-             *
-             * @tags invitation-token
-             * @name InvitationTokenControllerGetInvitationToken
-             * @summary Get invitation token with id
-             * @request GET:/api/v2/invitation-token/{id}
-             */
             invitationTokenControllerGetInvitationToken: (id, params = {}) => this.request({
                 path: `/api/v2/invitation-token/${id}`,
                 method: 'GET',
                 ...params,
             }),
-            /**
-             * No description
-             *
-             * @tags invitation-token
-             * @name InvitationTokenControllerCreateWorkspace
-             * @request POST:/api/v2/invitation-token
-             */
             invitationTokenControllerCreateWorkspace: (data, params = {}) => this.request({
                 path: `/api/v2/invitation-token`,
                 method: 'POST',
@@ -12723,27 +11744,12 @@ class Api extends HttpClient {
                 type: ContentType.Json,
                 ...params,
             }),
-            /**
-             * No description
-             *
-             * @tags invite-user
-             * @name InviteUserControllerGetUsers
-             * @summary Get invitations
-             * @request GET:/api/v2/invite-user
-             */
             inviteUserControllerGetUsers: (query, params = {}) => this.request({
                 path: `/api/v2/invite-user`,
                 method: 'GET',
                 query: query,
                 ...params,
             }),
-            /**
-             * No description
-             *
-             * @tags invite-user
-             * @name InviteUserControllerCreateInvitation
-             * @request POST:/api/v2/invite-user
-             */
             inviteUserControllerCreateInvitation: (data, params = {}) => this.request({
                 path: `/api/v2/invite-user`,
                 method: 'POST',
@@ -12751,65 +11757,26 @@ class Api extends HttpClient {
                 type: ContentType.Json,
                 ...params,
             }),
-            /**
-             * No description
-             *
-             * @tags invite-user
-             * @name InviteUserControllerRemoveEntity
-             * @summary Remove invitation
-             * @request DELETE:/api/v2/invite-user/{invitationId}
-             */
             inviteUserControllerRemoveEntity: (invitationId, params = {}) => this.request({
                 path: `/api/v2/invite-user/${invitationId}`,
                 method: 'DELETE',
                 ...params,
             }),
-            /**
-             * No description
-             *
-             * @tags entities
-             * @name InstanceEntityControllerGetEntitysChildren
-             * @summary Get entity's children
-             * @request GET:/api/v2/entities/{entityId}/children
-             */
             instanceEntityControllerGetEntitysChildren: (entityId, params = {}) => this.request({
                 path: `/api/v2/entities/${entityId}/children`,
                 method: 'GET',
                 ...params,
             }),
-            /**
-             * No description
-             *
-             * @tags entities
-             * @name InstanceEntityControllerRemoveEntity
-             * @summary Remove entity and it's children
-             * @request DELETE:/api/v2/entities/{entityId}
-             */
             instanceEntityControllerRemoveEntity: (entityId, params = {}) => this.request({
                 path: `/api/v2/entities/${entityId}`,
                 method: 'DELETE',
                 ...params,
             }),
-            /**
-             * No description
-             *
-             * @tags subscription
-             * @name SubscriptionControllerManageSubscriptions
-             * @request POST:/api/v2/subscription/manage-subscriptions
-             */
             subscriptionControllerManageSubscriptions: (params = {}) => this.request({
                 path: `/api/v2/subscription/manage-subscriptions`,
                 method: 'POST',
                 ...params,
             }),
-            /**
-             * No description
-             *
-             * @tags analytics
-             * @name AnalyticsControllerGetRunRuleStatistics
-             * @summary Get rule statistics for a run
-             * @request POST:/api/v2/analytics/app/{appId}/run/{runId}
-             */
             analyticsControllerGetRunRuleStatistics: (appId, runId, data, params = {}) => this.request({
                 path: `/api/v2/analytics/app/${appId}/run/${runId}`,
                 method: 'POST',
@@ -12818,14 +11785,6 @@ class Api extends HttpClient {
                 format: 'json',
                 ...params,
             }),
-            /**
-             * No description
-             *
-             * @tags analytics
-             * @name AnalyticsControllerGetComponentRuleStatistics
-             * @summary Get rule statistics for all components in an application
-             * @request POST:/api/v2/analytics/app/{appId}/components
-             */
             analyticsControllerGetComponentRuleStatistics: (appId, data, params = {}) => this.request({
                 path: `/api/v2/analytics/app/${appId}/components`,
                 method: 'POST',
@@ -12834,14 +11793,6 @@ class Api extends HttpClient {
                 format: 'json',
                 ...params,
             }),
-            /**
-             * No description
-             *
-             * @tags analytics
-             * @name AnalyticsControllerGetPageRuleStatistics
-             * @summary Get rule statistics for all components in an application
-             * @request POST:/api/v2/analytics/app/{appId}/pages
-             */
             analyticsControllerGetPageRuleStatistics: (appId, data, params = {}) => this.request({
                 path: `/api/v2/analytics/app/${appId}/pages`,
                 method: 'POST',
@@ -12850,13 +11801,6 @@ class Api extends HttpClient {
                 format: 'json',
                 ...params,
             }),
-            /**
-             * @description Get page performance statistics
-             *
-             * @tags analytics
-             * @name AnalyticsControllerGetPagePerformanceStatistics
-             * @request GET:/api/v2/analytics/app/{appId}/pages/performance
-             */
             analyticsControllerGetPagePerformanceStatistics: (appId, query, params = {}) => this.request({
                 path: `/api/v2/analytics/app/${appId}/pages/performance`,
                 method: 'GET',
@@ -12864,13 +11808,6 @@ class Api extends HttpClient {
                 format: 'json',
                 ...params,
             }),
-            /**
-             * No description
-             *
-             * @tags view
-             * @name ViewControllerGetViews
-             * @request GET:/api/v2/view/{parentId}
-             */
             viewControllerGetViews: (parentId, query, params = {}) => this.request({
                 path: `/api/v2/view/${parentId}`,
                 method: 'GET',
@@ -12878,13 +11815,6 @@ class Api extends HttpClient {
                 format: 'json',
                 ...params,
             }),
-            /**
-             * No description
-             *
-             * @tags view
-             * @name ViewControllerCreateView
-             * @request POST:/api/v2/view/{parentId}
-             */
             viewControllerCreateView: (parentId, data, params = {}) => this.request({
                 path: `/api/v2/view/${parentId}`,
                 method: 'POST',
@@ -12893,13 +11823,6 @@ class Api extends HttpClient {
                 format: 'json',
                 ...params,
             }),
-            /**
-             * No description
-             *
-             * @tags view
-             * @name ViewControllerUpdateView
-             * @request PUT:/api/v2/view/{parentId}/{viewId}
-             */
             viewControllerUpdateView: (parentId, viewId, data, params = {}) => this.request({
                 path: `/api/v2/view/${parentId}/${viewId}`,
                 method: 'PUT',
@@ -12908,13 +11831,6 @@ class Api extends HttpClient {
                 format: 'json',
                 ...params,
             }),
-            /**
-             * No description
-             *
-             * @tags view
-             * @name ViewControllerDeleteView
-             * @request DELETE:/api/v2/view/{parentId}/{viewId}
-             */
             viewControllerDeleteView: (parentId, viewId, params = {}) => this.request({
                 path: `/api/v2/view/${parentId}/${viewId}`,
                 method: 'DELETE',
@@ -12964,11 +11880,6 @@ class Api {
         const res = await this._api.api.variantControllerGetVariant(variantId, { secure: true });
         return res;
     }
-    /**
-     *
-     * @param variantId
-     * @returns The ID of the started run
-     */
     async startRun(variantId = this.inputs.variant) {
         const { runTemplate, application, parameters: parameterOverrides, } = this.inputs;
         console.log(`Getting parameters from run template ${runTemplate}`);
@@ -12976,7 +11887,6 @@ class Api {
         const params = (0, deepmerge_1.default)(paramsFromRunTemplate.data.resource.data, parameterOverrides);
         const body = {
             runOn: 'server',
-            // applicationId: application,
             applicationId: variantId,
             parametersId: null,
             parameters: params,
@@ -13116,7 +12026,6 @@ async function main() {
     }
 }
 async function startRun(api, inputs) {
-    // check that application exists
     const application = await api.getApplication();
     core.debug(`Found application:\n${JSON.stringify(application, null, 2)}`);
     console.log(`Testing application "${application.data.name}"`);
@@ -13137,7 +12046,6 @@ function onLog(log) {
     if (!msg)
         return;
     if (isErrorLog(log)) {
-        // numErrors++
         core.error(msg ? String(msg) : JSON.stringify(log));
     }
     else {
@@ -13168,45 +12076,14 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.ActionInputsSchema = void 0;
 const zod_1 = __webpack_require__(/*! zod */ "./node_modules/zod/lib/index.js");
 const run_parameters_inputs_1 = __webpack_require__(/*! ./run-parameters.inputs */ "./src/inputs/run-parameters.inputs.ts");
-/**
- * User inputs provided via Github Actions.
- *
- * @note the properties here are correlated to the `inputs` in [`action.yml`](../../action.yml).
- * However, there are some settings here that are not publicly advertised to
- * consumers, e.g. changing the URL of the repository.
- */
 exports.ActionInputsSchema = zod_1.z.object({
-    /**
-     * Either the name or ID of the application being tested
-     */
     application: zod_1.z.string().nonempty(),
-    /**
-     * Either the name or ID of the variant being tested
-     */
     variant: zod_1.z.string().nonempty(),
-    /**
-     * Either the name or ID of the run template to use.
-     */
     runTemplate: zod_1.z.string().nonempty(),
     parameters: run_parameters_inputs_1.RunParametersSchema,
-    /**
-     * The API key to use for the request. While an API key is required,
-     * it may be provided via the `ASTA_API_KEY` environment variable.
-     */
     apiKey: zod_1.z.string().nonempty(),
-    /**
-     * The ID of the api key. May also be set via the `ASTA_API_KEY_ID` environment variable.
-     */
     apiKeyId: zod_1.z.string().nonempty(),
 });
-// export const getActionInputs = (): ActionInputs => {
-//     const inputs: ActionInputs = {
-//         application: core.getInput('application'),
-//         variant: core.getInput('variant'),
-//         runTemplate: core.getInput('run-template'),
-//         parameters: RunParametersSchema.parse(core.getInput('parameters')),
-//     }
-// }
 
 
 /***/ }),
@@ -13244,7 +12121,6 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.InputsSchema = exports.getInputs = void 0;
-// Inputs provided by the user to the action in their workflow via `with`.
 const zod_1 = __webpack_require__(/*! zod */ "./node_modules/zod/lib/index.js");
 const action_inputs_1 = __webpack_require__(/*! ./action.inputs */ "./src/inputs/action.inputs.ts");
 const core = __importStar(__webpack_require__(/*! @actions/core */ "./node_modules/@actions/core/lib/core.js"));
@@ -13254,11 +12130,6 @@ const InputsSchema = action_inputs_1.ActionInputsSchema.extend({
         .string()
         .url()
         .default('https://asta.grantsgovservices.com'),
-    /**
-     * Non-public API. Causes the workflow to fail if the test run passes.
-     *
-     * @default false
-     */
     expectFailure: zod_1.z.coerce.boolean().default(false),
 });
 exports.InputsSchema = InputsSchema;
@@ -13298,44 +12169,19 @@ const zod_1 = __webpack_require__(/*! zod */ "./node_modules/zod/lib/index.js");
 const js_yaml_1 = __importDefault(__webpack_require__(/*! js-yaml */ "./node_modules/js-yaml/index.js"));
 exports.RunParametersSchema = zod_1.z
     .object({
-    /**
-     * Stop the run immediately after executing all flows.
-     *
-     * @default false
-     */
     stopAfterFlows: zod_1.z.coerce.boolean().optional().default(false),
-    /**
-     * Time, in seconds, ASTA should wait for pages to load before timing out
-     * and labeling the page as failed.
-     * @default 15
-     */
     pageLoadTimeout: zod_1.z.coerce.number().optional().default(15),
-    /**
-     * How many times ASTA should retry a failed action before giving up.
-     * @default 3
-     */
     actionRetryAttempts: zod_1.z.coerce.number().optional().default(3),
 })
     .default({});
-/**
- * Parse and validate run parameters from a github actions workflow
- *
- * @param parameters The raw parameters obtained from the workflow file
- *
- * @throws if `parameters` is not valid JSON or YAML
- * @throws if `parameters` does not match the {@link RunParametersSchema expected schema}
- */
 const getRunParameters = (parameters) => {
-    // No parameters provided, use defaults
     if (!parameters)
         return exports.RunParametersSchema.parse({});
     let parsed;
-    // users will likely be using yaml, so we'll try that first
     try {
         parsed = js_yaml_1.default.load(parameters);
     }
     catch (e) {
-        // try JSON next
         try {
             parsed = JSON.parse(parameters);
         }
@@ -13362,12 +12208,6 @@ exports.getRunParameters = getRunParameters;
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.sleep = exports.toError = void 0;
-/**
- * Coerce an unknown value caught in a `catch` block to an {@link Error}.
- *
- * @param err
- * @returns `err` as an {@link Error}
- */
 const toError = (err) => {
     if (err instanceof Error) {
         return err;
@@ -14576,6 +13416,7 @@ class ZodError extends Error {
         };
         const actualProto = new.target.prototype;
         if (Object.setPrototypeOf) {
+            // eslint-disable-next-line ban/ban
             Object.setPrototypeOf(this, actualProto);
         }
         else {
@@ -14615,6 +13456,13 @@ class ZodError extends Error {
                         const terminal = i === issue.path.length - 1;
                         if (!terminal) {
                             curr[el] = curr[el] || { _errors: [] };
+                            // if (typeof el === "string") {
+                            //   curr[el] = curr[el] || { _errors: [] };
+                            // } else if (typeof el === "number") {
+                            //   const errorArray: any = [];
+                            //   errorArray._errors = [];
+                            //   curr[el] = curr[el] || errorArray;
+                            // }
                         }
                         else {
                             curr[el] = curr[el] || { _errors: [] };
@@ -14788,7 +13636,7 @@ function addIssueToContext(ctx, issueData) {
             ctx.common.contextualErrorMap,
             ctx.schemaErrorMap,
             (0, errors_1.getErrorMap)(),
-            en_1.default,
+            en_1.default, // then global default map
         ].filter((x) => !!x),
     });
     ctx.common.issues.push(issue);
@@ -14919,8 +13767,8 @@ var util;
             return obj[e];
         });
     };
-    util.objectKeys = typeof Object.keys === "function"
-        ? (obj) => Object.keys(obj)
+    util.objectKeys = typeof Object.keys === "function" // eslint-disable-line ban/ban
+        ? (obj) => Object.keys(obj) // eslint-disable-line ban/ban
         : (object) => {
             const keys = [];
             for (const key in object) {
@@ -14938,7 +13786,7 @@ var util;
         return undefined;
     };
     util.isInteger = typeof Number.isInteger === "function"
-        ? (val) => Number.isInteger(val)
+        ? (val) => Number.isInteger(val) // eslint-disable-line ban/ban
         : (val) => typeof val === "number" && isFinite(val) && Math.floor(val) === val;
     function joinValues(array, separator = " | ") {
         return array
@@ -14958,7 +13806,7 @@ var objectUtil;
     objectUtil.mergeShapes = (first, second) => {
         return {
             ...first,
-            ...second,
+            ...second, // second overwrites first
         };
     };
 })(objectUtil = exports.objectUtil || (exports.objectUtil = {}));
@@ -15290,6 +14138,7 @@ function processCreateParams(params) {
 }
 class ZodType {
     constructor(def) {
+        /** Alias of safeParseAsync */
         this.spa = this.safeParseAsync;
         this._def = def;
         this.parse = this.parse.bind(this);
@@ -15545,12 +14394,31 @@ exports.Schema = ZodType;
 exports.ZodSchema = ZodType;
 const cuidRegex = /^c[^\s-]{8,}$/i;
 const cuid2Regex = /^[a-z][a-z0-9]*$/;
-const ulidRegex = /[0-9A-HJKMNP-TV-Z]{26}/;
+const ulidRegex = /^[0-9A-HJKMNP-TV-Z]{26}$/;
+// const uuidRegex =
+//   /^([a-f0-9]{8}-[a-f0-9]{4}-[1-5][a-f0-9]{3}-[a-f0-9]{4}-[a-f0-9]{12}|00000000-0000-0000-0000-000000000000)$/i;
 const uuidRegex = /^[0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12}$/i;
-const emailRegex = /^([A-Z0-9_+-]+\.?)*[A-Z0-9_+-]@([A-Z0-9][A-Z0-9\-]*\.)+[A-Z]{2,}$/i;
-const emojiRegex = /^(\p{Extended_Pictographic}|\p{Emoji_Component})+$/u;
+// from https://stackoverflow.com/a/46181/1550155
+// old version: too slow, didn't support unicode
+// const emailRegex = /^((([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+(\.([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+)*)|((\x22)((((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(([\x01-\x08\x0b\x0c\x0e-\x1f\x7f]|\x21|[\x23-\x5b]|[\x5d-\x7e]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(\\([\x01-\x09\x0b\x0c\x0d-\x7f]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))))*(((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(\x22)))@((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))$/i;
+//old email regex
+// const emailRegex = /^(([^<>()[\].,;:\s@"]+(\.[^<>()[\].,;:\s@"]+)*)|(".+"))@((?!-)([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{1,})[^-<>()[\].,;:\s@"]$/i;
+// eslint-disable-next-line
+// const emailRegex =
+//   /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[(((25[0-5])|(2[0-4][0-9])|(1[0-9]{2})|([0-9]{1,2}))\.){3}((25[0-5])|(2[0-4][0-9])|(1[0-9]{2})|([0-9]{1,2}))\])|(\[IPv6:(([a-f0-9]{1,4}:){7}|::([a-f0-9]{1,4}:){0,6}|([a-f0-9]{1,4}:){1}:([a-f0-9]{1,4}:){0,5}|([a-f0-9]{1,4}:){2}:([a-f0-9]{1,4}:){0,4}|([a-f0-9]{1,4}:){3}:([a-f0-9]{1,4}:){0,3}|([a-f0-9]{1,4}:){4}:([a-f0-9]{1,4}:){0,2}|([a-f0-9]{1,4}:){5}:([a-f0-9]{1,4}:){0,1})([a-f0-9]{1,4}|(((25[0-5])|(2[0-4][0-9])|(1[0-9]{2})|([0-9]{1,2}))\.){3}((25[0-5])|(2[0-4][0-9])|(1[0-9]{2})|([0-9]{1,2})))\])|([A-Za-z0-9]([A-Za-z0-9-]*[A-Za-z0-9])*(\.[A-Za-z]{2,})+))$/;
+// const emailRegex =
+//   /^[a-zA-Z0-9\.\!\#\$\%\&\'\*\+\/\=\?\^\_\`\{\|\}\~\-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
+// const emailRegex =
+//   /^(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])$/i;
+const emailRegex = /^(?!\.)(?!.*\.\.)([A-Z0-9_+-\.]*)[A-Z0-9_+-]@([A-Z0-9][A-Z0-9\-]*\.)+[A-Z]{2,}$/i;
+// const emailRegex =
+//   /^[a-z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-z0-9-]+(?:\.[a-z0-9\-]+)*$/i;
+// from https://thekevinscott.com/emojis-in-javascript/#writing-a-regular-expression
+const _emojiRegex = `^(\\p{Extended_Pictographic}|\\p{Emoji_Component})+$`;
+let emojiRegex;
 const ipv4Regex = /^(((25[0-5])|(2[0-4][0-9])|(1[0-9]{2})|([0-9]{1,2}))\.){3}((25[0-5])|(2[0-4][0-9])|(1[0-9]{2})|([0-9]{1,2}))$/;
 const ipv6Regex = /^(([a-f0-9]{1,4}:){7}|::([a-f0-9]{1,4}:){0,6}|([a-f0-9]{1,4}:){1}:([a-f0-9]{1,4}:){0,5}|([a-f0-9]{1,4}:){2}:([a-f0-9]{1,4}:){0,4}|([a-f0-9]{1,4}:){3}:([a-f0-9]{1,4}:){0,3}|([a-f0-9]{1,4}:){4}:([a-f0-9]{1,4}:){0,2}|([a-f0-9]{1,4}:){5}:([a-f0-9]{1,4}:){0,1})([a-f0-9]{1,4}|(((25[0-5])|(2[0-4][0-9])|(1[0-9]{2})|([0-9]{1,2}))\.){3}((25[0-5])|(2[0-4][0-9])|(1[0-9]{2})|([0-9]{1,2})))$/;
+// Adapted from https://stackoverflow.com/a/3143231
 const datetimeRegex = (args) => {
     if (args.precision) {
         if (args.offset) {
@@ -15587,27 +14455,6 @@ function isValidIP(ip, version) {
     return false;
 }
 class ZodString extends ZodType {
-    constructor() {
-        super(...arguments);
-        this._regex = (regex, validation, message) => this.refinement((data) => regex.test(data), {
-            validation,
-            code: ZodError_1.ZodIssueCode.invalid_string,
-            ...errorUtil_1.errorUtil.errToObj(message),
-        });
-        this.nonempty = (message) => this.min(1, errorUtil_1.errorUtil.errToObj(message));
-        this.trim = () => new ZodString({
-            ...this._def,
-            checks: [...this._def.checks, { kind: "trim" }],
-        });
-        this.toLowerCase = () => new ZodString({
-            ...this._def,
-            checks: [...this._def.checks, { kind: "toLowerCase" }],
-        });
-        this.toUpperCase = () => new ZodString({
-            ...this._def,
-            checks: [...this._def.checks, { kind: "toUpperCase" }],
-        });
-    }
     _parse(input) {
         if (this._def.coerce) {
             input.data = String(input.data);
@@ -15619,7 +14466,9 @@ class ZodString extends ZodType {
                 code: ZodError_1.ZodIssueCode.invalid_type,
                 expected: util_1.ZodParsedType.string,
                 received: ctx.parsedType,
-            });
+            }
+            //
+            );
             return parseUtil_1.INVALID;
         }
         const status = new parseUtil_1.ParseStatus();
@@ -15693,6 +14542,9 @@ class ZodString extends ZodType {
                 }
             }
             else if (check.kind === "emoji") {
+                if (!emojiRegex) {
+                    emojiRegex = new RegExp(_emojiRegex, "u");
+                }
                 if (!emojiRegex.test(input.data)) {
                     ctx = this._getOrReturnCtx(input, ctx);
                     (0, parseUtil_1.addIssueToContext)(ctx, {
@@ -15845,6 +14697,13 @@ class ZodString extends ZodType {
         }
         return { status: status.value, value: input.data };
     }
+    _regex(regex, validation, message) {
+        return this.refinement((data) => regex.test(data), {
+            validation,
+            code: ZodError_1.ZodIssueCode.invalid_string,
+            ...errorUtil_1.errorUtil.errToObj(message),
+        });
+    }
     _addCheck(check) {
         return new ZodString({
             ...this._def,
@@ -15942,6 +14801,31 @@ class ZodString extends ZodType {
             ...errorUtil_1.errorUtil.errToObj(message),
         });
     }
+    /**
+     * @deprecated Use z.string().min(1) instead.
+     * @see {@link ZodString.min}
+     */
+    nonempty(message) {
+        return this.min(1, errorUtil_1.errorUtil.errToObj(message));
+    }
+    trim() {
+        return new ZodString({
+            ...this._def,
+            checks: [...this._def.checks, { kind: "trim" }],
+        });
+    }
+    toLowerCase() {
+        return new ZodString({
+            ...this._def,
+            checks: [...this._def.checks, { kind: "toLowerCase" }],
+        });
+    }
+    toUpperCase() {
+        return new ZodString({
+            ...this._def,
+            checks: [...this._def.checks, { kind: "toUpperCase" }],
+        });
+    }
     get isDatetime() {
         return !!this._def.checks.find((ch) => ch.kind === "datetime");
     }
@@ -16000,6 +14884,7 @@ ZodString.create = (params) => {
         ...processCreateParams(params),
     });
 };
+// https://stackoverflow.com/questions/3966484/why-does-modulus-operator-return-fractional-number-in-javascript/31711034#31711034
 function floatSafeRemainder(val, step) {
     const valDecCount = (val.toString().split(".")[1] || "").length;
     const stepDecCount = (step.toString().split(".")[1] || "").length;
@@ -16635,6 +15520,7 @@ ZodNull.create = (params) => {
 class ZodAny extends ZodType {
     constructor() {
         super(...arguments);
+        // to prevent instances of other classes from extending ZodAny. this causes issues with catchall in ZodObject.
         this._any = true;
     }
     _parse(input) {
@@ -16651,6 +15537,7 @@ ZodAny.create = (params) => {
 class ZodUnknown extends ZodType {
     constructor() {
         super(...arguments);
+        // required
         this._unknown = true;
     }
     _parse(input) {
@@ -16841,7 +15728,47 @@ class ZodObject extends ZodType {
     constructor() {
         super(...arguments);
         this._cached = null;
+        /**
+         * @deprecated In most cases, this is no longer needed - unknown properties are now silently stripped.
+         * If you want to pass through unknown properties, use `.passthrough()` instead.
+         */
         this.nonstrict = this.passthrough;
+        // extend<
+        //   Augmentation extends ZodRawShape,
+        //   NewOutput extends util.flatten<{
+        //     [k in keyof Augmentation | keyof Output]: k extends keyof Augmentation
+        //       ? Augmentation[k]["_output"]
+        //       : k extends keyof Output
+        //       ? Output[k]
+        //       : never;
+        //   }>,
+        //   NewInput extends util.flatten<{
+        //     [k in keyof Augmentation | keyof Input]: k extends keyof Augmentation
+        //       ? Augmentation[k]["_input"]
+        //       : k extends keyof Input
+        //       ? Input[k]
+        //       : never;
+        //   }>
+        // >(
+        //   augmentation: Augmentation
+        // ): ZodObject<
+        //   extendShape<T, Augmentation>,
+        //   UnknownKeys,
+        //   Catchall,
+        //   NewOutput,
+        //   NewInput
+        // > {
+        //   return new ZodObject({
+        //     ...this._def,
+        //     shape: () => ({
+        //       ...this._def.shape(),
+        //       ...augmentation,
+        //     }),
+        //   }) as any;
+        // }
+        /**
+         * @deprecated Use `.extend` instead
+         *  */
         this.augment = this.extend;
     }
     _getCached() {
@@ -16909,12 +15836,14 @@ class ZodObject extends ZodType {
             }
         }
         else {
+            // run catchall validation
             const catchall = this._def.catchall;
             for (const key of extraKeys) {
                 const value = ctx.data[key];
                 pairs.push({
                     key: { status: "valid", value: key },
-                    value: catchall._parse(new ParseInputLazyPath(ctx, value, ctx.path, key)),
+                    value: catchall._parse(new ParseInputLazyPath(ctx, value, ctx.path, key) //, ctx.child(key), value, getParsedType(value)
+                    ),
                     alwaysSet: key in ctx.data,
                 });
             }
@@ -16978,6 +15907,23 @@ class ZodObject extends ZodType {
             unknownKeys: "passthrough",
         });
     }
+    // const AugmentFactory =
+    //   <Def extends ZodObjectDef>(def: Def) =>
+    //   <Augmentation extends ZodRawShape>(
+    //     augmentation: Augmentation
+    //   ): ZodObject<
+    //     extendShape<ReturnType<Def["shape"]>, Augmentation>,
+    //     Def["unknownKeys"],
+    //     Def["catchall"]
+    //   > => {
+    //     return new ZodObject({
+    //       ...def,
+    //       shape: () => ({
+    //         ...def.shape(),
+    //         ...augmentation,
+    //       }),
+    //     }) as any;
+    //   };
     extend(augmentation) {
         return new ZodObject({
             ...this._def,
@@ -16987,6 +15933,11 @@ class ZodObject extends ZodType {
             }),
         });
     }
+    /**
+     * Prior to zod@1.0.12 there was a bug in the
+     * inferred type of merged objects. Please
+     * upgrade if you are experiencing issues.
+     */
     merge(merging) {
         const merged = new ZodObject({
             unknownKeys: merging._def.unknownKeys,
@@ -16999,9 +15950,65 @@ class ZodObject extends ZodType {
         });
         return merged;
     }
+    // merge<
+    //   Incoming extends AnyZodObject,
+    //   Augmentation extends Incoming["shape"],
+    //   NewOutput extends {
+    //     [k in keyof Augmentation | keyof Output]: k extends keyof Augmentation
+    //       ? Augmentation[k]["_output"]
+    //       : k extends keyof Output
+    //       ? Output[k]
+    //       : never;
+    //   },
+    //   NewInput extends {
+    //     [k in keyof Augmentation | keyof Input]: k extends keyof Augmentation
+    //       ? Augmentation[k]["_input"]
+    //       : k extends keyof Input
+    //       ? Input[k]
+    //       : never;
+    //   }
+    // >(
+    //   merging: Incoming
+    // ): ZodObject<
+    //   extendShape<T, ReturnType<Incoming["_def"]["shape"]>>,
+    //   Incoming["_def"]["unknownKeys"],
+    //   Incoming["_def"]["catchall"],
+    //   NewOutput,
+    //   NewInput
+    // > {
+    //   const merged: any = new ZodObject({
+    //     unknownKeys: merging._def.unknownKeys,
+    //     catchall: merging._def.catchall,
+    //     shape: () =>
+    //       objectUtil.mergeShapes(this._def.shape(), merging._def.shape()),
+    //     typeName: ZodFirstPartyTypeKind.ZodObject,
+    //   }) as any;
+    //   return merged;
+    // }
     setKey(key, schema) {
         return this.augment({ [key]: schema });
     }
+    // merge<Incoming extends AnyZodObject>(
+    //   merging: Incoming
+    // ): //ZodObject<T & Incoming["_shape"], UnknownKeys, Catchall> = (merging) => {
+    // ZodObject<
+    //   extendShape<T, ReturnType<Incoming["_def"]["shape"]>>,
+    //   Incoming["_def"]["unknownKeys"],
+    //   Incoming["_def"]["catchall"]
+    // > {
+    //   // const mergedShape = objectUtil.mergeShapes(
+    //   //   this._def.shape(),
+    //   //   merging._def.shape()
+    //   // );
+    //   const merged: any = new ZodObject({
+    //     unknownKeys: merging._def.unknownKeys,
+    //     catchall: merging._def.catchall,
+    //     shape: () =>
+    //       objectUtil.mergeShapes(this._def.shape(), merging._def.shape()),
+    //     typeName: ZodFirstPartyTypeKind.ZodObject,
+    //   }) as any;
+    //   return merged;
+    // }
     catchall(index) {
         return new ZodObject({
             ...this._def,
@@ -17032,6 +16039,9 @@ class ZodObject extends ZodType {
             shape: () => shape,
         });
     }
+    /**
+     * @deprecated
+     */
     deepPartial() {
         return deepPartialify(this);
     }
@@ -17108,6 +16118,7 @@ class ZodUnion extends ZodType {
         const { ctx } = this._processInputParams(input);
         const options = this._def.options;
         function handleResults(results) {
+            // return first issue-free validation if it exists
             for (const result of results) {
                 if (result.result.status === "valid") {
                     return result.result;
@@ -17115,10 +16126,12 @@ class ZodUnion extends ZodType {
             }
             for (const result of results) {
                 if (result.result.status === "dirty") {
+                    // add issues from dirty option
                     ctx.common.issues.push(...result.ctx.common.issues);
                     return result.result;
                 }
             }
+            // return invalid
             const unionErrors = results.map((result) => new ZodError_1.ZodError(result.ctx.common.issues));
             (0, parseUtil_1.addIssueToContext)(ctx, {
                 code: ZodError_1.ZodIssueCode.invalid_union,
@@ -17197,6 +16210,13 @@ ZodUnion.create = (types, params) => {
         ...processCreateParams(params),
     });
 };
+/////////////////////////////////////////////////////
+/////////////////////////////////////////////////////
+//////////                                 //////////
+//////////      ZodDiscriminatedUnion      //////////
+//////////                                 //////////
+/////////////////////////////////////////////////////
+/////////////////////////////////////////////////////
 const getDiscriminator = (type) => {
     if (type instanceof ZodLazy) {
         return getDiscriminator(type.schema);
@@ -17211,6 +16231,7 @@ const getDiscriminator = (type) => {
         return type.options;
     }
     else if (type instanceof ZodNativeEnum) {
+        // eslint-disable-next-line ban/ban
         return Object.keys(type.enum);
     }
     else if (type instanceof ZodDefault) {
@@ -17272,8 +16293,18 @@ class ZodDiscriminatedUnion extends ZodType {
     get optionsMap() {
         return this._def.optionsMap;
     }
+    /**
+     * The constructor of the discriminated union schema. Its behaviour is very similar to that of the normal z.union() constructor.
+     * However, it only allows a union of objects, all of which need to share a discriminator property. This property must
+     * have a different value for each object in the union.
+     * @param discriminator the name of the discriminator property
+     * @param types an array of object schemas
+     * @param params
+     */
     static create(discriminator, options, params) {
+        // Get all the valid discriminator values
         const optionsMap = new Map();
+        // try {
         for (const type of options) {
             const discriminatorValues = getDiscriminator(type.shape[discriminator]);
             if (!discriminatorValues) {
@@ -17436,7 +16467,7 @@ class ZodTuple extends ZodType {
                 return null;
             return schema._parse(new ParseInputLazyPath(ctx, item, ctx.path, itemIndex));
         })
-            .filter((x) => !!x);
+            .filter((x) => !!x); // filter nulls
         if (ctx.common.async) {
             return Promise.all(items).then((results) => {
                 return parseUtil_1.ParseStatus.mergeArray(status, results);
@@ -17727,6 +16758,9 @@ class ZodFunction extends ZodType {
         const params = { errorMap: ctx.common.contextualErrorMap };
         const fn = ctx.data;
         if (this._def.returns instanceof ZodPromise) {
+            // Would love a way to avoid disabling this rule, but we need
+            // an alias (using an arrow function was what caused 2651).
+            // eslint-disable-next-line @typescript-eslint/no-this-alias
             const me = this;
             return (0, parseUtil_1.OK)(async function (...args) {
                 const error = new ZodError_1.ZodError([]);
@@ -17747,6 +16781,9 @@ class ZodFunction extends ZodType {
             });
         }
         else {
+            // Would love a way to avoid disabling this rule, but we need
+            // an alias (using an arrow function was what caused 2651).
+            // eslint-disable-next-line @typescript-eslint/no-this-alias
             const me = this;
             return (0, parseUtil_1.OK)(function (...args) {
                 const parsedArgs = me._def.args.safeParse(args, params);
@@ -18031,7 +17068,9 @@ class ZodEffects extends ZodType {
             }
         }
         if (effect.type === "refinement") {
-            const executeRefinement = (acc) => {
+            const executeRefinement = (acc
+            // effect: RefinementEffect<any>
+            ) => {
                 const result = effect.refinement(acc, checkCtx);
                 if (ctx.common.async) {
                     return Promise.resolve(result);
@@ -18051,6 +17090,7 @@ class ZodEffects extends ZodType {
                     return parseUtil_1.INVALID;
                 if (inner.status === "dirty")
                     status.dirty();
+                // return value is ignored
                 executeRefinement(inner.value);
                 return { status: status.value, value: inner.value };
             }
@@ -18185,6 +17225,7 @@ ZodDefault.create = (type, params) => {
 class ZodCatch extends ZodType {
     _parse(input) {
         const { ctx } = this._processInputParams(input);
+        // newCtx is used to not collect issues from inner types in ctx
         const newCtx = {
             ...ctx,
             common: {
@@ -18355,7 +17396,18 @@ ZodReadonly.create = (type, params) => {
         ...processCreateParams(params),
     });
 };
-const custom = (check, params = {}, fatal) => {
+const custom = (check, params = {}, 
+/**
+ * @deprecated
+ *
+ * Pass `fatal` into the params object instead:
+ *
+ * ```ts
+ * z.string().custom((val) => val.length > 5, { fatal: false })
+ * ```
+ *
+ */
+fatal) => {
     if (check)
         return ZodAny.create().superRefine((data, ctx) => {
             var _a, _b;
@@ -18415,10 +17467,13 @@ var ZodFirstPartyTypeKind;
     ZodFirstPartyTypeKind["ZodPipeline"] = "ZodPipeline";
     ZodFirstPartyTypeKind["ZodReadonly"] = "ZodReadonly";
 })(ZodFirstPartyTypeKind = exports.ZodFirstPartyTypeKind || (exports.ZodFirstPartyTypeKind = {}));
+// requires TS 4.4+
 class Class {
     constructor(..._) { }
 }
-const instanceOfType = (cls, params = {
+const instanceOfType = (
+// const instanceOfType = <T extends new (...args: any[]) => any>(
+cls, params = {
     message: `Input not instance of ${cls.name}`,
 }) => (0, exports.custom)((data) => data instanceof cls, params);
 exports["instanceof"] = instanceOfType;

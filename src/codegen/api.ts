@@ -114,6 +114,7 @@ export interface RunParametersDto {
     testableDomains: string[]
     assets: RunParametersAssetsDTO
     extensions: RunParametersExtensionsDTO
+    strategies?: object
     /** @default "active" */
     status?: string
     experimental?: ExperimentalRunParametersDTO
@@ -697,6 +698,44 @@ export interface PatDTO {
     updatedAt: string
 }
 
+export interface Plan {
+    /** @example "Free Plan" */
+    name: string
+    /** @example 1500 */
+    testItemsPerDay: number
+    /** @example 14 */
+    runHistoryDurationInDays: number
+}
+
+export interface WorkspaceDataDTO {
+    /** @default "inactive" */
+    status?: 'active' | 'inactive' | 'expired'
+    plan?: Plan
+    subscriptionId?: string
+}
+
+export interface WorkspaceDTO {
+    type: string
+    _id?: string
+    parent: object
+    data: WorkspaceDataDTO
+    role?: 0 | 1 | 2 | 3 | 4
+    /** @format date-time */
+    createdAt?: string
+    /** @format date-time */
+    updatedAt?: string
+    /**
+     * The name of the workspace
+     * @example "test's workspace"
+     */
+    name: string
+    /**
+     * The name of the workspace's plan
+     * @example "free"
+     */
+    plan?: 'free' | 'plus' | 'pro' | 'enterprise' | 'enterprise full access'
+}
+
 export interface UserResponse {
     /** @example "6398ff6875c42c6e2a417b8e" */
     _id: string
@@ -704,6 +743,11 @@ export interface UserResponse {
     createdAt: string
     /** @example "2020-11-24T17:43:15.970Z" */
     updatedAt: string
+    /**
+     * User's workspace
+     * @example "default workspace"
+     */
+    workspace: WorkspaceDTO
     /**
      * User's email address
      * @example "joh-doe@gmail.com"
@@ -718,14 +762,25 @@ export interface UserResponse {
      * User's stripe or payment ID
      * @example "cus_NeBMaIP2OU1SWh"
      */
-    paymentId: string
+    customerId: string
     /**
      * User's status
      * @example "active"
      */
-    status: string
+    status: 'active' | 'inactive' | 'waitlisted'
     /** User workspaces */
-    workspaces: string[]
+    workspaces: WorkspaceDTO[]
+}
+
+export interface PaginationMetadata {
+    count: number
+    limit: number
+    offset: number
+}
+
+export interface UserListDTO {
+    data: UserResponse[]
+    metadata: PaginationMetadata
 }
 
 export interface UpdateUserDto {
@@ -734,7 +789,7 @@ export interface UpdateUserDto {
     /** The email that identifies the user */
     externalId?: string
     /** The email that identifies the user */
-    paymentId?: string
+    customerId?: string
 }
 
 export interface CreateUserDto {
@@ -743,7 +798,7 @@ export interface CreateUserDto {
     /** The email that identifies the user */
     externalId: string
     /** The email that identifies the user */
-    paymentId: string
+    customerId: string
 }
 
 export type WorkspaceData = object
@@ -786,29 +841,31 @@ export interface WorkspaceResponse {
 }
 
 export interface CreateWorkspaceDto {
+    data: WorkspaceDataDTO
     /**
      * The name of the workspace
      * @example "test's workspace"
      */
     name: string
     /**
-     * The name of the workspace
-     * @example "test's workspace"
+     * The name of the workspace's plan
+     * @example "free"
      */
-    plan: string
+    plan?: 'free' | 'plus' | 'pro' | 'enterprise' | 'enterprise full access'
 }
 
 export interface UpdateWorkspaceDto {
+    data?: WorkspaceDataDTO
     /**
      * The name of the workspace
      * @example "test's workspace"
      */
     name?: string
     /**
-     * The name of the workspace
-     * @example "test's workspace"
+     * The name of the workspace's plan
+     * @example "free"
      */
-    plan?: string
+    plan?: 'free' | 'plus' | 'pro' | 'enterprise' | 'enterprise full access'
 }
 
 export interface CreateInvitationTokenDto {
@@ -852,8 +909,11 @@ export interface AnalyticsFilterDTO {
         | 'Option'
         | 'Table'
         | 'Table Header'
+        | 'Table Body'
+        | 'Table Footer'
         | 'Table Row'
-        | 'Table Cell'
+        | 'Table Header Cell'
+        | 'Table Data Cell'
         | 'Large Heading'
         | 'Medium Heading'
         | 'Small Heading'
@@ -922,8 +982,11 @@ export interface AnalyticsDTO {
         | 'Option'
         | 'Table'
         | 'Table Header'
+        | 'Table Body'
+        | 'Table Footer'
         | 'Table Row'
-        | 'Table Cell'
+        | 'Table Header Cell'
+        | 'Table Data Cell'
         | 'Large Heading'
         | 'Medium Heading'
         | 'Small Heading'
@@ -2797,6 +2860,20 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
          * No description
          *
          * @tags variants
+         * @name ModelControllerDeleteComponent
+         * @request DELETE:/api/v2/variants/{id}/model/components/{compId}
+         */
+        modelControllerDeleteComponent: (id: string, compId: string, params: RequestParams = {}) =>
+            this.request<void, void>({
+                path: `/api/v2/variants/${id}/model/components/${compId}`,
+                method: 'DELETE',
+                ...params,
+            }),
+
+        /**
+         * No description
+         *
+         * @tags variants
          * @name ModelControllerApplyUpdates
          * @request POST:/api/v2/variants/{appId}/model/update
          */
@@ -2837,9 +2914,10 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
          * @request GET:/api/v2/variants/{appId}/model/pages
          */
         modelControllerListPageModels: (appId: string, params: RequestParams = {}) =>
-            this.request<void, any>({
+            this.request<PageModelDto[], any>({
                 path: `/api/v2/variants/${appId}/model/pages`,
                 method: 'GET',
+                format: 'json',
                 ...params,
             }),
 
@@ -3192,10 +3270,12 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
                 limit?: number
                 /** @min 0 */
                 offset?: number
+                text?: string
+                workspaces?: boolean
             },
             params: RequestParams = {}
         ) =>
-            this.request<UserResponse, any>({
+            this.request<UserListDTO, any>({
                 path: `/api/v2/users`,
                 method: 'GET',
                 query: query,
@@ -3447,6 +3527,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
                 limit?: number
                 /** @min 0 */
                 offset?: number
+                text?: string
             },
             params: RequestParams = {}
         ) =>

@@ -12,6 +12,7 @@ async function main() {
     const inputs: Inputs = getInputs()
     const api = new Api(inputs)
 
+    core.debug(`Starting run for application "${inputs.application}"`)
     const runId = await startRun(api, inputs)
     core.setOutput('run-id', runId)
 
