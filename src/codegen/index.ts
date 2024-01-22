@@ -106,7 +106,9 @@ export class Api {
     }
 
     public async stopRun(runId: string) {
-        await this._api.api.runsControllerPauseRun(runId, 'stop', { secure: true })
+        await this._api.api.runsControllerPauseRun(runId, 'stop', {
+            secure: true,
+        })
     }
 
     public async getRunLogs(

@@ -4,6 +4,7 @@ import { Api } from './codegen'
 import { getInputs, type Inputs } from './inputs'
 import { sleep, toError } from './util'
 import { RunLogEntryDTO } from './codegen/api'
+import { COMPANION_BASE_URL } from './constants'
 
 async function main() {
     const POLL_INTERVAL = 1_000
@@ -78,11 +79,14 @@ async function startRun(api: Api, inputs: Inputs) {
 
     core.debug('Starting run...')
     const runId = await api.startRun()
+    const runLogUrl = new URL(COMPANION_BASE_URL, `/app/${inputs.variant}/log`)
+    runLogUrl.searchParams.set('run', runId)
+    runLogUrl.searchParams.set('filters[level][$ne]', 'Debug')
     core.notice(
         `
 Started run ${runId} for ${application.data.name} (${variant.name})
     
-View detailed logs here: https://companion.asta.grantsgovservices.com/app/${inputs.variant}/log?run=${runId}&filters%5Blevel%5D%5B%24ne%5D=Debug
+View detailed logs here: ${runLogUrl.toString()}
 `.trim()
     )
 
