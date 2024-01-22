@@ -83,7 +83,7 @@ async function startRun(api: Api, inputs: Inputs) {
 
     core.debug('Starting run...')
     const runId = await api.startRun()
-    const runLogUrl = new URL(COMPANION_BASE_URL, `/app/${inputs.variant}/log`)
+    const runLogUrl = new URL(`/app/${inputs.variant}/log`, COMPANION_BASE_URL)
     runLogUrl.searchParams.set('run', runId)
     runLogUrl.searchParams.set('filters[level][$ne]', 'Debug')
     core.notice(
