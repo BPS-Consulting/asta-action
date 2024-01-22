@@ -6,8 +6,11 @@ import { sleep, toError } from './util'
 import { RunLogEntryDTO } from './codegen/api'
 import { COMPANION_BASE_URL } from './constants'
 
+import pkg from '../package.json'
+
 async function main() {
     const POLL_INTERVAL = 1_000
+    core.debug(`Startign asta-action@${pkg.version}...`)
 
     core.debug(`Parsing inputs...`)
     const inputs: Inputs = getInputs()
