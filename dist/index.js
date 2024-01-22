@@ -11732,6 +11732,12 @@ class Api extends HttpClient {
                 method: 'DELETE',
                 ...params,
             }),
+            workspaceControllerAddUnlimitedPlan: (wsId, params = {}) => this.request({
+                path: `/api/v2/workspace/${wsId}/add-unlimited-plan`,
+                method: 'POST',
+                format: 'json',
+                ...params,
+            }),
             invitationTokenControllerGetInvitationToken: (id, params = {}) => this.request({
                 path: `/api/v2/invitation-token/${id}`,
                 method: 'GET',
