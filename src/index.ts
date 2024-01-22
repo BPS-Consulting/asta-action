@@ -28,7 +28,8 @@ async function main() {
     let numErrors = 0
     for (
         runStatus = await api.getRunStatus(runId);
-        ['starting', 'running'].includes(runStatus.runningState);
+        // ['starting', 'running'].includes(runStatus.runningState);
+        runStatus.runningState !== 'stopped';
         runStatus = await api.getRunStatus(runId)
     ) {
         core.debug(`Run status: ${JSON.stringify(runStatus, null, 2)}`)
