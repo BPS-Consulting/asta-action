@@ -10793,8 +10793,13 @@ class HttpClient {
             this.securityData = data;
         };
         this.contentFormatters = {
-            [ContentType.Json]: (input) => input !== null && (typeof input === 'object' || typeof input === 'string') ? JSON.stringify(input) : input,
-            [ContentType.Text]: (input) => input !== null && typeof input !== 'string' ? JSON.stringify(input) : input,
+            [ContentType.Json]: (input) => input !== null &&
+                (typeof input === 'object' || typeof input === 'string')
+                ? JSON.stringify(input)
+                : input,
+            [ContentType.Text]: (input) => input !== null && typeof input !== 'string'
+                ? JSON.stringify(input)
+                : input,
             [ContentType.FormData]: (input) => Object.keys(input || {}).reduce((formData, key) => {
                 const property = input[key];
                 formData.append(key, property instanceof Blob
@@ -10826,7 +10831,9 @@ class HttpClient {
             }
         };
         this.request = async ({ body, secure, path, type, query, format, baseUrl, cancelToken, ...params }) => {
-            const secureParams = ((typeof secure === 'boolean' ? secure : this.baseApiParams.secure) &&
+            const secureParams = ((typeof secure === 'boolean'
+                ? secure
+                : this.baseApiParams.secure) &&
                 this.securityWorker &&
                 (await this.securityWorker(this.securityData))) ||
                 {};
@@ -10838,10 +10845,16 @@ class HttpClient {
                 ...requestParams,
                 headers: {
                     ...(requestParams.headers || {}),
-                    ...(type && type !== ContentType.FormData ? { 'Content-Type': type } : {}),
+                    ...(type && type !== ContentType.FormData
+                        ? { 'Content-Type': type }
+                        : {}),
                 },
-                signal: (cancelToken ? this.createAbortSignal(cancelToken) : requestParams.signal) || null,
-                body: typeof body === 'undefined' || body === null ? null : payloadFormatter(body),
+                signal: (cancelToken
+                    ? this.createAbortSignal(cancelToken)
+                    : requestParams.signal) || null,
+                body: typeof body === 'undefined' || body === null
+                    ? null
+                    : payloadFormatter(body),
             }).then(async (response) => {
                 const r = response;
                 r.data = null;
@@ -10887,7 +10900,9 @@ class HttpClient {
         const query = rawQuery || {};
         const keys = Object.keys(query).filter(key => 'undefined' !== typeof query[key]);
         return keys
-            .map(key => Array.isArray(query[key]) ? this.addArrayQueryParam(query, key) : this.addQueryParam(query, key))
+            .map(key => Array.isArray(query[key])
+            ? this.addArrayQueryParam(query, key)
+            : this.addQueryParam(query, key))
             .join('&');
     }
     addQueryParams(rawQuery) {
@@ -11914,7 +11929,9 @@ class Api {
         return runId;
     }
     async stopRun(runId) {
-        await this._api.api.runsControllerPauseRun(runId, 'stop', { secure: true });
+        await this._api.api.runsControllerPauseRun(runId, 'stop', {
+            secure: true,
+        });
     }
     async getRunLogs(runId, params = {}, applicationId = this.inputs.variant) {
         const requestParams = { query: params, secure: true };
@@ -11938,6 +11955,22 @@ class Api {
     }
 }
 exports.Api = Api;
+
+
+/***/ }),
+
+/***/ "./src/constants.ts":
+/*!**************************!*\
+  !*** ./src/constants.ts ***!
+  \**************************/
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.REPOSITORY_BASE_URL = exports.COMPANION_BASE_URL = void 0;
+exports.COMPANION_BASE_URL = `https://companion.sqabot.ai`;
+exports.REPOSITORY_BASE_URL = 'https://sqabot.ai';
 
 
 /***/ }),
@@ -11973,14 +12006,20 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 __webpack_require__(/*! source-map-support/register */ "./node_modules/source-map-support/register.js");
 const core = __importStar(__webpack_require__(/*! @actions/core */ "./node_modules/@actions/core/lib/core.js"));
 const codegen_1 = __webpack_require__(/*! ./codegen */ "./src/codegen/index.ts");
 const inputs_1 = __webpack_require__(/*! ./inputs */ "./src/inputs/index.ts");
 const util_1 = __webpack_require__(/*! ./util */ "./src/util.ts");
+const constants_1 = __webpack_require__(/*! ./constants */ "./src/constants.ts");
+const package_json_1 = __importDefault(__webpack_require__(/*! ../package.json */ "./package.json"));
 async function main() {
     const POLL_INTERVAL = 1000;
+    core.debug(`Startign asta-action@${package_json_1.default.version}...`);
     core.debug(`Parsing inputs...`);
     const inputs = (0, inputs_1.getInputs)();
     const api = new codegen_1.Api(inputs);
@@ -11995,7 +12034,7 @@ async function main() {
     let runStatus;
     let lastRunLogNumber = 0;
     let numErrors = 0;
-    for (runStatus = await api.getRunStatus(runId); runStatus.runningState === 'running'; runStatus = await api.getRunStatus(runId)) {
+    for (runStatus = await api.getRunStatus(runId); runStatus.runningState !== 'stopped'; runStatus = await api.getRunStatus(runId)) {
         core.debug(`Run status: ${JSON.stringify(runStatus, null, 2)}`);
         const logs = await api.getRunLogs(runId, {
             offset: lastRunLogNumber,
@@ -12041,10 +12080,13 @@ async function startRun(api, inputs) {
     console.log(`Testing variant "${variant.name}"`);
     core.debug('Starting run...');
     const runId = await api.startRun();
+    const runLogUrl = new URL(constants_1.COMPANION_BASE_URL, `/app/${inputs.variant}/log`);
+    runLogUrl.searchParams.set('run', runId);
+    runLogUrl.searchParams.set('filters[level][$ne]', 'Debug');
     core.notice(`
 Started run ${runId} for ${application.data.name} (${variant.name})
     
-View detailed logs here: https://companion.asta.grantsgovservices.com/app/${inputs.variant}/log?run=${runId}&filters%5Blevel%5D%5B%24ne%5D=Debug
+View detailed logs here: ${runLogUrl.toString()}
 `.trim());
     return runId;
 }
@@ -12132,11 +12174,9 @@ const zod_1 = __webpack_require__(/*! zod */ "./node_modules/zod/lib/index.js");
 const action_inputs_1 = __webpack_require__(/*! ./action.inputs */ "./src/inputs/action.inputs.ts");
 const core = __importStar(__webpack_require__(/*! @actions/core */ "./node_modules/@actions/core/lib/core.js"));
 const run_parameters_inputs_1 = __webpack_require__(/*! ./run-parameters.inputs */ "./src/inputs/run-parameters.inputs.ts");
+const constants_1 = __webpack_require__(/*! ../constants */ "./src/constants.ts");
 const InputsSchema = action_inputs_1.ActionInputsSchema.extend({
-    repositoryUrl: zod_1.z
-        .string()
-        .url()
-        .default('https://asta.grantsgovservices.com'),
+    repositoryUrl: zod_1.z.string().url().default(constants_1.REPOSITORY_BASE_URL),
     expectFailure: zod_1.z.coerce.boolean().default(false),
 });
 exports.InputsSchema = InputsSchema;
@@ -17681,6 +17721,17 @@ module.exports = require("tls");
 
 "use strict";
 module.exports = require("util");
+
+/***/ }),
+
+/***/ "./package.json":
+/*!**********************!*\
+  !*** ./package.json ***!
+  \**********************/
+/***/ ((module) => {
+
+"use strict";
+module.exports = JSON.parse('{"name":"asta-action","description":"Test your web application with Asta","version":"0.0.5","license":"SEE LICENSE in LICENSE.md","author":"Business Performance Systems, LLC","packageManager":"yarn@3.6.3","main":"dist/index.js","types":"dist/index.d.ts","engines":{"node":">=16.0.0","yarn":">=3.6.0"},"scripts":{"build":"webpack","typecheck":"tsc --noEmit","format":"prettier --write src","lint":"yarn dlx oxlint -D correctness -D restriction -D suspicious -D pedantic -A no-console -A no-explicit-any src","codegen":"yarn swagger-typescript-api --path swagger.json --output src/codegen --name api.ts","test":"jest"},"dependencies":{"@actions/core":"^1.10.1","@actions/github":"^5.1.1","cross-fetch":"^4.0.0","deepmerge":"^4.3.1","js-yaml":"^4.1.0","source-map-support":"^0.5.21","zod":"^3.22.4"},"devDependencies":{"@swc/core":"^1.3.105","@swc/jest":"^0.2.31","@types/jest":"^29.5.11","@types/js-yaml":"^4.0.9","@types/node":"^20.11.5","jest":"^29.7.0","prettier":"^3.2.4","swagger-typescript-api":"^13.0.3","ts-loader":"^9.5.1","typescript":"^5.3.3","webpack":"^5.89.0","webpack-cli":"^5.1.4"}}');
 
 /***/ })
 

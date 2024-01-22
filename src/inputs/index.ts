@@ -4,12 +4,10 @@ import { ActionInputsSchema, type ActionInputs } from './action.inputs'
 
 import * as core from '@actions/core'
 import { getRunParameters } from './run-parameters.inputs'
+import { REPOSITORY_BASE_URL } from '../constants'
 
 const InputsSchema = ActionInputsSchema.extend({
-    repositoryUrl: z
-        .string()
-        .url()
-        .default('https://asta.grantsgovservices.com'),
+    repositoryUrl: z.string().url().default(REPOSITORY_BASE_URL),
     /**
      * Non-public API. Causes the workflow to fail if the test run passes.
      *
