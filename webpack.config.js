@@ -5,7 +5,7 @@ const path = require('path')
 module.exports = {
   entry: './src/index.ts',
   mode: 'development',
-  devtool: 'source-map',
+  devtool: 'nosources-source-map',
   output: {
     filename: 'index.js',
     path: path.resolve(__dirname, 'dist'),
