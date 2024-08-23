@@ -4,7 +4,7 @@
   "version": "0.0.7-alpha.1",
   "license": "SEE LICENSE in LICENSE.md",
   "author": "Business Performance Systems, LLC",
-  "packageManager": "yarn@3.6.3",
+  "packageManager": "yarn@4.4.0",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "engines": {
