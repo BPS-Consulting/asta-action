@@ -1,6 +1,6 @@
 const path = require('path')
 /**
- * @type {import('@rspack/cli').Configuration}
+ * @type {import('webpack').Configuration}
  */
 module.exports = {
   entry: './src/index.ts',
@@ -10,11 +10,15 @@ module.exports = {
     filename: 'index.js',
     path: path.resolve(__dirname, 'dist'),
   },
+  target: 'node20',
   externalsPresets: {
     node: true
   },
   optimization: {
     minimize: false,
+    usedExports: true,
+    providedExports: true,
+    sideEffects: true
   },
   module: {
     rules: [
@@ -27,5 +31,5 @@ module.exports = {
   },
   resolve:{
     extensions: ['.ts', '.js', '.json']
-  } 
+  }
 }

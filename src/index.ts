@@ -36,7 +36,7 @@ async function main() {
         runStatus = await api.getRunStatus(runId)
     ) {
         core.debug(`Run status: ${JSON.stringify(runStatus, null, 2)}`)
-        const logs = await api.getRunLogs(runId, {
+        const { data: logs } = await api.getRunLogs(runId, {
             offset: lastRunLogNumber,
             limit: 50,
         })
