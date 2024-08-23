@@ -3,6 +3,7 @@ import deepmerge from 'deepmerge'
 import { Inputs } from '../inputs'
 import {
     Api as ApiInternal,
+    RunTemplateData,
     StartRunRequestDTO,
     type RequestParams,
 } from './api'
@@ -55,19 +56,9 @@ export class Api {
         } = this.inputs
 
         console.log(`Getting parameters from run template ${runTemplate}`)
-        const paramsFromRunTemplate =
-            await this._api.api.assetsControllerFindOne(
-                application,
-                'run_parameter',
-                runTemplate,
-                { secure: true }
-            )
-        const params = deepmerge(
-            (
-                paramsFromRunTemplate.data.resource as {
-                    data: StartRunRequestDTO['parameters']
-                }
-            ).data,
+        const paramsFromRunTemplate = await this._api.api.runTemplateControllerFindOne(application, runTemplate, { secure: true })
+        const params = deepmerge<RunTemplateData, typeof parameterOverrides>(
+            paramsFromRunTemplate.data.data,
             parameterOverrides
         )
         const body: StartRunRequestDTO = {
