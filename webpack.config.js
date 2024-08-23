@@ -10,12 +10,15 @@ module.exports = {
     filename: 'index.js',
     path: path.resolve(__dirname, 'dist'),
   },
-  target: 'node',
+  target: 'node20',
   externalsPresets: {
     node: true
   },
   optimization: {
     minimize: false,
+    usedExports: true,
+    providedExports: true,
+    sideEffects: true
   },
   module: {
     rules: [
