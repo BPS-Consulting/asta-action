@@ -10793,13 +10793,8 @@ class HttpClient {
             this.securityData = data;
         };
         this.contentFormatters = {
-            [ContentType.Json]: (input) => input !== null &&
-                (typeof input === 'object' || typeof input === 'string')
-                ? JSON.stringify(input)
-                : input,
-            [ContentType.Text]: (input) => input !== null && typeof input !== 'string'
-                ? JSON.stringify(input)
-                : input,
+            [ContentType.Json]: (input) => input !== null && (typeof input === 'object' || typeof input === 'string') ? JSON.stringify(input) : input,
+            [ContentType.Text]: (input) => input !== null && typeof input !== 'string' ? JSON.stringify(input) : input,
             [ContentType.FormData]: (input) => Object.keys(input || {}).reduce((formData, key) => {
                 const property = input[key];
                 formData.append(key, property instanceof Blob
@@ -10831,9 +10826,7 @@ class HttpClient {
             }
         };
         this.request = async ({ body, secure, path, type, query, format, baseUrl, cancelToken, ...params }) => {
-            const secureParams = ((typeof secure === 'boolean'
-                ? secure
-                : this.baseApiParams.secure) &&
+            const secureParams = ((typeof secure === 'boolean' ? secure : this.baseApiParams.secure) &&
                 this.securityWorker &&
                 (await this.securityWorker(this.securityData))) ||
                 {};
@@ -10845,16 +10838,10 @@ class HttpClient {
                 ...requestParams,
                 headers: {
                     ...(requestParams.headers || {}),
-                    ...(type && type !== ContentType.FormData
-                        ? { 'Content-Type': type }
-                        : {}),
+                    ...(type && type !== ContentType.FormData ? { 'Content-Type': type } : {}),
                 },
-                signal: (cancelToken
-                    ? this.createAbortSignal(cancelToken)
-                    : requestParams.signal) || null,
-                body: typeof body === 'undefined' || body === null
-                    ? null
-                    : payloadFormatter(body),
+                signal: (cancelToken ? this.createAbortSignal(cancelToken) : requestParams.signal) || null,
+                body: typeof body === 'undefined' || body === null ? null : payloadFormatter(body),
             }).then(async (response) => {
                 const r = response;
                 r.data = null;
@@ -10900,9 +10887,7 @@ class HttpClient {
         const query = rawQuery || {};
         const keys = Object.keys(query).filter(key => 'undefined' !== typeof query[key]);
         return keys
-            .map(key => Array.isArray(query[key])
-            ? this.addArrayQueryParam(query, key)
-            : this.addQueryParam(query, key))
+            .map(key => Array.isArray(query[key]) ? this.addArrayQueryParam(query, key) : this.addQueryParam(query, key))
             .join('&');
     }
     addQueryParams(rawQuery) {
@@ -17731,7 +17716,7 @@ module.exports = require("util");
 /***/ ((module) => {
 
 "use strict";
-module.exports = JSON.parse('{"name":"asta-action","description":"Test your web application with Asta","version":"0.0.7-alpha.1","license":"SEE LICENSE in LICENSE.md","author":"Business Performance Systems, LLC","packageManager":"yarn@3.6.3","main":"dist/index.js","types":"dist/index.d.ts","engines":{"node":">=16.0.0","yarn":">=3.6.0"},"scripts":{"build":"webpack","typecheck":"tsc --noEmit","format":"prettier --write src","lint":"yarn dlx oxlint -D correctness -D restriction -D suspicious -D pedantic -A no-console -A no-explicit-any src","codegen":"yarn swagger-typescript-api --path swagger.json --output src/codegen --name api.ts","test":"jest"},"dependencies":{"@actions/core":"^1.10.1","@actions/github":"^5.1.1","cross-fetch":"^4.0.0","deepmerge":"^4.3.1","js-yaml":"^4.1.0","source-map-support":"^0.5.21","zod":"^3.22.4"},"devDependencies":{"@swc/core":"^1.3.105","@swc/jest":"^0.2.31","@types/jest":"^29.5.11","@types/js-yaml":"^4.0.9","@types/node":"^20.11.5","jest":"^29.7.0","prettier":"^3.2.4","swagger-typescript-api":"^13.0.3","ts-loader":"^9.5.1","typescript":"^5.3.3","webpack":"^5.89.0","webpack-cli":"^5.1.4"}}');
+module.exports = JSON.parse('{"name":"asta-action","description":"Test your web application with Asta","version":"0.0.7-alpha.1","license":"SEE LICENSE in LICENSE.md","author":"Business Performance Systems, LLC","packageManager":"yarn@4.4.0","main":"dist/index.js","types":"dist/index.d.ts","engines":{"node":">=16.0.0","yarn":">=3.6.0"},"scripts":{"build":"webpack","typecheck":"tsc --noEmit","format":"prettier --write src","lint":"oxlint --import-plugin --config .oxlintrc.json src","codegen":"yarn swagger-typescript-api --path swagger.json --output src/codegen --name api.ts","test":"jest"},"dependencies":{"@actions/core":"^1.10.1","@actions/github":"^5.1.1","cross-fetch":"^4.0.0","deepmerge":"^4.3.1","js-yaml":"^4.1.0","source-map-support":"^0.5.21","zod":"^3.22.4"},"devDependencies":{"@swc/core":"^1.3.105","@swc/jest":"^0.2.31","@types/jest":"^29.5.11","@types/js-yaml":"^4.0.9","@types/node":"^20.11.5","jest":"^29.7.0","oxlint":"^0.8.0","prettier":"^3.2.4","swagger-typescript-api":"^13.0.3","ts-loader":"^9.5.1","typescript":"^5.3.3","webpack":"^5.89.0","webpack-cli":"^5.1.4"}}');
 
 /***/ })
 

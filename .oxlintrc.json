@@ -1,0 +1,18 @@
+{
+  "rules": {
+    "array-callback-return": "warn",
+    "eqeqeq": ["warn", "smart"],
+    "no-accumulating-spread": "warn",
+    "no-case-declarations": "warn",
+    "no-redeclare": "warn",
+    "no-unreachable": "warn",
+    "no-unused-vars": "warn",
+    "no-zero-fractions": "warn",
+    "prefer-for-of": "warn",
+    "prefer-includes": "warn",
+    "throw-new-error": "warn",
+    "import/no-self-import": "error",
+    "import/named": "warn",
+    "import/no-cycle": "error",
+  }
+}

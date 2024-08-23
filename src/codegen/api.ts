@@ -21,12 +21,7 @@ export interface AssetDTO {
     desc: string
     tags: string[]
     coverage?: CoverageDto
-    resource:
-        | DatasetAssetDto
-        | FormSpecAssetDto
-        | RuleAssetDto
-        | RunParametersAssetDto
-        | TaskAssetDto
+    resource: DatasetAssetDto | FormSpecAssetDto | RuleAssetDto | RunParametersAssetDto | TaskAssetDto
     /** The id referencing the application the asset belongs to */
     parent: string | ApplicationResponse
 }
@@ -45,12 +40,7 @@ export interface UpdateAssetParentDTO {
 }
 
 export interface RuleDto {
-    type:
-        | 'accessibility-rule'
-        | 'functional-rule'
-        | 'resource-rule'
-        | 'webform-rule'
-        | 'link-rule'
+    type: 'accessibility-rule' | 'functional-rule' | 'resource-rule' | 'webform-rule' | 'link-rule'
     id: string
     name: string
     text: string
@@ -527,16 +517,7 @@ export interface LoggableAppStateDTO {
 
 export interface RunLogEntryDTO {
     id: number
-    type:
-        | 'Agent'
-        | 'Action'
-        | 'Assertion'
-        | 'Event'
-        | 'Rule'
-        | 'Selector'
-        | 'Work'
-        | 'Flow'
-        | 'Performance'
+    type: 'Agent' | 'Action' | 'Assertion' | 'Event' | 'Rule' | 'Selector' | 'Work' | 'Flow' | 'Performance'
     level: 'Info' | 'Error' | 'Warning' | 'Debug'
     timestamp: string
     state: LoggableAppStateDTO
@@ -943,12 +924,7 @@ export interface AnalyticsFilterDTO {
     runId?: string | string[]
     /** Filter for one or more rules by id */
     ruleId?: string | string[]
-    ruleType?:
-        | 'accessibility-rule'
-        | 'functional-rule'
-        | 'resource-rule'
-        | 'webform-rule'
-        | 'link-rule'
+    ruleType?: 'accessibility-rule' | 'functional-rule' | 'resource-rule' | 'webform-rule' | 'link-rule'
     pageId?: string
     componentId?: string
     componentType?:
@@ -1021,12 +997,7 @@ export interface AnalyticsDTO {
     tested: number
     runId?: string | object
     ruleId?: string | object
-    ruleType?:
-        | 'accessibility-rule'
-        | 'functional-rule'
-        | 'resource-rule'
-        | 'webform-rule'
-        | 'link-rule'
+    ruleType?: 'accessibility-rule' | 'functional-rule' | 'resource-rule' | 'webform-rule' | 'link-rule'
     pageId?: string | object
     componentId?: string | object
     componentType?:
@@ -1188,22 +1159,16 @@ export interface FullRequestParams extends Omit<RequestInit, 'body'> {
     cancelToken?: CancelToken
 }
 
-export type RequestParams = Omit<
-    FullRequestParams,
-    'body' | 'method' | 'query' | 'path'
->
+export type RequestParams = Omit<FullRequestParams, 'body' | 'method' | 'query' | 'path'>
 
 export interface ApiConfig<SecurityDataType = unknown> {
     baseUrl?: string
     baseApiParams?: Omit<RequestParams, 'baseUrl' | 'cancelToken' | 'signal'>
-    securityWorker?: (
-        securityData: SecurityDataType | null
-    ) => Promise<RequestParams | void> | RequestParams | void
+    securityWorker?: (securityData: SecurityDataType | null) => Promise<RequestParams | void> | RequestParams | void
     customFetch?: typeof fetch
 }
 
-export interface HttpResponse<D extends unknown, E extends unknown = unknown>
-    extends Response {
+export interface HttpResponse<D extends unknown, E extends unknown = unknown> extends Response {
     data: D
     error: E
 }
@@ -1222,8 +1187,7 @@ export class HttpClient<SecurityDataType = unknown> {
     private securityData: SecurityDataType | null = null
     private securityWorker?: ApiConfig<SecurityDataType>['securityWorker']
     private abortControllers = new Map<CancelToken, AbortController>()
-    private customFetch = (...fetchParams: Parameters<typeof fetch>) =>
-        fetch(...fetchParams)
+    private customFetch = (...fetchParams: Parameters<typeof fetch>) => fetch(...fetchParams)
 
     private baseApiParams: RequestParams = {
         credentials: 'same-origin',
@@ -1242,9 +1206,7 @@ export class HttpClient<SecurityDataType = unknown> {
 
     protected encodeQueryParam(key: string, value: any) {
         const encodedKey = encodeURIComponent(key)
-        return `${encodedKey}=${encodeURIComponent(
-            typeof value === 'number' ? value : `${value}`
-        )}`
+        return `${encodedKey}=${encodeURIComponent(typeof value === 'number' ? value : `${value}`)}`
     }
 
     protected addQueryParam(query: QueryParamsType, key: string) {
@@ -1258,14 +1220,10 @@ export class HttpClient<SecurityDataType = unknown> {
 
     protected toQueryString(rawQuery?: QueryParamsType): string {
         const query = rawQuery || {}
-        const keys = Object.keys(query).filter(
-            key => 'undefined' !== typeof query[key]
-        )
+        const keys = Object.keys(query).filter(key => 'undefined' !== typeof query[key])
         return keys
             .map(key =>
-                Array.isArray(query[key])
-                    ? this.addArrayQueryParam(query, key)
-                    : this.addQueryParam(query, key)
+                Array.isArray(query[key]) ? this.addArrayQueryParam(query, key) : this.addQueryParam(query, key)
             )
             .join('&')
     }
@@ -1277,14 +1235,9 @@ export class HttpClient<SecurityDataType = unknown> {
 
     private contentFormatters: Record<ContentType, (input: any) => any> = {
         [ContentType.Json]: (input: any) =>
-            input !== null &&
-            (typeof input === 'object' || typeof input === 'string')
-                ? JSON.stringify(input)
-                : input,
+            input !== null && (typeof input === 'object' || typeof input === 'string') ? JSON.stringify(input) : input,
         [ContentType.Text]: (input: any) =>
-            input !== null && typeof input !== 'string'
-                ? JSON.stringify(input)
-                : input,
+            input !== null && typeof input !== 'string' ? JSON.stringify(input) : input,
         [ContentType.FormData]: (input: any) =>
             Object.keys(input || {}).reduce((formData, key) => {
                 const property = input[key]
@@ -1293,18 +1246,15 @@ export class HttpClient<SecurityDataType = unknown> {
                     property instanceof Blob
                         ? property
                         : typeof property === 'object' && property !== null
-                          ? JSON.stringify(property)
-                          : `${property}`
+                        ? JSON.stringify(property)
+                        : `${property}`
                 )
                 return formData
             }, new FormData()),
         [ContentType.UrlEncoded]: (input: any) => this.toQueryString(input),
     }
 
-    protected mergeRequestParams(
-        params1: RequestParams,
-        params2?: RequestParams
-    ): RequestParams {
+    protected mergeRequestParams(params1: RequestParams, params2?: RequestParams): RequestParams {
         return {
             ...this.baseApiParams,
             ...params1,
@@ -1317,9 +1267,7 @@ export class HttpClient<SecurityDataType = unknown> {
         }
     }
 
-    protected createAbortSignal = (
-        cancelToken: CancelToken
-    ): AbortSignal | undefined => {
+    protected createAbortSignal = (cancelToken: CancelToken): AbortSignal | undefined => {
         if (this.abortControllers.has(cancelToken)) {
             const abortController = this.abortControllers.get(cancelToken)
             if (abortController) {
@@ -1354,40 +1302,24 @@ export class HttpClient<SecurityDataType = unknown> {
         ...params
     }: FullRequestParams): Promise<HttpResponse<T, E>> => {
         const secureParams =
-            ((typeof secure === 'boolean'
-                ? secure
-                : this.baseApiParams.secure) &&
+            ((typeof secure === 'boolean' ? secure : this.baseApiParams.secure) &&
                 this.securityWorker &&
                 (await this.securityWorker(this.securityData))) ||
             {}
         const requestParams = this.mergeRequestParams(params, secureParams)
         const queryString = query && this.toQueryString(query)
-        const payloadFormatter =
-            this.contentFormatters[type || ContentType.Json]
+        const payloadFormatter = this.contentFormatters[type || ContentType.Json]
         const responseFormat = format || requestParams.format
 
-        return this.customFetch(
-            `${baseUrl || this.baseUrl || ''}${path}${
-                queryString ? `?${queryString}` : ''
-            }`,
-            {
-                ...requestParams,
-                headers: {
-                    ...(requestParams.headers || {}),
-                    ...(type && type !== ContentType.FormData
-                        ? { 'Content-Type': type }
-                        : {}),
-                },
-                signal:
-                    (cancelToken
-                        ? this.createAbortSignal(cancelToken)
-                        : requestParams.signal) || null,
-                body:
-                    typeof body === 'undefined' || body === null
-                        ? null
-                        : payloadFormatter(body),
-            }
-        ).then(async response => {
+        return this.customFetch(`${baseUrl || this.baseUrl || ''}${path}${queryString ? `?${queryString}` : ''}`, {
+            ...requestParams,
+            headers: {
+                ...(requestParams.headers || {}),
+                ...(type && type !== ContentType.FormData ? { 'Content-Type': type } : {}),
+            },
+            signal: (cancelToken ? this.createAbortSignal(cancelToken) : requestParams.signal) || null,
+            body: typeof body === 'undefined' || body === null ? null : payloadFormatter(body),
+        }).then(async response => {
             const r = response as HttpResponse<T, E>
             r.data = null as unknown as T
             r.error = null as unknown as E
@@ -1426,9 +1358,7 @@ export class HttpClient<SecurityDataType = unknown> {
  *
  * API used for the agent and companion
  */
-export class Api<
-    SecurityDataType extends unknown,
-> extends HttpClient<SecurityDataType> {
+export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDataType> {
     api = {
         /**
          * No description
@@ -1437,11 +1367,7 @@ export class Api<
          * @summary Get assets for the given application with type
          * @request GET:/api/v2/assets/{appId}/{type}
          */
-        assetsControllerFindAll: (
-            appId: string,
-            type: string,
-            params: RequestParams = {}
-        ) =>
+        assetsControllerFindAll: (appId: string, type: string, params: RequestParams = {}) =>
             this.request<AssetDTO[], any>({
                 path: `/api/v2/assets/${appId}/${type}`,
                 method: 'GET',
@@ -1456,12 +1382,7 @@ export class Api<
          * @summary Create asset
          * @request POST:/api/v2/assets/{appId}/{type}
          */
-        assetsControllerCreate: (
-            appId: string,
-            type: string,
-            data: CreateAssetDto,
-            params: RequestParams = {}
-        ) =>
+        assetsControllerCreate: (appId: string, type: string, data: CreateAssetDto, params: RequestParams = {}) =>
             this.request<AssetDTO, any>({
                 path: `/api/v2/assets/${appId}/${type}`,
                 method: 'POST',
@@ -1501,12 +1422,7 @@ export class Api<
          * @summary Get asset with type and id
          * @request GET:/api/v2/assets/{appId}/{type}/{id}
          */
-        assetsControllerFindOne: (
-            appId: string,
-            type: string,
-            id: string,
-            params: RequestParams = {}
-        ) =>
+        assetsControllerFindOne: (appId: string, type: string, id: string, params: RequestParams = {}) =>
             this.request<AssetDTO, void>({
                 path: `/api/v2/assets/${appId}/${type}/${id}`,
                 method: 'GET',
@@ -1521,13 +1437,7 @@ export class Api<
          * @summary Put asset with type
          * @request PUT:/api/v2/assets/{appId}/{type}/{id}
          */
-        assetsControllerUpdate: (
-            appId: string,
-            type: string,
-            id: string,
-            data: AssetDTO,
-            params: RequestParams = {}
-        ) =>
+        assetsControllerUpdate: (appId: string, type: string, id: string, data: AssetDTO, params: RequestParams = {}) =>
             this.request<AssetDTO, void>({
                 path: `/api/v2/assets/${appId}/${type}/${id}`,
                 method: 'PUT',
@@ -1544,12 +1454,7 @@ export class Api<
          * @summary Delete asset
          * @request DELETE:/api/v2/assets/{appId}/{type}/{id}
          */
-        assetsControllerRemove: (
-            appId: string,
-            type: string,
-            id: string,
-            params: RequestParams = {}
-        ) =>
+        assetsControllerRemove: (appId: string, type: string, id: string, params: RequestParams = {}) =>
             this.request<string, void>({
                 path: `/api/v2/assets/${appId}/${type}/${id}`,
                 method: 'DELETE',
@@ -1587,12 +1492,7 @@ export class Api<
          * @summary Update assets tags
          * @request PUT:/api/v2/assets/{appId}/{type}/{id}/tags
          */
-        assetsControllerUpdateTags: (
-            appId: string,
-            type: string,
-            id: string,
-            params: RequestParams = {}
-        ) =>
+        assetsControllerUpdateTags: (appId: string, type: string, id: string, params: RequestParams = {}) =>
             this.request<AssetDTO, void>({
                 path: `/api/v2/assets/${appId}/${type}/${id}/tags`,
                 method: 'PUT',
@@ -1606,11 +1506,7 @@ export class Api<
          * @name AssetsControllerGetOneRule
          * @request GET:/api/v2/assets/{appId}/rule/{id}
          */
-        assetsControllerGetOneRule: (
-            appId: string,
-            id: string,
-            params: RequestParams = {}
-        ) =>
+        assetsControllerGetOneRule: (appId: string, id: string, params: RequestParams = {}) =>
             this.request<RuleAssetDto, any>({
                 path: `/api/v2/assets/${appId}/rule/${id}`,
                 method: 'GET',
@@ -1624,11 +1520,7 @@ export class Api<
          * @name AssetsControllerGetOneFlow
          * @request GET:/api/v2/assets/{appId}/flow/{id}
          */
-        assetsControllerGetOneFlow: (
-            appId: string,
-            id: string,
-            params: RequestParams = {}
-        ) =>
+        assetsControllerGetOneFlow: (appId: string, id: string, params: RequestParams = {}) =>
             this.request<TaskAssetDto, any>({
                 path: `/api/v2/assets/${appId}/flow/${id}`,
                 method: 'GET',
@@ -1642,11 +1534,7 @@ export class Api<
          * @name AssetsControllerGetOneRunParam
          * @request GET:/api/v2/assets/{appId}/run_param/{id}
          */
-        assetsControllerGetOneRunParam: (
-            appId: string,
-            id: string,
-            params: RequestParams = {}
-        ) =>
+        assetsControllerGetOneRunParam: (appId: string, id: string, params: RequestParams = {}) =>
             this.request<RunParametersAssetDto, any>({
                 path: `/api/v2/assets/${appId}/run_param/${id}`,
                 method: 'GET',
@@ -1660,11 +1548,7 @@ export class Api<
          * @name AssetsControllerGetOneDataset
          * @request GET:/api/v2/assets/{appId}/dataset/{id}
          */
-        assetsControllerGetOneDataset: (
-            appId: string,
-            id: string,
-            params: RequestParams = {}
-        ) =>
+        assetsControllerGetOneDataset: (appId: string, id: string, params: RequestParams = {}) =>
             this.request<DatasetAssetDto, any>({
                 path: `/api/v2/assets/${appId}/dataset/${id}`,
                 method: 'GET',
@@ -1678,11 +1562,7 @@ export class Api<
          * @name AssetsControllerGetOneFormSpec
          * @request GET:/api/v2/assets/{appId}/form_spec/{id}
          */
-        assetsControllerGetOneFormSpec: (
-            appId: string,
-            id: string,
-            params: RequestParams = {}
-        ) =>
+        assetsControllerGetOneFormSpec: (appId: string, id: string, params: RequestParams = {}) =>
             this.request<FormSpecAssetDto, any>({
                 path: `/api/v2/assets/${appId}/form_spec/${id}`,
                 method: 'GET',
@@ -1738,10 +1618,7 @@ export class Api<
          * @name CoverageControllerCreateCoverage
          * @request POST:/api/v2/coverage
          */
-        coverageControllerCreateCoverage: (
-            data: CoverageDto,
-            params: RequestParams = {}
-        ) =>
+        coverageControllerCreateCoverage: (data: CoverageDto, params: RequestParams = {}) =>
             this.request<void, any>({
                 path: `/api/v2/coverage`,
                 method: 'POST',
@@ -1756,10 +1633,7 @@ export class Api<
          * @name CoverageControllerGetCoverageById
          * @request GET:/api/v2/coverage/{id}
          */
-        coverageControllerGetCoverageById: (
-            id: string,
-            params: RequestParams = {}
-        ) =>
+        coverageControllerGetCoverageById: (id: string, params: RequestParams = {}) =>
             this.request<void, any>({
                 path: `/api/v2/coverage/${id}`,
                 method: 'GET',
@@ -1772,11 +1646,7 @@ export class Api<
          * @name CoverageControllerUpdateCoverage
          * @request PUT:/api/v2/coverage/{id}
          */
-        coverageControllerUpdateCoverage: (
-            id: string,
-            data: CoverageDto,
-            params: RequestParams = {}
-        ) =>
+        coverageControllerUpdateCoverage: (id: string, data: CoverageDto, params: RequestParams = {}) =>
             this.request<void, any>({
                 path: `/api/v2/coverage/${id}`,
                 method: 'PUT',
@@ -1791,10 +1661,7 @@ export class Api<
          * @name CoverageControllerDeleteCoverage
          * @request DELETE:/api/v2/coverage/{id}
          */
-        coverageControllerDeleteCoverage: (
-            id: string,
-            params: RequestParams = {}
-        ) =>
+        coverageControllerDeleteCoverage: (id: string, params: RequestParams = {}) =>
             this.request<void, any>({
                 path: `/api/v2/coverage/${id}`,
                 method: 'DELETE',
@@ -1807,10 +1674,7 @@ export class Api<
          * @name CoverageControllerGetVariantCoverageStatistics
          * @request GET:/api/v2/coverage/variants/{id}/statistics
          */
-        coverageControllerGetVariantCoverageStatistics: (
-            id: string,
-            params: RequestParams = {}
-        ) =>
+        coverageControllerGetVariantCoverageStatistics: (id: string, params: RequestParams = {}) =>
             this.request<void, any>({
                 path: `/api/v2/coverage/variants/${id}/statistics`,
                 method: 'GET',
@@ -1823,11 +1687,7 @@ export class Api<
          * @name CoverageControllerGetComponentCoverage
          * @request GET:/api/v2/coverage/variants/{id}/elems/{cid}
          */
-        coverageControllerGetComponentCoverage: (
-            id: string,
-            cid: string,
-            params: RequestParams = {}
-        ) =>
+        coverageControllerGetComponentCoverage: (id: string, cid: string, params: RequestParams = {}) =>
             this.request<void, any>({
                 path: `/api/v2/coverage/variants/${id}/elems/${cid}`,
                 method: 'GET',
@@ -1840,11 +1700,7 @@ export class Api<
          * @name CoverageControllerGetVariantCoverage
          * @request GET:/api/v2/coverage/variants/{id}/{assetType}
          */
-        coverageControllerGetVariantCoverage: (
-            id: string,
-            assetType: string,
-            params: RequestParams = {}
-        ) =>
+        coverageControllerGetVariantCoverage: (id: string, assetType: string, params: RequestParams = {}) =>
             this.request<void, any>({
                 path: `/api/v2/coverage/variants/${id}/${assetType}`,
                 method: 'GET',
@@ -1857,12 +1713,7 @@ export class Api<
          * @name CoverageControllerPatchFlowCoverage
          * @request PATCH:/api/v2/coverage/variants/{id}/flows/{fid}
          */
-        coverageControllerPatchFlowCoverage: (
-            id: string,
-            fid: string,
-            data: CoverageDto,
-            params: RequestParams = {}
-        ) =>
+        coverageControllerPatchFlowCoverage: (id: string, fid: string, data: CoverageDto, params: RequestParams = {}) =>
             this.request<void, any>({
                 path: `/api/v2/coverage/variants/${id}/flows/${fid}`,
                 method: 'PATCH',
@@ -1877,10 +1728,7 @@ export class Api<
          * @name CoverageControllerPatchModelCoverage
          * @request PATCH:/api/v2/coverage/variants/{id}/model/coverage
          */
-        coverageControllerPatchModelCoverage: (
-            id: string,
-            params: RequestParams = {}
-        ) =>
+        coverageControllerPatchModelCoverage: (id: string, params: RequestParams = {}) =>
             this.request<void, any>({
                 path: `/api/v2/coverage/variants/${id}/model/coverage`,
                 method: 'PATCH',
@@ -1893,10 +1741,7 @@ export class Api<
          * @name CoverageControllerGetAssetsCoverage
          * @request GET:/api/v2/coverage/{id}/assets
          */
-        coverageControllerGetAssetsCoverage: (
-            id: string,
-            params: RequestParams = {}
-        ) =>
+        coverageControllerGetAssetsCoverage: (id: string, params: RequestParams = {}) =>
             this.request<Coverage, any>({
                 path: `/api/v2/coverage/${id}/assets`,
                 method: 'GET',
@@ -1910,10 +1755,7 @@ export class Api<
          * @name CoverageControllerGetPagesCoverage
          * @request GET:/api/v2/coverage/{id}/pages
          */
-        coverageControllerGetPagesCoverage: (
-            id: string,
-            params: RequestParams = {}
-        ) =>
+        coverageControllerGetPagesCoverage: (id: string, params: RequestParams = {}) =>
             this.request<void, any>({
                 path: `/api/v2/coverage/${id}/pages`,
                 method: 'GET',
@@ -1926,11 +1768,7 @@ export class Api<
          * @name CoverageControllerGetRunsFullCoverage
          * @request GET:/api/v2/coverage/{id}/run/{runId}
          */
-        coverageControllerGetRunsFullCoverage: (
-            id: string,
-            runId: string,
-            params: RequestParams = {}
-        ) =>
+        coverageControllerGetRunsFullCoverage: (id: string, runId: string, params: RequestParams = {}) =>
             this.request<CoverageResponseDto[], any>({
                 path: `/api/v2/coverage/${id}/run/${runId}`,
                 method: 'GET',
@@ -1982,11 +1820,7 @@ export class Api<
          * @summary Create tag
          * @request POST:/api/v2/tags/{id}
          */
-        tagsControllerCreate: (
-            id: string,
-            data: CreateTagDto,
-            params: RequestParams = {}
-        ) =>
+        tagsControllerCreate: (id: string, data: CreateTagDto, params: RequestParams = {}) =>
             this.request<void, any>({
                 path: `/api/v2/tags/${id}`,
                 method: 'POST',
@@ -2002,11 +1836,7 @@ export class Api<
          * @name TagsControllerUpdateTag
          * @request PUT:/api/v2/tags/{id}
          */
-        tagsControllerUpdateTag: (
-            id: string,
-            data: UpdateTagDto,
-            params: RequestParams = {}
-        ) =>
+        tagsControllerUpdateTag: (id: string, data: UpdateTagDto, params: RequestParams = {}) =>
             this.request<void, any>({
                 path: `/api/v2/tags/${id}`,
                 method: 'PUT',
@@ -2022,11 +1852,7 @@ export class Api<
          * @name TagsControllerRemoveTag
          * @request DELETE:/api/v2/tags/{id}/{tagId}
          */
-        tagsControllerRemoveTag: (
-            id: string,
-            tagId: string,
-            params: RequestParams = {}
-        ) =>
+        tagsControllerRemoveTag: (id: string, tagId: string, params: RequestParams = {}) =>
             this.request<void, any>({
                 path: `/api/v2/tags/${id}/${tagId}`,
                 method: 'DELETE',
@@ -2056,10 +1882,7 @@ export class Api<
          * @name ApplicationControllerCreateApplication
          * @request POST:/api/v2/applications
          */
-        applicationControllerCreateApplication: (
-            data: CreateApplicationDto,
-            params: RequestParams = {}
-        ) =>
+        applicationControllerCreateApplication: (data: CreateApplicationDto, params: RequestParams = {}) =>
             this.request<ApplicationResponse, any>({
                 path: `/api/v2/applications`,
                 method: 'POST',
@@ -2077,10 +1900,7 @@ export class Api<
          * @summary Get application with id
          * @request GET:/api/v2/applications/{id}
          */
-        applicationControllerGetApplication: (
-            id: string,
-            params: RequestParams = {}
-        ) =>
+        applicationControllerGetApplication: (id: string, params: RequestParams = {}) =>
             this.request<TransformedApplicationResponse, any>({
                 path: `/api/v2/applications/${id}`,
                 method: 'GET',
@@ -2095,11 +1915,7 @@ export class Api<
          * @name ApplicationControllerUpdate
          * @request PUT:/api/v2/applications/{id}
          */
-        applicationControllerUpdate: (
-            id: string,
-            data: UpdateApplicationDto,
-            params: RequestParams = {}
-        ) =>
+        applicationControllerUpdate: (id: string, data: UpdateApplicationDto, params: RequestParams = {}) =>
             this.request<void, any>({
                 path: `/api/v2/applications/${id}`,
                 method: 'PUT',
@@ -2130,10 +1946,7 @@ export class Api<
          * @summary Get the application's tags
          * @request GET:/api/v2/applications/{id}/tags
          */
-        applicationControllerGetApplicationsTags: (
-            id: string,
-            params: RequestParams = {}
-        ) =>
+        applicationControllerGetApplicationsTags: (id: string, params: RequestParams = {}) =>
             this.request<ApplicationResponse, any>({
                 path: `/api/v2/applications/${id}/tags`,
                 method: 'GET',
@@ -2149,10 +1962,7 @@ export class Api<
          * @summary Get applications with given parent
          * @request GET:/api/v2/applications/parent/{id}
          */
-        applicationControllerGetApplicationWithParent: (
-            id: string,
-            params: RequestParams = {}
-        ) =>
+        applicationControllerGetApplicationWithParent: (id: string, params: RequestParams = {}) =>
             this.request<ApplicationResponse, any>({
                 path: `/api/v2/applications/parent/${id}`,
                 method: 'GET',
@@ -2184,10 +1994,7 @@ export class Api<
          * @name PermissionControllerCreatePermission
          * @request POST:/api/v2/permissions
          */
-        permissionControllerCreatePermission: (
-            data: CreatePermissionDto,
-            params: RequestParams = {}
-        ) =>
+        permissionControllerCreatePermission: (data: CreatePermissionDto, params: RequestParams = {}) =>
             this.request<PermissionResponse | InvitedUserPermissionDto, any>({
                 path: `/api/v2/permissions`,
                 method: 'POST',
@@ -2205,10 +2012,7 @@ export class Api<
          * @summary Get permission with id
          * @request GET:/api/v2/permissions/{id}
          */
-        permissionControllerGetPermission: (
-            id: string,
-            params: RequestParams = {}
-        ) =>
+        permissionControllerGetPermission: (id: string, params: RequestParams = {}) =>
             this.request<PermissionResponse, any>({
                 path: `/api/v2/permissions/${id}`,
                 method: 'GET',
@@ -2223,11 +2027,7 @@ export class Api<
          * @name PermissionControllerUpdate
          * @request PUT:/api/v2/permissions/{id}
          */
-        permissionControllerUpdate: (
-            id: string,
-            data: UpdatePermissionRoleDto,
-            params: RequestParams = {}
-        ) =>
+        permissionControllerUpdate: (id: string, data: UpdatePermissionRoleDto, params: RequestParams = {}) =>
             this.request<PermissionResponse, any>({
                 path: `/api/v2/permissions/${id}`,
                 method: 'PUT',
@@ -2260,10 +2060,7 @@ export class Api<
          * @summary Get permission of the resource with id
          * @request GET:/api/v2/permissions/resource/{id}
          */
-        permissionControllerGetResourcePermissions: (
-            id: string,
-            params: RequestParams = {}
-        ) =>
+        permissionControllerGetResourcePermissions: (id: string, params: RequestParams = {}) =>
             this.request<PermissionResponse, any>({
                 path: `/api/v2/permissions/resource/${id}`,
                 method: 'GET',
@@ -2280,10 +2077,7 @@ export class Api<
          * @request GET:/api/v2/permissions/user/{id}
          * @deprecated
          */
-        permissionControllerGetUserPermissions: (
-            id: string,
-            params: RequestParams = {}
-        ) =>
+        permissionControllerGetUserPermissions: (id: string, params: RequestParams = {}) =>
             this.request<PermissionResponse, any>({
                 path: `/api/v2/permissions/user/${id}`,
                 method: 'GET',
@@ -2312,10 +2106,7 @@ export class Api<
          * @name FileControllerUploadFile
          * @request POST:/api/v2/files/{fileId}
          */
-        fileControllerUploadFile: (
-            fileId: string,
-            params: RequestParams = {}
-        ) =>
+        fileControllerUploadFile: (fileId: string, params: RequestParams = {}) =>
             this.request<void, any>({
                 path: `/api/v2/files/${fileId}`,
                 method: 'POST',
@@ -2400,10 +2191,7 @@ export class Api<
          * @name IssueControllerUpdateOne
          * @request PUT:/api/v2/issues
          */
-        issueControllerUpdateOne: (
-            data: IssueDto,
-            params: RequestParams = {}
-        ) =>
+        issueControllerUpdateOne: (data: IssueDto, params: RequestParams = {}) =>
             this.request<void, any>({
                 path: `/api/v2/issues`,
                 method: 'PUT',
@@ -2447,11 +2235,7 @@ export class Api<
          * @name IssueControllerUpdate
          * @request PUT:/api/v2/issues/{id}
          */
-        issueControllerUpdate: (
-            id: string,
-            data: IssueDto,
-            params: RequestParams = {}
-        ) =>
+        issueControllerUpdate: (id: string, data: IssueDto, params: RequestParams = {}) =>
             this.request<void, any>({
                 path: `/api/v2/issues/${id}`,
                 method: 'PUT',
@@ -2467,11 +2251,7 @@ export class Api<
          * @name IssueControllerGetLogs
          * @request GET:/api/v2/issues/{id}/logs/{appId}
          */
-        issueControllerGetLogs: (
-            id: string,
-            appId: string,
-            params: RequestParams = {}
-        ) =>
+        issueControllerGetLogs: (id: string, appId: string, params: RequestParams = {}) =>
             this.request<void, any>({
                 path: `/api/v2/issues/${id}/logs/${appId}`,
                 method: 'GET',
@@ -2500,10 +2280,7 @@ export class Api<
          * @name RunsControllerGetVariantRuns
          * @request GET:/api/v2/run/{id}
          */
-        runsControllerGetVariantRuns: (
-            id: string,
-            params: RequestParams = {}
-        ) =>
+        runsControllerGetVariantRuns: (id: string, params: RequestParams = {}) =>
             this.request<RunMetadataDto[], any>({
                 path: `/api/v2/run/${id}`,
                 method: 'GET',
@@ -2532,10 +2309,7 @@ export class Api<
          * @name RunsControllerGetSummaryStatistics
          * @request GET:/api/v2/run/{runId}/statistics
          */
-        runsControllerGetSummaryStatistics: (
-            runId: string,
-            params: RequestParams = {}
-        ) =>
+        runsControllerGetSummaryStatistics: (runId: string, params: RequestParams = {}) =>
             this.request<SummaryStatisticsDTO, any>({
                 path: `/api/v2/run/${runId}/statistics`,
                 method: 'GET',
@@ -2550,10 +2324,7 @@ export class Api<
          * @name RunsControllerGetCurrentPage
          * @request GET:/api/v2/run/{runId}/currentPage
          */
-        runsControllerGetCurrentPage: (
-            runId: string,
-            params: RequestParams = {}
-        ) =>
+        runsControllerGetCurrentPage: (runId: string, params: RequestParams = {}) =>
             this.request<PageDTO, any>({
                 path: `/api/v2/run/${runId}/currentPage`,
                 method: 'GET',
@@ -2597,11 +2368,7 @@ export class Api<
          * @name RunsControllerPauseRun
          * @request POST:/api/v2/run/{runId}/{command}
          */
-        runsControllerPauseRun: (
-            runId: string,
-            command: 'pause' | 'resume' | 'stop',
-            params: RequestParams = {}
-        ) =>
+        runsControllerPauseRun: (runId: string, command: 'pause' | 'resume' | 'stop', params: RequestParams = {}) =>
             this.request<void, any>({
                 path: `/api/v2/run/${runId}/${command}`,
                 method: 'POST',
@@ -2657,10 +2424,7 @@ export class Api<
          * @name RunParametersControllerUpdate
          * @request PUT:/api/v2/run/parameters/{id}
          */
-        runParametersControllerUpdate: (
-            id: string,
-            params: RequestParams = {}
-        ) =>
+        runParametersControllerUpdate: (id: string, params: RequestParams = {}) =>
             this.request<void, any>({
                 path: `/api/v2/run/parameters/${id}`,
                 method: 'PUT',
@@ -2674,10 +2438,7 @@ export class Api<
          * @name RunParametersControllerDelete
          * @request POST:/api/v2/run/parameters/{id}/delete
          */
-        runParametersControllerDelete: (
-            id: string,
-            params: RequestParams = {}
-        ) =>
+        runParametersControllerDelete: (id: string, params: RequestParams = {}) =>
             this.request<void, any>({
                 path: `/api/v2/run/parameters/${id}/delete`,
                 method: 'POST',
@@ -2691,10 +2452,7 @@ export class Api<
          * @name RunsLogControllerGetRunLog
          * @request GET:/api/v2/run/{runId}/log
          */
-        runsLogControllerGetRunLog: (
-            runId: string,
-            params: RequestParams = {}
-        ) =>
+        runsLogControllerGetRunLog: (runId: string, params: RequestParams = {}) =>
             this.request<RunLogDTO, RunLogDTO>({
                 path: `/api/v2/run/${runId}/log`,
                 method: 'GET',
@@ -2709,11 +2467,7 @@ export class Api<
          * @name RunsLogControllerUpdateRunLog
          * @request PUT:/api/v2/run/{runId}/log
          */
-        runsLogControllerUpdateRunLog: (
-            runId: string,
-            data: RunLogDTO,
-            params: RequestParams = {}
-        ) =>
+        runsLogControllerUpdateRunLog: (runId: string, data: RunLogDTO, params: RequestParams = {}) =>
             this.request<RunLogDTO, any>({
                 path: `/api/v2/run/${runId}/log`,
                 method: 'PUT',
@@ -2745,11 +2499,7 @@ export class Api<
          * @name RunsLogControllerAppendRunLog
          * @request POST:/api/v2/run/{runId}/log/append
          */
-        runsLogControllerAppendRunLog: (
-            runId: string,
-            data: AppendRunLogRequestDTO,
-            params: RequestParams = {}
-        ) =>
+        runsLogControllerAppendRunLog: (runId: string, data: AppendRunLogRequestDTO, params: RequestParams = {}) =>
             this.request<RunLogDTO, any>({
                 path: `/api/v2/run/${runId}/log/append`,
                 method: 'POST',
@@ -2766,10 +2516,7 @@ export class Api<
          * @name RunsStatusControllerGetStatus
          * @request GET:/api/v2/run/{id}/status
          */
-        runsStatusControllerGetStatus: (
-            id: string,
-            params: RequestParams = {}
-        ) =>
+        runsStatusControllerGetStatus: (id: string, params: RequestParams = {}) =>
             this.request<RunStatusDTO, any>({
                 path: `/api/v2/run/${id}/status`,
                 method: 'GET',
@@ -2784,11 +2531,7 @@ export class Api<
          * @name RunsStatusControllerUpdateStatus
          * @request PUT:/api/v2/run/{id}/status
          */
-        runsStatusControllerUpdateStatus: (
-            id: string,
-            data: RunStatusDTO,
-            params: RequestParams = {}
-        ) =>
+        runsStatusControllerUpdateStatus: (id: string, data: RunStatusDTO, params: RequestParams = {}) =>
             this.request<RunStatusDTO, any>({
                 path: `/api/v2/run/${id}/status`,
                 method: 'PUT',
@@ -2805,10 +2548,7 @@ export class Api<
          * @name RunsSummaryStatisticsControllerGet
          * @request GET:/api/v2/run/{runId}/summaryStatistics
          */
-        runsSummaryStatisticsControllerGet: (
-            runId: string,
-            params: RequestParams = {}
-        ) =>
+        runsSummaryStatisticsControllerGet: (runId: string, params: RequestParams = {}) =>
             this.request<SummaryStatisticsDTO, SummaryStatisticsDTO>({
                 path: `/api/v2/run/${runId}/summaryStatistics`,
                 method: 'GET',
@@ -2844,10 +2584,7 @@ export class Api<
          * @name RunsSummaryStatisticsControllerGetItemStats
          * @request GET:/api/v2/run/{runId}/summaryStatistics/items
          */
-        runsSummaryStatisticsControllerGetItemStats: (
-            runId: string,
-            params: RequestParams = {}
-        ) =>
+        runsSummaryStatisticsControllerGetItemStats: (runId: string, params: RequestParams = {}) =>
             this.request<SummaryStatisticsDTO, SummaryStatisticsDTO>({
                 path: `/api/v2/run/${runId}/summaryStatistics/items`,
                 method: 'GET',
@@ -2889,10 +2626,7 @@ export class Api<
          * @name RunsSummaryStatisticsControllerGetRuleStats
          * @request GET:/api/v2/run/{runId}/summaryStatistics/rules
          */
-        runsSummaryStatisticsControllerGetRuleStats: (
-            runId: string,
-            params: RequestParams = {}
-        ) =>
+        runsSummaryStatisticsControllerGetRuleStats: (runId: string, params: RequestParams = {}) =>
             this.request<SummaryStatisticsDTO, SummaryStatisticsDTO>({
                 path: `/api/v2/run/${runId}/summaryStatistics/rules`,
                 method: 'GET',
@@ -2907,10 +2641,7 @@ export class Api<
          * @name RunsWorkQueueControllerGet
          * @request GET:/api/v2/run/{runId}/workQueue
          */
-        runsWorkQueueControllerGet: (
-            runId: string,
-            params: RequestParams = {}
-        ) =>
+        runsWorkQueueControllerGet: (runId: string, params: RequestParams = {}) =>
             this.request<WorkQueueDTO, WorkQueueDTO>({
                 path: `/api/v2/run/${runId}/workQueue`,
                 method: 'GET',
@@ -2925,11 +2656,7 @@ export class Api<
          * @name RunsWorkQueueControllerUpdate
          * @request PUT:/api/v2/run/{runId}/workQueue
          */
-        runsWorkQueueControllerUpdate: (
-            runId: string,
-            data: WorkQueueDTO,
-            params: RequestParams = {}
-        ) =>
+        runsWorkQueueControllerUpdate: (runId: string, data: WorkQueueDTO, params: RequestParams = {}) =>
             this.request<WorkQueueDTO, any>({
                 path: `/api/v2/run/${runId}/workQueue`,
                 method: 'PUT',
@@ -2960,11 +2687,7 @@ export class Api<
          * @name RunsLogControllerV2GetRun
          * @request GET:/api/v2/runs/{id}/run/{runNumber}
          */
-        runsLogControllerV2GetRun: (
-            id: string,
-            runNumber: string,
-            params: RequestParams = {}
-        ) =>
+        runsLogControllerV2GetRun: (id: string, runNumber: string, params: RequestParams = {}) =>
             this.request<RunDocument, any>({
                 path: `/api/v2/runs/${id}/run/${runNumber}`,
                 method: 'GET',
@@ -3011,11 +2734,7 @@ export class Api<
          * @name StartRunControllerStartRun
          * @request POST:/api/v2/start/variant/{id}
          */
-        startRunControllerStartRun: (
-            id: string,
-            data: StartRunRequestDTO,
-            params: RequestParams = {}
-        ) =>
+        startRunControllerStartRun: (id: string, data: StartRunRequestDTO, params: RequestParams = {}) =>
             this.request<StartRunSuccessResponseDTO, void>({
                 path: `/api/v2/start/variant/${id}`,
                 method: 'POST',
@@ -3047,10 +2766,7 @@ export class Api<
          * @name VariantControllerCreateVariant
          * @request POST:/api/v2/variants
          */
-        variantControllerCreateVariant: (
-            data: CreateVariantDto,
-            params: RequestParams = {}
-        ) =>
+        variantControllerCreateVariant: (data: CreateVariantDto, params: RequestParams = {}) =>
             this.request<VariantResponse, any>({
                 path: `/api/v2/variants`,
                 method: 'POST',
@@ -3081,11 +2797,7 @@ export class Api<
          * @name VariantControllerUpdateVariant
          * @request PUT:/api/v2/variants/{id}
          */
-        variantControllerUpdateVariant: (
-            id: string,
-            data: UpdateVariantDto,
-            params: RequestParams = {}
-        ) =>
+        variantControllerUpdateVariant: (id: string, data: UpdateVariantDto, params: RequestParams = {}) =>
             this.request<VariantResponse, any>({
                 path: `/api/v2/variants/${id}`,
                 method: 'PUT',
@@ -3102,10 +2814,7 @@ export class Api<
          * @name VariantControllerGetVariantsWithParent
          * @request GET:/api/v2/variants/parent/{id}
          */
-        variantControllerGetVariantsWithParent: (
-            id: string,
-            params: RequestParams = {}
-        ) =>
+        variantControllerGetVariantsWithParent: (id: string, params: RequestParams = {}) =>
             this.request<VariantResponse, any>({
                 path: `/api/v2/variants/parent/${id}`,
                 method: 'GET',
@@ -3120,10 +2829,7 @@ export class Api<
          * @name VariantControllerGetVariantsWorkspace
          * @request GET:/api/v2/variants/{id}/workspace
          */
-        variantControllerGetVariantsWorkspace: (
-            id: string,
-            params: RequestParams = {}
-        ) =>
+        variantControllerGetVariantsWorkspace: (id: string, params: RequestParams = {}) =>
             this.request<void, any>({
                 path: `/api/v2/variants/${id}/workspace`,
                 method: 'GET',
@@ -3137,10 +2843,7 @@ export class Api<
          * @name VariantControllerGetVariantsApplication
          * @request GET:/api/v2/variants/{id}/application
          */
-        variantControllerGetVariantsApplication: (
-            id: string,
-            params: RequestParams = {}
-        ) =>
+        variantControllerGetVariantsApplication: (id: string, params: RequestParams = {}) =>
             this.request<void, any>({
                 path: `/api/v2/variants/${id}/application`,
                 method: 'GET',
@@ -3196,11 +2899,7 @@ export class Api<
          * @name ModelControllerDeleteComponent
          * @request DELETE:/api/v2/variants/{id}/model/components/{compId}
          */
-        modelControllerDeleteComponent: (
-            id: string,
-            compId: string,
-            params: RequestParams = {}
-        ) =>
+        modelControllerDeleteComponent: (id: string, compId: string, params: RequestParams = {}) =>
             this.request<void, void>({
                 path: `/api/v2/variants/${id}/model/components/${compId}`,
                 method: 'DELETE',
@@ -3234,11 +2933,7 @@ export class Api<
          * @name ModelControllerSavePageModel
          * @request POST:/api/v2/variants/{appId}/model/pages
          */
-        modelControllerSavePageModel: (
-            appId: string,
-            data: PageModelDto,
-            params: RequestParams = {}
-        ) =>
+        modelControllerSavePageModel: (appId: string, data: PageModelDto, params: RequestParams = {}) =>
             this.request<void, any>({
                 path: `/api/v2/variants/${appId}/model/pages`,
                 method: 'POST',
@@ -3254,10 +2949,7 @@ export class Api<
          * @name ModelControllerListPageModels
          * @request GET:/api/v2/variants/{appId}/model/pages
          */
-        modelControllerListPageModels: (
-            appId: string,
-            params: RequestParams = {}
-        ) =>
+        modelControllerListPageModels: (appId: string, params: RequestParams = {}) =>
             this.request<PageModelDto[], any>({
                 path: `/api/v2/variants/${appId}/model/pages`,
                 method: 'GET',
@@ -3272,11 +2964,7 @@ export class Api<
          * @name ModelControllerGetPageModel
          * @request GET:/api/v2/variants/{appId}/model/pages/{pageId}/model
          */
-        modelControllerGetPageModel: (
-            appId: string,
-            pageId: string,
-            params: RequestParams = {}
-        ) =>
+        modelControllerGetPageModel: (appId: string, pageId: string, params: RequestParams = {}) =>
             this.request<void, any>({
                 path: `/api/v2/variants/${appId}/model/pages/${pageId}/model`,
                 method: 'GET',
@@ -3290,11 +2978,7 @@ export class Api<
          * @name CoverageControllerPatchComponentCoverage
          * @request PATCH:/api/v2/variants/{id}/model/components/{cId}/coverage
          */
-        coverageControllerPatchComponentCoverage: (
-            id: string,
-            cId: string,
-            params: RequestParams = {}
-        ) =>
+        coverageControllerPatchComponentCoverage: (id: string, cId: string, params: RequestParams = {}) =>
             this.request<void, any>({
                 path: `/api/v2/variants/${id}/model/components/${cId}/coverage`,
                 method: 'PATCH',
@@ -3308,11 +2992,7 @@ export class Api<
          * @name CoverageControllerGetComponentsCoverage
          * @request GET:/api/v2/variants/{id}/model/components/{cId}/coverage
          */
-        coverageControllerGetComponentsCoverage: (
-            id: string,
-            cId: string,
-            params: RequestParams = {}
-        ) =>
+        coverageControllerGetComponentsCoverage: (id: string, cId: string, params: RequestParams = {}) =>
             this.request<void, any>({
                 path: `/api/v2/variants/${id}/model/components/${cId}/coverage`,
                 method: 'GET',
@@ -3326,10 +3006,7 @@ export class Api<
          * @name CoverageControllerGetVariantsCoverage
          * @request GET:/api/v2/variants/{id}/model/coverage
          */
-        coverageControllerGetVariantsCoverage: (
-            id: string,
-            params: RequestParams = {}
-        ) =>
+        coverageControllerGetVariantsCoverage: (id: string, params: RequestParams = {}) =>
             this.request<void, any>({
                 path: `/api/v2/variants/${id}/model/coverage`,
                 method: 'GET',
@@ -3343,10 +3020,7 @@ export class Api<
          * @name CoverageControllerGetCoverage
          * @request GET:/api/v2/variants/{id}/coverage/rules
          */
-        coverageControllerGetCoverage: (
-            id: string,
-            params: RequestParams = {}
-        ) =>
+        coverageControllerGetCoverage: (id: string, params: RequestParams = {}) =>
             this.request<void, any>({
                 path: `/api/v2/variants/${id}/coverage/rules`,
                 method: 'GET',
@@ -3360,10 +3034,7 @@ export class Api<
          * @name CoverageControllerGetSimpleVariantCoverage
          * @request GET:/api/v2/variants/{id}/model/coverage/simple
          */
-        coverageControllerGetSimpleVariantCoverage: (
-            id: string,
-            params: RequestParams = {}
-        ) =>
+        coverageControllerGetSimpleVariantCoverage: (id: string, params: RequestParams = {}) =>
             this.request<void, any>({
                 path: `/api/v2/variants/${id}/model/coverage/simple`,
                 method: 'GET',
@@ -3418,10 +3089,7 @@ export class Api<
          * @name RulesControllerAddRule
          * @request POST:/api/v2/rules
          */
-        rulesControllerAddRule: (
-            data: AddRuleRequestDTO,
-            params: RequestParams = {}
-        ) =>
+        rulesControllerAddRule: (data: AddRuleRequestDTO, params: RequestParams = {}) =>
             this.request<void, any>({
                 path: `/api/v2/rules`,
                 method: 'POST',
@@ -3451,11 +3119,7 @@ export class Api<
          * @name RulesControllerUpdateRule
          * @request PUT:/api/v2/rules/{id}
          */
-        rulesControllerUpdateRule: (
-            id: string,
-            data: AddRuleResponseDTO,
-            params: RequestParams = {}
-        ) =>
+        rulesControllerUpdateRule: (id: string, data: AddRuleResponseDTO, params: RequestParams = {}) =>
             this.request<void, any>({
                 path: `/api/v2/rules/${id}`,
                 method: 'PUT',
@@ -3471,9 +3135,7 @@ export class Api<
          * @name RequirementsDocumentsControllerGetRequirementsDocuments
          * @request GET:/api/v2/requirementsDocuments
          */
-        requirementsDocumentsControllerGetRequirementsDocuments: (
-            params: RequestParams = {}
-        ) =>
+        requirementsDocumentsControllerGetRequirementsDocuments: (params: RequestParams = {}) =>
             this.request<void, any>({
                 path: `/api/v2/requirementsDocuments`,
                 method: 'GET',
@@ -3487,9 +3149,7 @@ export class Api<
          * @name RequirementsDocumentsControllerPostRequirementsDocument
          * @request POST:/api/v2/requirementsDocuments
          */
-        requirementsDocumentsControllerPostRequirementsDocument: (
-            params: RequestParams = {}
-        ) =>
+        requirementsDocumentsControllerPostRequirementsDocument: (params: RequestParams = {}) =>
             this.request<void, any>({
                 path: `/api/v2/requirementsDocuments`,
                 method: 'POST',
@@ -3503,10 +3163,7 @@ export class Api<
          * @name RequirementsDocumentsControllerGetRequirementsDocument
          * @request GET:/api/v2/requirementsDocuments/{id}
          */
-        requirementsDocumentsControllerGetRequirementsDocument: (
-            id: string,
-            params: RequestParams = {}
-        ) =>
+        requirementsDocumentsControllerGetRequirementsDocument: (id: string, params: RequestParams = {}) =>
             this.request<void, any>({
                 path: `/api/v2/requirementsDocuments/${id}`,
                 method: 'GET',
@@ -3520,9 +3177,7 @@ export class Api<
          * @name RequirementsDocumentsControllerPostRequirementsDocumentV2
          * @request POST:/api/v2/requirementsDocuments/v2
          */
-        requirementsDocumentsControllerPostRequirementsDocumentV2: (
-            params: RequestParams = {}
-        ) =>
+        requirementsDocumentsControllerPostRequirementsDocumentV2: (params: RequestParams = {}) =>
             this.request<void, any>({
                 path: `/api/v2/requirementsDocuments/v2`,
                 method: 'POST',
@@ -3536,9 +3191,7 @@ export class Api<
          * @name ScreenshotControllerCreateScreenshotEntity
          * @request POST:/api/v2/screenshots
          */
-        screenshotControllerCreateScreenshotEntity: (
-            params: RequestParams = {}
-        ) =>
+        screenshotControllerCreateScreenshotEntity: (params: RequestParams = {}) =>
             this.request<void, any>({
                 path: `/api/v2/screenshots`,
                 method: 'POST',
@@ -3552,10 +3205,7 @@ export class Api<
          * @name ScreenshotControllerAddPublicScreenshot
          * @request POST:/api/v2/screenshots/public/{id}
          */
-        screenshotControllerAddPublicScreenshot: (
-            id: string,
-            params: RequestParams = {}
-        ) =>
+        screenshotControllerAddPublicScreenshot: (id: string, params: RequestParams = {}) =>
             this.request<void, any>({
                 path: `/api/v2/screenshots/public/${id}`,
                 method: 'POST',
@@ -3569,10 +3219,7 @@ export class Api<
          * @name ScreenshotControllerUploadScreenshot
          * @request POST:/api/v2/screenshots/{screenshotId}
          */
-        screenshotControllerUploadScreenshot: (
-            screenshotId: string,
-            params: RequestParams = {}
-        ) =>
+        screenshotControllerUploadScreenshot: (screenshotId: string, params: RequestParams = {}) =>
             this.request<void, any>({
                 path: `/api/v2/screenshots/${screenshotId}`,
                 method: 'POST',
@@ -3586,10 +3233,7 @@ export class Api<
          * @name ScreenshotControllerGetScreenshot
          * @request GET:/api/v2/screenshots/{screenshotId}
          */
-        screenshotControllerGetScreenshot: (
-            screenshotId: string,
-            params: RequestParams = {}
-        ) =>
+        screenshotControllerGetScreenshot: (screenshotId: string, params: RequestParams = {}) =>
             this.request<void, any>({
                 path: `/api/v2/screenshots/${screenshotId}`,
                 method: 'GET',
@@ -3604,10 +3248,7 @@ export class Api<
          * @summary Create a new PAT.
          * @request POST:/api/v2/users/pat
          */
-        userControllerCreatePat: (
-            data: CreatePatDTO,
-            params: RequestParams = {}
-        ) =>
+        userControllerCreatePat: (data: CreatePatDTO, params: RequestParams = {}) =>
             this.request<CreatePatResponseDTO, any>({
                 path: `/api/v2/users/pat`,
                 method: 'POST',
@@ -3701,11 +3342,7 @@ export class Api<
          * @name UserControllerUpdate
          * @request PUT:/api/v2/users/{id}
          */
-        userControllerUpdate: (
-            id: string,
-            data: UpdateUserDto,
-            params: RequestParams = {}
-        ) =>
+        userControllerUpdate: (id: string, data: UpdateUserDto, params: RequestParams = {}) =>
             this.request<UserResponse, any>({
                 path: `/api/v2/users/${id}`,
                 method: 'PUT',
@@ -3750,10 +3387,7 @@ export class Api<
          * @name UserControllerValidateUser
          * @request POST:/api/v2/users/validateUser
          */
-        userControllerValidateUser: (
-            data: CreateUserDto,
-            params: RequestParams = {}
-        ) =>
+        userControllerValidateUser: (data: CreateUserDto, params: RequestParams = {}) =>
             this.request<void, any>({
                 path: `/api/v2/users/validateUser`,
                 method: 'POST',
@@ -3784,10 +3418,7 @@ export class Api<
          * @name UserControllerDeactivateUser
          * @request POST:/api/v2/users/deactivateUser/{id}
          */
-        userControllerDeactivateUser: (
-            id: string,
-            params: RequestParams = {}
-        ) =>
+        userControllerDeactivateUser: (id: string, params: RequestParams = {}) =>
             this.request<UserResponse, any>({
                 path: `/api/v2/users/deactivateUser/${id}`,
                 method: 'POST',
@@ -3829,10 +3460,7 @@ export class Api<
          * @name WorkspaceControllerCreateWorkspace
          * @request POST:/api/v2/workspace
          */
-        workspaceControllerCreateWorkspace: (
-            data: CreateWorkspaceDto,
-            params: RequestParams = {}
-        ) =>
+        workspaceControllerCreateWorkspace: (data: CreateWorkspaceDto, params: RequestParams = {}) =>
             this.request<WorkspaceResponse, any>({
                 path: `/api/v2/workspace`,
                 method: 'POST',
@@ -3849,10 +3477,7 @@ export class Api<
          * @name WorkspaceControllerGetWorkspace
          * @request GET:/api/v2/workspace/{id}
          */
-        workspaceControllerGetWorkspace: (
-            id: string,
-            params: RequestParams = {}
-        ) =>
+        workspaceControllerGetWorkspace: (id: string, params: RequestParams = {}) =>
             this.request<WorkspaceResponse, any>({
                 path: `/api/v2/workspace/${id}`,
                 method: 'GET',
@@ -3867,11 +3492,7 @@ export class Api<
          * @name WorkspaceControllerUpdateWorkspace
          * @request PUT:/api/v2/workspace/{id}
          */
-        workspaceControllerUpdateWorkspace: (
-            id: string,
-            data: UpdateWorkspaceDto,
-            params: RequestParams = {}
-        ) =>
+        workspaceControllerUpdateWorkspace: (id: string, data: UpdateWorkspaceDto, params: RequestParams = {}) =>
             this.request<void, any>({
                 path: `/api/v2/workspace/${id}`,
                 method: 'PUT',
@@ -3887,10 +3508,7 @@ export class Api<
          * @name WorkspaceControllerDeleteWorkspace
          * @request DELETE:/api/v2/workspace/{id}
          */
-        workspaceControllerDeleteWorkspace: (
-            id: string,
-            params: RequestParams = {}
-        ) =>
+        workspaceControllerDeleteWorkspace: (id: string, params: RequestParams = {}) =>
             this.request<void, any>({
                 path: `/api/v2/workspace/${id}`,
                 method: 'DELETE',
@@ -3904,10 +3522,7 @@ export class Api<
          * @name WorkspaceControllerAddUnlimitedPlan
          * @request POST:/api/v2/workspace/{wsId}/add-unlimited-plan
          */
-        workspaceControllerAddUnlimitedPlan: (
-            wsId: string,
-            params: RequestParams = {}
-        ) =>
+        workspaceControllerAddUnlimitedPlan: (wsId: string, params: RequestParams = {}) =>
             this.request<DefaultResponseDto, any>({
                 path: `/api/v2/workspace/${wsId}/add-unlimited-plan`,
                 method: 'POST',
@@ -3923,10 +3538,7 @@ export class Api<
          * @summary Get invitation token with id
          * @request GET:/api/v2/invitation-token/{id}
          */
-        invitationTokenControllerGetInvitationToken: (
-            id: string,
-            params: RequestParams = {}
-        ) =>
+        invitationTokenControllerGetInvitationToken: (id: string, params: RequestParams = {}) =>
             this.request<void, any>({
                 path: `/api/v2/invitation-token/${id}`,
                 method: 'GET',
@@ -3940,10 +3552,7 @@ export class Api<
          * @name InvitationTokenControllerCreateWorkspace
          * @request POST:/api/v2/invitation-token
          */
-        invitationTokenControllerCreateWorkspace: (
-            data: CreateInvitationTokenDto,
-            params: RequestParams = {}
-        ) =>
+        invitationTokenControllerCreateWorkspace: (data: CreateInvitationTokenDto, params: RequestParams = {}) =>
             this.request<void, any>({
                 path: `/api/v2/invitation-token`,
                 method: 'POST',
@@ -3987,10 +3596,7 @@ export class Api<
          * @name InviteUserControllerCreateInvitation
          * @request POST:/api/v2/invite-user
          */
-        inviteUserControllerCreateInvitation: (
-            data: CreateUserInvitationDto,
-            params: RequestParams = {}
-        ) =>
+        inviteUserControllerCreateInvitation: (data: CreateUserInvitationDto, params: RequestParams = {}) =>
             this.request<void, any>({
                 path: `/api/v2/invite-user`,
                 method: 'POST',
@@ -4007,10 +3613,7 @@ export class Api<
          * @summary Remove invitation
          * @request DELETE:/api/v2/invite-user/{invitationId}
          */
-        inviteUserControllerRemoveEntity: (
-            invitationId: string,
-            params: RequestParams = {}
-        ) =>
+        inviteUserControllerRemoveEntity: (invitationId: string, params: RequestParams = {}) =>
             this.request<void, any>({
                 path: `/api/v2/invite-user/${invitationId}`,
                 method: 'DELETE',
@@ -4025,10 +3628,7 @@ export class Api<
          * @summary Get entity's children
          * @request GET:/api/v2/entities/{entityId}/children
          */
-        instanceEntityControllerGetEntitysChildren: (
-            entityId: string,
-            params: RequestParams = {}
-        ) =>
+        instanceEntityControllerGetEntitysChildren: (entityId: string, params: RequestParams = {}) =>
             this.request<void, any>({
                 path: `/api/v2/entities/${entityId}/children`,
                 method: 'GET',
@@ -4043,10 +3643,7 @@ export class Api<
          * @summary Remove entity and it's children
          * @request DELETE:/api/v2/entities/{entityId}
          */
-        instanceEntityControllerRemoveEntity: (
-            entityId: string,
-            params: RequestParams = {}
-        ) =>
+        instanceEntityControllerRemoveEntity: (entityId: string, params: RequestParams = {}) =>
             this.request<void, any>({
                 path: `/api/v2/entities/${entityId}`,
                 method: 'DELETE',
@@ -4060,9 +3657,7 @@ export class Api<
          * @name SubscriptionControllerManageSubscriptions
          * @request POST:/api/v2/subscription/manage-subscriptions
          */
-        subscriptionControllerManageSubscriptions: (
-            params: RequestParams = {}
-        ) =>
+        subscriptionControllerManageSubscriptions: (params: RequestParams = {}) =>
             this.request<void, any>({
                 path: `/api/v2/subscription/manage-subscriptions`,
                 method: 'POST',
@@ -4199,11 +3794,7 @@ export class Api<
          * @name ViewControllerCreateView
          * @request POST:/api/v2/view/{parentId}
          */
-        viewControllerCreateView: (
-            parentId: string,
-            data: CreateViewDTO,
-            params: RequestParams = {}
-        ) =>
+        viewControllerCreateView: (parentId: string, data: CreateViewDTO, params: RequestParams = {}) =>
             this.request<ViewDTO, any>({
                 path: `/api/v2/view/${parentId}`,
                 method: 'POST',
@@ -4220,12 +3811,7 @@ export class Api<
          * @name ViewControllerUpdateView
          * @request PUT:/api/v2/view/{parentId}/{viewId}
          */
-        viewControllerUpdateView: (
-            parentId: string,
-            viewId: string,
-            data: UpdateViewDTO,
-            params: RequestParams = {}
-        ) =>
+        viewControllerUpdateView: (parentId: string, viewId: string, data: UpdateViewDTO, params: RequestParams = {}) =>
             this.request<ViewDTO, any>({
                 path: `/api/v2/view/${parentId}/${viewId}`,
                 method: 'PUT',
@@ -4242,11 +3828,7 @@ export class Api<
          * @name ViewControllerDeleteView
          * @request DELETE:/api/v2/view/{parentId}/{viewId}
          */
-        viewControllerDeleteView: (
-            parentId: string,
-            viewId: string,
-            params: RequestParams = {}
-        ) =>
+        viewControllerDeleteView: (parentId: string, viewId: string, params: RequestParams = {}) =>
             this.request<void, any>({
                 path: `/api/v2/view/${parentId}/${viewId}`,
                 method: 'DELETE',
