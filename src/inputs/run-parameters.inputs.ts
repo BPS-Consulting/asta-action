@@ -44,15 +44,17 @@ export const getRunParameters = (parameters: string): RunParameters => {
     // users will likely be using yaml, so we'll try that first
     try {
         parsed = yaml.load(parameters)
-    } catch (e) {
+    } catch {
         // try JSON next
         try {
             parsed = JSON.parse(parameters)
         } catch (e) {
-            throw new TypeError(
+            const error =new TypeError(
                 'Unable to parse run parameters from your workflow file. ' +
                     'Please ensure that your parameters are valid JSON or YAML objects.'
-            )
+            );
+            (error as any).cause = e
+            throw error
         }
     }
 

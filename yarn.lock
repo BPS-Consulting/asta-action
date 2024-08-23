@@ -1697,6 +1697,7 @@ __metadata:
     source-map-support: "npm:^0.5.21"
     swagger-typescript-api: "npm:^13.0.21"
     ts-loader: "npm:^9.5.1"
+    tslib: "npm:^2.6.3"
     typescript: "npm:^5.5.4"
     webpack: "npm:^5.94.0"
     webpack-cli: "npm:^5.1.4"
@@ -4893,6 +4894,13 @@ __metadata:
     typescript: "*"
     webpack: ^5.0.0
   checksum: 10/a85d43bb6f72858d613290ac02d1d24e81c38ba2dcb98b90465dc97eb6c2036bf9a389542c1a7865548643e7ed39f063fdff2dbb3e5aafbc511de6a3eb275adf
+  languageName: node
+  linkType: hard
+
+"tslib@npm:^2.6.3":
+  version: 2.6.3
+  resolution: "tslib@npm:2.6.3"
+  checksum: 10/52109bb681f8133a2e58142f11a50e05476de4f075ca906d13b596ae5f7f12d30c482feb0bff167ae01cfc84c5803e575a307d47938999246f5a49d174fc558c
   languageName: node
   linkType: hard
 

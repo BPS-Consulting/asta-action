@@ -1,6 +1,6 @@
 // Inputs provided by the user to the action in their workflow via `with`.
 import { z } from 'zod'
-import { ActionInputsSchema, type ActionInputs } from './action.inputs'
+import { ActionInputsSchema } from './action.inputs'
 
 import * as core from '@actions/core'
 import { getRunParameters } from './run-parameters.inputs'

@@ -10,7 +10,7 @@ import pkg from '../package.json'
 
 async function main() {
     const POLL_INTERVAL = 1_000
-    core.debug(`Startign asta-action@${pkg.version}...`)
+    core.debug(`Starting asta-action@${pkg.version}...`)
 
     core.debug(`Parsing inputs...`)
     const inputs: Inputs = getInputs()
