@@ -1,5 +1,6 @@
 import { z } from 'zod'
 import { RunParametersSchema } from './run-parameters.inputs'
+import { REPOSITORY_BASE_URL } from '../constants'
 
 /**
  * User inputs provided via Github Actions.
@@ -10,36 +11,27 @@ import { RunParametersSchema } from './run-parameters.inputs'
  */
 export const ActionInputsSchema = z.object({
     /**
-     * Either the name or ID of the application being tested
+     * The personal access token to use for authentication.
      */
-    application: z.string().nonempty(),
+    pat: z.string().min(1),
     /**
      * Either the name or ID of the variant being tested
      */
-    variant: z.string().nonempty(),
+    variantId: z.string().min(1),
     /**
-     * Either the name or ID of the run template to use.
+     * The parameters to use for the run.
      */
-    runTemplate: z.string().nonempty(),
-    parameters: RunParametersSchema,
+    parameters: z.union([z.string(), RunParametersSchema]),
     /**
      * The API key to use for the request. While an API key is required,
      * it may be provided via the `ASTA_API_KEY` environment variable.
      */
-    apiKey: z.string().nonempty(),
+    repositoryUrl: z.string().url().default(REPOSITORY_BASE_URL),
+
     /**
-     * The ID of the api key. May also be set via the `ASTA_API_KEY_ID` environment variable.
+     * The URL of the repository to use for the request.
      */
-    apiKeyId: z.string().nonempty(),
+    expectFailure: z.coerce.boolean().default(true),
 })
 
 export type ActionInputs = z.infer<typeof ActionInputsSchema>
-
-// export const getActionInputs = (): ActionInputs => {
-//     const inputs: ActionInputs = {
-//         application: core.getInput('application'),
-//         variant: core.getInput('variant'),
-//         runTemplate: core.getInput('run-template'),
-//         parameters: RunParametersSchema.parse(core.getInput('parameters')),
-//     }
-// }

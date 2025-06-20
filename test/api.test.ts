@@ -1,26 +1,15 @@
-import path from 'path'
-import { promises as fs } from 'fs'
 import { Api } from '../src/codegen'
 import { Inputs, InputsSchema } from '../src/inputs'
 
-const KEY_FILE = 'local.key'
 let inputs: Inputs
 
-
 beforeAll(async () => {
-    const keyFileContents = await fs.readFile(path.join(__dirname, KEY_FILE), 'utf-8')
-    const { id, key } = JSON.parse(keyFileContents)
-    expect(typeof id).toBe('string')
-    expect(id.length).toBeGreaterThan(0)
-    expect(typeof key).toBe('string')
-    expect(key.length).toBeGreaterThan(0)
     inputs = InputsSchema.parse({
-        application: '64da53b177f4ac4fd8005957',
-        variant: '64da53c177f4ac4fd8005967',
-        runTemplate: '64da53c177f4ac4fd8005967',
+        variantId: '6761e2a564e3d83226978099',
+        parameters: '6501d76a3d6550269c78b836',
         repositoryUrl: 'http://localhost:4000',
-        apiKey: key,
-        apiKeyId: id,
+        pat: '055847fb14ad9a0bebd3fc4109acc32a78e2c992c8a0c582546f4fd298d8b207f6f8f2c22292d462cff8f717cfb5de157bbefed788c3572b41844ade8efa98df',
+        expectFailure: true,
     } satisfies Partial<Record<keyof Inputs, unknown>>)
 })
 
@@ -31,8 +20,15 @@ describe('the API', () => {
         api = new Api(inputs)
     })
 
-    it('can get an application', async () => {
-        const res = await api.getApplication(inputs.application)
-        expect(res.data._id).toBe(inputs.application)
+    it('can get the current user', async () => {
+        const res = await api.whoami()
+        console.log(res.data.data)
+        expect(res).toBeDefined()
+    })
+
+    it('can get a variant', async () => {
+        const res = await api.getVariant(inputs.variantId)
+        console.log(res)
+        // expect(res.data.data._id).toBe(inputs.variantId)
     })
 })

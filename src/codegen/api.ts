@@ -171,8 +171,10 @@ export interface UpdateAssetParentDTO {
 }
 
 export interface DatasetData {
-    /** Parsed dataset, only present if the dataset is valid */
+    type: 'file' | 'dataset'
+    /** Parsed dataset, for datasets, [{ key: string }] for files, only present if the asset is valid */
     data?: object[]
+    /** JSON text for datasets, file name for files */
     text: string
 }
 
@@ -264,31 +266,54 @@ export interface FlowWithPopulatedParentAndTags {
     _id: string
 }
 
-export interface PopulatedWorkQueue {
-    /** @example "Activity" */
-    type: 'Activity' | 'ChatGPT' | 'Component' | 'Jump' | 'Link Testing' | 'Page' | 'Form Field'
-    label: string
-    /** Unique identifier for the workqueue item */
-    id?: string
-    /** @example "" */
-    pageId?: string
-    /** @example "" */
-    componentId?: string
-    activityId?: Flow | string
+export interface ExecutionStatus {
+    offset: number
+    lineNum: number
+    colNum: number
 }
 
-export interface WorkQueueItem {
-    /** @example "Activity" */
-    type: 'Activity' | 'ChatGPT' | 'Component' | 'Jump' | 'Link Testing' | 'Page' | 'Form Field'
+export interface ComponentRunWorkQueueItemItem {
     label: string
-    /** Unique identifier for the workqueue item */
-    id?: string
-    /** @example "" */
+    pageUrl: string
+}
+
+export interface RunWorkQueueItem {
+    id: string
+    state: 'Todo' | 'Doing' | 'Failed' | 'Success' | 'Partial'
+    label: string
+    type: 'Flow' | 'ChatGPT' | 'Component' | 'Jump' | 'Link Testing' | 'Page' | 'Form Field'
+    subItems?: RunWorkQueueItem[]
+    executionStatus?: ExecutionStatus
+    url?: string
     pageId?: string
-    /** @example "" */
     componentId?: string
-    /** @example "" */
-    activityId?: Flow | string
+    activityId?: string
+    item?: ComponentRunWorkQueueItemItem
+}
+
+export interface PopulatedWorkQueue {
+    id: string
+    state: 'Todo' | 'Doing' | 'Failed' | 'Success' | 'Partial'
+    label: string
+    type: 'Flow' | 'ChatGPT' | 'Component' | 'Jump' | 'Link Testing' | 'Page' | 'Form Field'
+    subItems?: RunWorkQueueItem[]
+    executionStatus?: ExecutionStatus
+    url?: string
+    pageId?: string
+    componentId?: string
+    item?: ComponentRunWorkQueueItemItem
+    activityId?: Flow
+}
+
+export interface FormTestingConfig {
+    /** @default false */
+    validData?: boolean
+    /** @default false */
+    invalidData?: boolean
+    /** @default false */
+    fieldLevelTest?: boolean
+    /** @default false */
+    formSubmission?: boolean
 }
 
 export interface RunTemplateAssets {
@@ -304,17 +329,37 @@ export interface Extensions {
     brokenLinks: boolean
     resources: boolean
     performance: boolean
+    functional: boolean
 }
 
 export interface RunTemplateData {
     path: string
     /** @default 3 */
     depth: number
-    duration?: number
+    duration: number
     /** @default false */
     stopAfterFlows?: boolean
+    /** @default "default" */
+    workQueueConfig?: string
+    /** @default {} */
+    formTestingConfig?: FormTestingConfig
+    /** @default false */
+    fastTestTables?: boolean
+    /** @default {} */
+    extraHTTPHeaders?: object
+    /** @default "" */
+    skipComponents?: string
+    /** @default false */
+    stopOnFlowError?: boolean
     /** @default true */
     enableModeling?: boolean
+    /** @default false */
+    useDatasetsForForms?: boolean
+    /**
+     * If true, the agent will not visit links to test them
+     * @default false
+     */
+    fastTestLinks?: boolean
     /** @default 3000 */
     pageLoadTimeout?: number
     /** @default 1 */
@@ -323,11 +368,8 @@ export interface RunTemplateData {
     testableDomains: string[]
     assets: RunTemplateAssets
     extensions: Extensions
-    /**
-     * A set of work queue items for the test
-     * @example ""
-     */
-    workQueue: (PopulatedWorkQueue | WorkQueueItem)[]
+    /** A set of work queue items for the test */
+    workQueue: PopulatedWorkQueue[]
 }
 
 export interface RunTemplate {
@@ -438,9 +480,138 @@ export interface FormSpecWithPopulatedParentAndTags {
     _id: string
 }
 
+export interface User {
+    /** @format date-time */
+    createdAt?: string
+    /** @format date-time */
+    updatedAt?: string
+    email: string
+    externalId: string
+    customerId: string
+    status: 'active' | 'inactive' | 'waitlisted'
+    isAdmin?: boolean
+}
+
+export interface MetadataDTO {
+    count: number
+    offset: number
+    limit: number
+    hasMore: boolean
+}
+
+export interface TransformedUser {
+    data: User
+    metadata: MetadataDTO
+}
+
+export interface RunStatusParameters {
+    path: string
+    /** @default 3 */
+    depth: number
+    duration: number
+    /** @default false */
+    stopAfterFlows?: boolean
+    /** @default "default" */
+    workQueueConfig?: string
+    /** @default {} */
+    formTestingConfig?: FormTestingConfig
+    /** @default false */
+    fastTestTables?: boolean
+    /** @default {} */
+    extraHTTPHeaders?: object
+    /** @default "" */
+    skipComponents?: string
+    /** @default false */
+    stopOnFlowError?: boolean
+    /** @default true */
+    enableModeling?: boolean
+    /** @default false */
+    useDatasetsForForms?: boolean
+    /**
+     * If true, the agent will not visit links to test them
+     * @default false
+     */
+    fastTestLinks?: boolean
+    /** @default 3000 */
+    pageLoadTimeout?: number
+    /** @default 1 */
+    actionRetryAttempts?: number
+    /** Domains that will be tested by the agent. */
+    testableDomains: string[]
+    assets: RunTemplateAssets
+    extensions: Extensions
+    name: string
+    workQueue: RunWorkQueueItem[]
+    _id: string
+}
+
+export interface Pause {
+    start: string
+    end: string
+}
+
+export interface Run {
+    _id: string
+    /** Applications id */
+    applicationId: string
+    /** The values for the run parameters */
+    parameters: RunStatusParameters
+    /** Run number */
+    runNumber: number
+    /** Run start time */
+    startTime: string
+    /** Run end time */
+    endTime: string
+    /** Run status */
+    status: 'starting' | 'running' | 'paused' | 'stopping' | 'stopped'
+    /** Template name */
+    templateName: string
+    /** User who started the run */
+    user: string
+    /** The current page title */
+    currentPageTitle: string
+    /** The current page url */
+    currentPageUrl: string
+    /** The current component label */
+    currentComponentLabel: string
+    /** The current screenshot id */
+    currentScreenshotId: string
+    /** The pauses and resumes for the run */
+    stops: Pause[]
+}
+
+export interface WorkQueueItem {
+    /** @example "Activity" */
+    type: string
+    label: string
+    /** Unique identifier for the workqueue item */
+    id?: string
+    /** @example "" */
+    pageId?: string
+    /** @example "" */
+    componentId?: string
+    /** @example "" */
+    activityId?: string
+}
+
+export interface StatusCounts {
+    /** @min 0 */
+    todo: number
+    /** @min 0 */
+    doing: number
+    /** @min 0 */
+    untested: number
+    /** @min 0 */
+    partial: number
+    /** @min 0 */
+    success: number
+    /** @min 0 */
+    failed: number
+}
+
 export interface StatisticsDTO {
     /** The number of components in each state (e.g. passed, failed, todo) */
-    counts: object
+    counts: StatusCounts
 }
 
 export interface ComponentStatisticsDTO {
@@ -461,38 +632,6 @@ export interface SummaryStatisticsDTO {
     runId: string
     /** The statistics for each type of test */
     componentStatistics: ComponentStatisticsDTO
-}
-
-export interface RunResultsDto {
-    passed: number
-    failed: number
-    untested: number
-    partial: number
-}
-
-export interface RunMetadataDto {
-    /**
-     * The run's id
-     * @example "123"
-     */
-    id: string
-    /** @example "" */
-    applicationId: string
-    /** @example "" */
-    parametersId: string
-    /** @example "" */
-    templateName: string
-    /** @example "" */
-    runNumber: string
-    /** @example "" */
-    startTime: string
-    /** @example "" */
-    endTime: string
-    /** @example "" */
-    status: string
-    /** @example "" */
-    summaryStatistics: SummaryStatisticsDTO
-    results: RunResultsDto
 }
 
 export interface RunDto {
@@ -519,39 +658,6 @@ export interface PaginatedRunMetadataDTO {
 export interface PaginatedRunDTO {
     data: RunDto[]
     metadata: PaginatedRunMetadataDTO
-}
-
-export interface DimensionsDTO {
-    /** @example "" */
-    w: number
-    /** @example "" */
-    h: number
-}
-
-export interface ItemDTO {
-    /** @example "" */
-    id: string
-    /** @example "" */
-    type: string
-    /** @example "" */
-    data: object
-}
-
-export interface PageDTO {
-    /** @example "" */
-    id: string
-    /** @example "" */
-    url: string
-    /** @example "" */
-    title: string
-    /** @example "" */
-    content: object
-    /** @example "" */
-    components: string[]
-    /** @example "" */
-    dimensions: DimensionsDTO
-    /** @example "" */
-    item: ItemDTO
 }
 
 export interface RemoveRunsResponseDTO {
@@ -597,6 +703,132 @@ export interface AppendRunLogRequestDTO {
     entries: string[]
 }
 
+export interface StopDto {
+    start: string
+    end?: string
+}
+
+export interface UpdateRunStatusDto {
+    currentComponentLabel: string
+    currentPageTitle: string
+    currentPageUrl: string
+    currentScreenshotId: string
+    runningState: 'starting' | 'running' | 'paused' | 'stopping' | 'stopped'
+    stops: StopDto[]
+}
+
+export interface ChatGptRunWorkQueueItem {
+    id: string
+    state: 'Todo' | 'Doing' | 'Failed' | 'Success' | 'Partial'
+    label: string
+    type: 'ChatGPT'
+    subItems?: RunWorkQueueItem[]
+    executionStatus?: ExecutionStatus
+    url?: string
+    pageId?: string
+    componentId?: string
+    activityId?: string
+    item?: ComponentRunWorkQueueItemItem
+}
+
+export interface JumpRunWorkQueueItem {
+    id: string
+    state: 'Todo' | 'Doing' | 'Failed' | 'Success' | 'Partial'
+    label: string
+    type: 'Jump'
+    subItems?: RunWorkQueueItem[]
+    executionStatus?: ExecutionStatus
+    url: string
+    pageId?: string
+    componentId?: string
+    activityId?: string
+    item?: ComponentRunWorkQueueItemItem
+}
+
+export interface PageRunWorkQueueItem {
+    id: string
+    state: 'Todo' | 'Doing' | 'Failed' | 'Success' | 'Partial'
+    label: string
+    type: 'Page'
+    subItems?: RunWorkQueueItem[]
+    executionStatus?: ExecutionStatus
+    url?: string
+    pageId: string
+    componentId?: string
+    activityId?: string
+    item?: ComponentRunWorkQueueItemItem
+}
+
+export interface ComponentRunWorkQueueItem {
+    id: string
+    state: 'Todo' | 'Doing' | 'Failed' | 'Success' | 'Partial'
+    label: string
+    type: 'Component'
+    subItems?: RunWorkQueueItem[]
+    executionStatus?: ExecutionStatus
+    url?: string
+    pageId: string
+    componentId: string
+    activityId?: string
+    item: ComponentRunWorkQueueItemItem
+}
+
+export interface FlowRunWorkQueueItem {
+    id: string
+    state: 'Todo' | 'Doing' | 'Failed' | 'Success' | 'Partial'
+    label: string
+    type: 'Flow'
+    subItems?: RunWorkQueueItem[]
+    executionStatus?: ExecutionStatus
+    url?: string
+    pageId?: string
+    componentId?: string
+    activityId: string
+    item?: ComponentRunWorkQueueItemItem
+}
+
+export interface LinkRunWorkQueueItem {
+    id: string
+    state: 'Todo' | 'Doing' | 'Failed' | 'Success' | 'Partial'
+    label: string
+    type: 'Link Testing'
+    subItems?: RunWorkQueueItem[]
+    executionStatus?: ExecutionStatus
+    url?: string
+    pageId?: string
+    componentId?: string
+    activityId?: string
+    item?: ComponentRunWorkQueueItemItem
+}
+
+export interface FormFieldRunWorkQueueItem {
+    id: string
+    state: 'Todo' | 'Doing' | 'Failed' | 'Success' | 'Partial'
+    label: string
+    type: 'Form Field'
+    subItems?: RunWorkQueueItem[]
+    executionStatus?: ExecutionStatus
+    url?: string
+    pageId: string
+    componentId?: string
+    activityId?: string
+    item?: ComponentRunWorkQueueItemItem
+}
+
+export interface PopulatedRunWorkQueueItemDto {
+    id: string
+    state: 'Todo' | 'Doing' | 'Failed' | 'Success' | 'Partial'
+    label: string
+    type: 'Flow' | 'ChatGPT' | 'Component' | 'Jump' | 'Link Testing' | 'Page' | 'Form Field'
+    subItems?: RunWorkQueueItem[]
+    executionStatus?: ExecutionStatus
+    url?: string
+    pageId?: string
+    componentId?: string
+    item?: ComponentRunWorkQueueItemItem
+    activityId: Flow
+}
+
 export interface WorkQueueDTO {
     /** @example "" */
     id: string
@@ -618,7 +850,54 @@ export interface WorkQueueDTO {
     completedCount: number
 }
 
-export type RunDocument = object
+export interface UpdateWorkQueueDTO {
+    runId: string
+    items: RunWorkQueueItem[]
+}
+
+export interface RunWorkQueue {
+    /** @format date-time */
+    createdAt?: string
+    /** @format date-time */
+    updatedAt?: string
+    _id: string
+    /** The id referencing the run that the work queue belongs to */
+    runId:
+        | string
+        | {
+              _id?: string
+          }
+    items: RunWorkQueueItem[]
+}
+
+export interface RunLogFilterDto {
+    /**
+     * @min 1
+     * @default 50
+     */
+    limit?: number
+    /** @min 0 */
+    offset?: number
+    /** String sort */
+    sort?: string
+    /** Only include results from a specific log type */
+    type?: object
+    /** Only include results from a specific rule type */
+    ruleType?: object
+    /** Only include results from a specific log level */
+    level?: object
+    /** Only include results from a specific message in the log */
+    message?: object
+    /** Only include results from a specific page in the log */
+    page?: object
+    /** Only include results from a specific rule id in the log */
+    ruleId?: object
+}
+
+export interface TypeFilterDto {
+    /** Only include results from a specific log type */
+    type?: object
+}
 
 export interface LoggableAppStateDTO {
     prevPage: object
@@ -628,7 +907,17 @@ export interface LoggableAppStateDTO {
 
 export interface RunLogEntryDTO {
     id: number
-    type: 'Agent' | 'Action' | 'Assertion' | 'Event' | 'Rule' | 'Selector' | 'Work' | 'Flow' | 'Performance'
+    type:
+        | 'Agent'
+        | 'Action'
+        | 'Assertion'
+        | 'Event'
+        | 'Rule'
+        | 'Selector'
+        | 'Work'
+        | 'Flow'
+        | 'Performance'
+        | 'Download'
     level: 'Info' | 'Error' | 'Warning' | 'Debug'
     timestamp: string
     state: LoggableAppStateDTO
@@ -642,15 +931,34 @@ export interface LogWithCount {
     totalCount: number
 }
 
-export interface RunParameters {
+export interface ClusterRunParameters {
     path: string
     /** @default 3 */
     depth: number
-    duration?: number
+    duration: number
     /** @default false */
     stopAfterFlows?: boolean
+    /** @default "default" */
+    workQueueConfig?: string
+    /** @default {} */
+    formTestingConfig?: FormTestingConfig
+    /** @default false */
+    fastTestTables?: boolean
+    /** @default {} */
+    extraHTTPHeaders?: object
+    /** @default "" */
+    skipComponents?: string
+    /** @default false */
+    stopOnFlowError?: boolean
     /** @default true */
     enableModeling?: boolean
+    /** @default false */
+    useDatasetsForForms?: boolean
+    /**
+     * If true, the agent will not visit links to test them
+     * @default false
+     */
+    fastTestLinks?: boolean
     /** @default 3000 */
     pageLoadTimeout?: number
     /** @default 1 */
@@ -659,11 +967,56 @@ export interface RunParameters {
     testableDomains: string[]
     assets: RunTemplateAssets
     extensions: Extensions
+    name: string
+    workQueue: RunWorkQueueItem[]
+    _id: string
+}
+
+export interface StartRunClusterRequestDTO {
+    runId: string
+    runNumber: number
+    variantId: string
+    parameters: ClusterRunParameters
+    availableTestActions: number
+}
+
+export interface RunParameters {
+    path: string
+    /** @default 3 */
+    depth: number
+    duration: number
+    /** @default false */
+    stopAfterFlows?: boolean
+    /** @default "default" */
+    workQueueConfig?: string
+    /** @default {} */
+    formTestingConfig?: FormTestingConfig
+    /** @default false */
+    fastTestTables?: boolean
+    /** @default {} */
+    extraHTTPHeaders?: object
+    /** @default "" */
+    skipComponents?: string
+    /** @default false */
+    stopOnFlowError?: boolean
+    /** @default true */
+    enableModeling?: boolean
+    /** @default false */
+    useDatasetsForForms?: boolean
     /**
-     * A set of work queue items for the test
-     * @example ""
+     * If true, the agent will not visit links to test them
+     * @default false
      */
-    workQueue: (PopulatedWorkQueue | WorkQueueItem)[]
+    fastTestLinks?: boolean
+    /** @default 3000 */
+    pageLoadTimeout?: number
+    /** @default 1 */
+    actionRetryAttempts?: number
+    /** Domains that will be tested by the agent. */
+    testableDomains: string[]
+    assets: RunTemplateAssets
+    extensions: Extensions
+    workQueue: RunWorkQueueItem[]
     name: string
     _id: string
 }
@@ -680,13 +1033,6 @@ export interface StartRunSuccessResponseDTO {
      */
     runId: string
     runNumber: number
-}
-
-export interface MetadataDTO {
-    count: number
-    offset: number
-    limit: number
-    hasMore: boolean
 }
 
 export interface TransformedVariantDtos {
@@ -773,8 +1119,8 @@ export interface Plan {
     createdAt?: string
     /** @format date-time */
     updatedAt?: string
-    /** @example "Free Plan" */
-    name: string
+    /** @example "Free" */
+    name: 'Free' | 'Plus' | 'Pro' | 'Enterprise' | 'Unlimited'
     /** @example 1500 */
     testActionsPerDay: number
     /** @example 14 */
@@ -823,6 +1169,11 @@ export interface WorkspaceDto {
     lastRun: string
 }
 
+export interface TransformedWorkspaceDto {
+    data: WorkspaceDto
+    metadata: MetadataDTO
+}
+
 export interface VariantData {
     defaultUrl: string
 }
@@ -860,32 +1211,65 @@ export interface ApplicationModelDTO {
     edges: object[]
 }
 
-export interface ApplicationComponentDTO {
-    /** @example "" */
-    applicationId: string
-    /** @example "" */
+export interface Properties {
+    tagName: string
+    nodeName: string
     id: string
-    /** @example "" */
-    type: string
-    /** @example "" */
+}
+
+export interface Dimensions {
+    width: number
+    height: number
+}
+
+export interface Position {
+    x: number
+    y: number
+    z: number
+}
+
+export interface ModelItemData {
+    properties: Properties
+    __dimensions: Dimensions
+    __position: Position
+    classifications: string
+    jsonSnapshot: string
+}
+
+export interface ApplicationComponent {
+    /** @format date-time */
+    createdAt?: string
+    /** @format date-time */
+    updatedAt?: string
+    _id: string
+    applicationId: string
+    id: string
     name: string
-    /** @example "" */
-    data: object
-    /**
-     * Version of the modeling algorithm used to construct this relationship.
-     * @min 1
-     * @example 1
-     */
+    type: string
+    data: ModelItemData
+    /** @default 1 */
     version: number
 }
 
-export interface UpdateDTO {
-    /** @example "" */
+export interface UpdateDTOItem {
+    id: string
+    name: string
     type: string
-    /** @example "" */
-    item: object
-    /** @example "" */
-    relationship: object
+    data: ModelItemData
+}
+
+export interface UpdateDTORelationship {
+    id: string
+    type: string
+    from: string
+    to: string
+    data: ModelItemData
+}
+
+export interface UpdateDTO {
+    type: string
+    item: UpdateDTOItem
+    relationship: UpdateDTORelationship
 }
 
 export interface ApplicationModelUpdateRequestDTO {
@@ -1154,6 +1538,18 @@ export interface PerformanceResultsDTO {
     count: number
 }
 
+export type FormData = object
+
+export interface FileUploadDto {
+    file: FormData
+}
+
+export type StreamableFile = object
+
+export interface UpdateKeyDto {
+    newKey: string
+}
+
 export interface TransformedTagDTOS {
     data: TagDTO[]
     metadata: MetadataDTO
@@ -1295,6 +1691,21 @@ export interface IssueDto {
     updated_at?: string
 }
 
+export interface PatDTO {
+    name: string
+    /** @format date-time */
+    expiresAt: string
+    _id: string
+    /** user id */
+    user: string
+    /** @format date-time */
+    lastUsed: string
+    /** @format date-time */
+    createdAt: string
+    /** @format date-time */
+    updatedAt: string
+}
+
 export interface CreatePatDTO {
     /**
      * When the PAT will expire and can no longer be used for authentication.
@@ -1325,19 +1736,19 @@ export interface CreatePatResponseDTO {
     updatedAt: string
 }
 
-export interface PatDTO {
-    name: string
-    /** @format date-time */
-    expiresAt: string
-    _id: string
-    /** user id */
-    user: string
-    /** @format date-time */
-    lastUsed: string
-    /** @format date-time */
-    createdAt: string
-    /** @format date-time */
-    updatedAt: string
+export interface TransformedCreatePatResponseDTO {
+    data: CreatePatResponseDTO
+    metadata: MetadataDTO
+}
+
+export interface TransformedPatDTOS {
+    data: PatDTO[]
+    metadata: MetadataDTO
+}
+
+export interface TransformedPatDTO {
+    data: PatDTO
+    metadata: MetadataDTO
 }
 
 export interface UserWorkspace {
@@ -1404,11 +1815,6 @@ export interface TransformedWorkspaceDtos {
     metadata: MetadataDTO
 }
 
-export interface TransformedWorkspaceDto {
-    data: WorkspaceDto
-    metadata: MetadataDTO
-}
-
 export interface CreateWorkspaceDto {
     /**
      * The name of the workspace
@@ -1420,6 +1826,11 @@ export interface CreateWorkspaceDto {
      * @example "free"
      */
     plan?: 'free' | 'plus' | 'pro' | 'enterprise' | 'unlimited'
+}
+
+export interface UpdateWorkspacePlanDto {
+    /** @example "Free" */
+    plan: 'Free' | 'Plus' | 'Pro' | 'Enterprise' | 'Unlimited'
 }
 
 export interface DefaultResponseDto {
@@ -1445,12 +1856,9 @@ export interface UpdateWorkspaceDto {
     plan?: 'free' | 'plus' | 'pro' | 'enterprise' | 'unlimited'
 }
 
-export interface InviteUserDTO {
-    resource?: string | object | WorkspaceDto | ApplicationDto | VariantDto
-    email: string
-    role?: 0 | 1 | 2 | 3 | 4 | 5
-    /** The status of the invite */
-    status: 'pending' | 'accepted'
+export interface TransformedInviteUserDTOS {
+    data: InviteUserDTO[]
+    metadata: MetadataDTO
 }
 
 export interface CreateUserInvitationDto {
@@ -1463,6 +1871,14 @@ export interface CreateUserInvitationDto {
      * @default "none"
      */
     role: number
+}
+
+export interface InviteUserDTO {
+    resource?: string | object | WorkspaceDto | ApplicationDto | VariantDto
+    email: string
+    role?: 0 | 1 | 2 | 3 | 4 | 5
+    /** The status of the invite */
+    status: 'pending' | 'accepted'
 }
 
 export interface EntityResponse {
@@ -1764,7 +2180,7 @@ export class HttpClient<SecurityDataType = unknown> {
 
 /**
  * @title ASTA Repository API
- * @version 0.15.1
+ * @version 0.23.0
  * @baseUrl http://localhost:4000
  * @contact
  *
@@ -2841,9 +3257,10 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
          * @request GET:/api/v2/auth/whoami
          */
         authControllerGetPermissions: (params: RequestParams = {}) =>
-            this.request<void, any>({
+            this.request<TransformedUser, any>({
                 path: `/api/v2/auth/whoami`,
                 method: 'GET',
+                format: 'json',
                 ...params,
             }),
 
@@ -2869,7 +3286,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
          * @request GET:/api/v2/run
          */
         runsControllerGetRuns: (params: RequestParams = {}) =>
-            this.request<RunMetadataDto[], any>({
+            this.request<Run[], any>({
                 path: `/api/v2/run`,
                 method: 'GET',
                 format: 'json',
@@ -2915,21 +3332,6 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
             this.request<void, any>({
                 path: `/api/v2/run/variant/${id}/hasRuns`,
                 method: 'GET',
-                ...params,
-            }),
-
-        /**
-         * No description
-         *
-         * @tags run
-         * @name RunsControllerGetCurrentPage
-         * @request GET:/api/v2/run/{runId}/currentPage
-         */
-        runsControllerGetCurrentPage: (runId: string, params: RequestParams = {}) =>
-            this.request<PageDTO, any>({
-                path: `/api/v2/run/${runId}/currentPage`,
-                method: 'GET',
-                format: 'json',
                 ...params,
             }),
 
@@ -3115,11 +3517,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
          *
          * @tags run
          * @name RunsStatusControllerGetStatus
-         * @request GET:/api/v2/run/{id}/status
+         * @request GET:/api/v2/run/{runId}/status/{appId}
          */
-        runsStatusControllerGetStatus: (id: string, params: RequestParams = {}) =>
-            this.request<RunStatusDTO, any>({
-                path: `/api/v2/run/${id}/status`,
+        runsStatusControllerGetStatus: (appId: string, runId: string, params: RequestParams = {}) =>
+            this.request<Run, any>({
+                path: `/api/v2/run/${runId}/status/${appId}`,
                 method: 'GET',
                 format: 'json',
                 ...params,
@@ -3132,8 +3534,8 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
          * @name RunsStatusControllerUpdateStatus
          * @request PUT:/api/v2/run/{id}/status
          */
-        runsStatusControllerUpdateStatus: (id: string, data: RunStatusDTO, params: RequestParams = {}) =>
-            this.request<RunStatusDTO, any>({
+        runsStatusControllerUpdateStatus: (id: string, data: UpdateRunStatusDto, params: RequestParams = {}) =>
+            this.request<Run, any>({
                 path: `/api/v2/run/${id}/status`,
                 method: 'PUT',
                 body: data,
@@ -3164,8 +3566,8 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
          * @name RunsWorkQueueControllerUpdate
          * @request PUT:/api/v2/run/{runId}/workQueue
          */
-        runsWorkQueueControllerUpdate: (runId: string, data: WorkQueueDTO, params: RequestParams = {}) =>
-            this.request<WorkQueueDTO, any>({
+        runsWorkQueueControllerUpdate: (runId: string, data: UpdateWorkQueueDTO, params: RequestParams = {}) =>
+            this.request<RunWorkQueue, any>({
                 path: `/api/v2/run/${runId}/workQueue`,
                 method: 'PUT',
                 body: data,
@@ -3196,7 +3598,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
          * @request GET:/api/v2/runs/{id}/run/{runNumber}
          */
         runsLogControllerV2GetRun: (id: string, runNumber: string, params: RequestParams = {}) =>
-            this.request<RunDocument, any>({
+            this.request<Run, any>({
                 path: `/api/v2/runs/${id}/run/${runNumber}`,
                 method: 'GET',
                 format: 'json',
@@ -3224,6 +3626,8 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
                 offset?: number
                 /** String sort */
                 sort?: string
+                /** Only include results from a specific log type */
+                type?: object
             },
             params: RequestParams = {}
         ) =>
@@ -3338,7 +3742,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
          * @request GET:/api/v2/variants/{id}/workspace
          */
         variantControllerGetVariantsWorkspace: (id: string, params: RequestParams = {}) =>
-            this.request<WorkspaceDto, any>({
+            this.request<TransformedWorkspaceDto, any>({
                 path: `/api/v2/variants/${id}/workspace`,
                 method: 'GET',
                 format: 'json',
@@ -3410,7 +3814,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
          * @request GET:/api/v2/variants/{appId}/model/components/{compId}
          */
         modelControllerGetComponent: (appId: string, compId: string, params: RequestParams = {}) =>
-            this.request<ApplicationComponentDTO, void>({
+            this.request<ApplicationComponent, void>({
                 path: `/api/v2/variants/${appId}/model/components/${compId}`,
                 method: 'GET',
                 format: 'json',
@@ -3972,6 +4376,90 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         /**
          * No description
          *
+         * @tags file
+         * @name FileControllerUpload
+         * @summary Upload file
+         * @request POST:/api/v2/file/{appId}
+         */
+        fileControllerUpload: (
+            appId: string,
+            query: {
+                key: string
+            },
+            data: {
+                /** @format binary */
+                file?: File
+            },
+            params: RequestParams = {}
+        ) =>
+            this.request<void, any>({
+                path: `/api/v2/file/${appId}`,
+                method: 'POST',
+                query: query,
+                body: data,
+                type: ContentType.FormData,
+                ...params,
+            }),
+
+        /**
+         * No description
+         *
+         * @tags file
+         * @name FileControllerGetFile
+         * @summary Get file by key
+         * @request GET:/api/v2/file/{appId}
+         */
+        fileControllerGetFile: (
+            appId: string,
+            query: {
+                /** File key to retrieve */
+                key: string
+            },
+            params: RequestParams = {}
+        ) =>
+            this.request<StreamableFile, void>({
+                path: `/api/v2/file/${appId}`,
+                method: 'GET',
+                query: query,
+                format: 'json',
+                ...params,
+            }),
+
+        /**
+         * No description
+         *
+         * @tags file
+         * @name FileControllerUpdateKey
+         * @summary Update file key
+         * @request PUT:/api/v2/file/{appId}/{key}
+         */
+        fileControllerUpdateKey: (appId: string, key: string, data: UpdateKeyDto, params: RequestParams = {}) =>
+            this.request<void, void>({
+                path: `/api/v2/file/${appId}/${key}`,
+                method: 'PUT',
+                body: data,
+                type: ContentType.Json,
+                ...params,
+            }),
+
+        /**
+         * No description
+         *
+         * @tags file
+         * @name FileControllerRemove
+         * @summary Remove specific file
+         * @request DELETE:/api/v2/file/{appId}/{key}
+         */
+        fileControllerRemove: (appId: string, key: string, params: RequestParams = {}) =>
+            this.request<void, void>({
+                path: `/api/v2/file/${appId}/${key}`,
+                method: 'DELETE',
+                ...params,
+            }),
+
+        /**
+         * No description
+         *
          * @tags tags
          * @name TagsControllerGetTagsWithIds
          * @summary Get tags with ids
@@ -4088,10 +4576,27 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
          * @summary Get applications
          * @request GET:/api/v2/applications
          */
-        applicationControllerGetApplications: (params: RequestParams = {}) =>
+        applicationControllerGetApplications: (
+            query?: {
+                /**
+                 * @min 1
+                 * @default 50
+                 */
+                limit?: number
+                /** @min 0 */
+                offset?: number
+                /** Filter by workspace status */
+                status?: {
+                    $eq?: 'active' | 'inactive' | 'expired'
+                    $ne?: 'active' | 'inactive' | 'expired'
+                }
+            },
+            params: RequestParams = {}
+        ) =>
             this.request<TransformedApplicationDtos, any>({
                 path: `/api/v2/applications`,
                 method: 'GET',
+                query: query,
                 format: 'json',
                 ...params,
             }),
@@ -4183,10 +4688,28 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
          * @summary Get applications with given parent
          * @request GET:/api/v2/applications/parent/{id}
          */
-        applicationControllerGetApplicationWithParent: (id: string, params: RequestParams = {}) =>
+        applicationControllerGetApplicationWithParent: (
+            id: string,
+            query?: {
+                /**
+                 * @min 1
+                 * @default 50
+                 */
+                limit?: number
+                /** @min 0 */
+                offset?: number
+                /** Filter by workspace status */
+                status?: {
+                    $eq?: 'active' | 'inactive' | 'expired'
+                    $ne?: 'active' | 'inactive' | 'expired'
+                }
+            },
+            params: RequestParams = {}
+        ) =>
             this.request<TransformedApplicationDtos, any>({
                 path: `/api/v2/applications/parent/${id}`,
                 method: 'GET',
+                query: query,
                 format: 'json',
                 ...params,
             }),
@@ -4213,7 +4736,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
          * @request GET:/api/v2/health/info
          */
         healthControllerGetInfo: (params: RequestParams = {}) =>
-            this.request<RunDocument, any>({
+            this.request<FormData, any>({
                 path: `/api/v2/health/info`,
                 method: 'GET',
                 format: 'json',
@@ -4387,7 +4910,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
          * @request POST:/api/v2/users/pat
          */
         userControllerCreatePat: (data: CreatePatDTO, params: RequestParams = {}) =>
-            this.request<CreatePatResponseDTO, any>({
+            this.request<TransformedCreatePatResponseDTO, any>({
                 path: `/api/v2/users/pat`,
                 method: 'POST',
                 body: data,
@@ -4405,8 +4928,24 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
          * @request GET:/api/v2/users/pat
          */
         userControllerFindPaTs: (params: RequestParams = {}) =>
-            this.request<PatDTO[], any>({
+            this.request<TransformedPatDTOS, any>({
                 path: `/api/v2/users/pat`,
+                method: 'GET',
+                format: 'json',
+                ...params,
+            }),
+
+        /**
+         * No description
+         *
+         * @tags users
+         * @name UserControllerGetAllPaTs
+         * @summary Get all PATs. This endpoint is only enabled for admins
+         * @request GET:/api/v2/users/pats
+         */
+        userControllerGetAllPaTs: (params: RequestParams = {}) =>
+            this.request<TransformedPatDTOS, any>({
+                path: `/api/v2/users/pats`,
                 method: 'GET',
                 format: 'json',
                 ...params,
@@ -4421,9 +4960,10 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
          * @request DELETE:/api/v2/users/pat/{id}
          */
         userControllerRevokePat: (id: string, params: RequestParams = {}) =>
-            this.request<void, any>({
+            this.request<TransformedPatDTO, any>({
                 path: `/api/v2/users/pat/${id}`,
                 method: 'DELETE',
+                format: 'json',
                 ...params,
             }),
 
@@ -4446,6 +4986,13 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
                 offset?: number
                 text?: string
                 workspaces?: boolean
+                /** Filter by user status */
+                status?: {
+                    $eq?: 'active' | 'inactive' | 'waitlisted'
+                    $in?: 'active' | 'inactive' | 'waitlisted'
+                    $regex?: 'active' | 'inactive' | 'waitlisted'
+                    $ne?: 'active' | 'inactive' | 'waitlisted'
+                }
             },
             params: RequestParams = {}
         ) =>
@@ -4566,6 +5113,16 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
                 limit?: number
                 /** @min 0 */
                 offset?: number
+                /** Filter by workspace plan */
+                plan?: {
+                    $eq?: 'Free' | 'Plus' | 'Pro' | 'Enterprise' | 'Unlimited'
+                    $ne?: 'Free' | 'Plus' | 'Pro' | 'Enterprise' | 'Unlimited'
+                }
+                /** Filter by workspace status */
+                status?: {
+                    $eq?: 'active' | 'inactive' | 'expired'
+                    $ne?: 'active' | 'inactive' | 'expired'
+                }
             },
             params: RequestParams = {}
         ) =>
@@ -4644,13 +5201,19 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
          * No description
          *
          * @tags workspace
-         * @name WorkspaceControllerAddUnlimitedPlan
-         * @request POST:/api/v2/workspace/{wsId}/add-unlimited-plan
+         * @name WorkspaceControllerUpdateWorkspacePlan
+         * @request POST:/api/v2/workspace/{wsId}/update-workspace-plan
          */
-        workspaceControllerAddUnlimitedPlan: (wsId: string, params: RequestParams = {}) =>
+        workspaceControllerUpdateWorkspacePlan: (
+            wsId: string,
+            data: UpdateWorkspacePlanDto,
+            params: RequestParams = {}
+        ) =>
             this.request<TransformedDefaultResponseDto, any>({
-                path: `/api/v2/workspace/${wsId}/add-unlimited-plan`,
+                path: `/api/v2/workspace/${wsId}/update-workspace-plan`,
                 method: 'POST',
+                body: data,
+                type: ContentType.Json,
                 format: 'json',
                 ...params,
             }),
@@ -4673,10 +5236,20 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
                 /** @min 0 */
                 offset?: number
                 text?: string
+                /** Filter by invitation status */
+                status?: {
+                    $eq?: 'pending' | 'accepted'
+                    $ne?: 'pending' | 'accepted'
+                }
+                /** Filter by role type */
+                role?: {
+                    $eq?: 0 | 1 | 2 | 3 | 4 | 5
+                    $ne?: 0 | 1 | 2 | 3 | 4 | 5
+                }
             },
             params: RequestParams = {}
         ) =>
-            this.request<InviteUserDTO[], any>({
+            this.request<TransformedInviteUserDTOS[], any>({
                 path: `/api/v2/invite-user`,
                 method: 'GET',
                 query: query,

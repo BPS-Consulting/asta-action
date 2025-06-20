@@ -1,29 +1,73 @@
 import { z } from 'zod'
 import yaml from 'js-yaml'
+import { StartRunRequestDTO } from '../codegen/api'
+
+const defaultRunParameters = {
+    path: '',
+    depth: 3,
+    duration: 0,
+    stopAfterFlows: false,
+    workQueueConfig: 'default',
+    formTestingConfig: {},
+    fastTestTables: false,
+    extraHTTPHeaders: {},
+    skipComponents: '',
+    stopOnFlowError: false,
+    enableModeling: true,
+    useDatasetsForForms: false,
+    fastTestLinks: false,
+    pageLoadTimeout: 3000,
+    actionRetryAttempts: 1,
+    testableDomains: [],
+    assets: {
+        rules: [],
+        data: [],
+        activities: [],
+    },
+    extensions: {
+        accessibility: false,
+        brokenLinks: false,
+        resources: false,
+        performance: false,
+        functional: false,
+    },
+    workQueue: [],
+    name: '',
+    _id: '',
+} satisfies StartRunRequestDTO['parameters']
 
 export const RunParametersSchema = z
     .object({
+        path: z.string(),
+        depth: z.coerce.number().default(3),
+        duration: z.coerce.number(),
+        stopAfterFlows: z.coerce.boolean().optional().default(false),
+        workQueueConfig: z.string().optional().default("default"),
+        formTestingConfig: z.record(z.unknown()).optional(),
+        fastTestTables: z.coerce.boolean().optional().default(false),
+        extraHTTPHeaders: z.record(z.unknown()).optional().default({}),
+        skipComponents: z.string().optional().default(""),
+        stopOnFlowError: z.coerce.boolean().optional().default(false),
+        enableModeling: z.coerce.boolean().optional().default(true),
+        useDatasetsForForms: z.coerce.boolean().optional().default(false),
         /**
-         * Stop the run immediately after executing all flows.
-         *
+         * If true, the agent will not visit links to test them
          * @default false
          */
-        stopAfterFlows: z.coerce.boolean().optional().default(false),
-
+        fastTestLinks: z.coerce.boolean().optional().default(false),
+        pageLoadTimeout: z.coerce.number().optional().default(3000),
+        actionRetryAttempts: z.coerce.number().optional().default(1),
         /**
-         * Time, in seconds, ASTA should wait for pages to load before timing out
-         * and labeling the page as failed.
-         * @default 15
+         * Domains that will be tested by the agent.
          */
-        pageLoadTimeout: z.coerce.number().optional().default(15),
-
-        /**
-         * How many times ASTA should retry a failed action before giving up.
-         * @default 3
-         */
-        actionRetryAttempts: z.coerce.number().optional().default(3),
+        testableDomains: z.array(z.string()),
+        assets: z.record(z.unknown()),
+        extensions: z.record(z.unknown()),
+        workQueue: z.array(z.unknown()),
+        name: z.string(),
+        _id: z.string(),
     })
-    .default({})
+    .default(defaultRunParameters)
 
 export type RunParameters = z.infer<typeof RunParametersSchema>
 

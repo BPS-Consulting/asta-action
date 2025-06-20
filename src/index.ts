@@ -16,7 +16,12 @@ async function main() {
     const inputs: Inputs = getInputs()
     const api = new Api(inputs)
 
-    core.debug(`Starting run for application "${inputs.application}"`)
+    const [user, variant] = await Promise.all([
+        api.whoami(),
+        api.getVariant(inputs.variantId),
+    ])
+
+    core.debug(`Starting run for variant "${variant.name}" as ${user}`)
     const runId = await startRun(api, inputs)
     core.setOutput('run-id', runId)
 
@@ -30,10 +35,9 @@ async function main() {
     let lastRunLogNumber = 0
     let numErrors = 0
     for (
-        runStatus = await api.getRunStatus(runId);
-        // ['starting', 'running'].includes(runStatus.runningState);
-        runStatus.runningState !== 'stopped';
-        runStatus = await api.getRunStatus(runId)
+        runStatus = await api.getRunStatus(inputs.variantId, runId);
+        runStatus.status !== 'stopped';
+        runStatus = await api.getRunStatus(inputs.variantId, runId)
     ) {
         core.debug(`Run status: ${JSON.stringify(runStatus, null, 2)}`)
         const { data: logs } = await api.getRunLogs(runId, {
@@ -73,22 +77,17 @@ async function main() {
 }
 
 async function startRun(api: Api, inputs: Inputs) {
-    // check that application exists
-    const application = await api.getApplication()
-    core.debug(`Found application:\n${JSON.stringify(application, null, 2)}`)
-    console.log(`Testing application "${application.data.name}"`)
-    const variant = await api.getVariant()
-    core.debug(`Found variant:\n${JSON.stringify(variant, null, 2)}`)
-    console.log(`Testing variant "${variant.name}"`)
-
     core.debug('Starting run...')
     const runId = await api.startRun()
-    const runLogUrl = new URL(`/app/${inputs.variant}/log`, COMPANION_BASE_URL)
+    const runLogUrl = new URL(
+        `/app/${inputs.variantId}/log`,
+        COMPANION_BASE_URL
+    )
     runLogUrl.searchParams.set('run', runId)
     runLogUrl.searchParams.set('filters[level][$ne]', 'Debug')
     core.notice(
         `
-Started run ${runId} for ${application.data.name} (${variant.name})
+Started run ${runId} for ${inputs.variantId} (${inputs.variantId})
     
 View detailed logs here: ${runLogUrl.toString()}
 `.trim()
