@@ -113,7 +113,8 @@ export class Api {
     public async getRunStatus(variantId: string, runId: string) {
         const res = await this._api.api.runsStatusControllerGetStatus(
             variantId,
-            runId
+            runId,
+            { secure: true }
         )
         return res.data
     }
@@ -121,8 +122,6 @@ export class Api {
     private authParams(authData: ApiKeyData | null): RequestParams {
         if (!authData) return {}
         const { pat } = authData
-
-        console.log(`Token: ${pat}`)
 
         return {
             headers: {

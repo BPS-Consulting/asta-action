@@ -11566,14 +11566,13 @@ class Api {
         return res.data;
     }
     async getRunStatus(variantId, runId) {
-        const res = await this._api.api.runsStatusControllerGetStatus(variantId, runId);
+        const res = await this._api.api.runsStatusControllerGetStatus(variantId, runId, { secure: true });
         return res.data;
     }
     authParams(authData) {
         if (!authData)
             return {};
         const { pat } = authData;
-        console.log(`Token: ${pat}`);
         return {
             headers: {
                 Authorization: `Bearer ${pat}`,

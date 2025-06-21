@@ -22,13 +22,16 @@ describe('the API', () => {
 
     it('can get the current user', async () => {
         const res = await api.whoami()
-        console.log(res.data.data)
         expect(res).toBeDefined()
     })
 
     it('can get a variant', async () => {
         const res = await api.getVariant(inputs.variantId)
-        console.log(res)
-        // expect(res.data.data._id).toBe(inputs.variantId)
+        expect(res).toBeDefined()
+    })
+
+    it('can get a run status', async () => {
+        const res = await api.getRunStatus(inputs.variantId, 'latest')
+        expect(res).toBeDefined()
     })
 })
