@@ -79,10 +79,14 @@ async function main() {
 async function startRun(api: Api, inputs: Inputs) {
     core.debug('Starting run...')
     const runId = await api.startRun()
-    const runLogUrl = new URL(
-        `/app/${inputs.variantId}/log`,
+
+    const baseUrl =
+        (inputs.repositoryUrl.includes('localhost') &&
+            'http://localhost:3000') ||
+        (inputs.repositoryUrl.includes('dev') && 'https://dev.sqabot.ai/') ||
         COMPANION_BASE_URL
-    )
+
+    const runLogUrl = new URL(`/app/${inputs.variantId}/log`, baseUrl)
     runLogUrl.searchParams.set('run', runId)
     runLogUrl.searchParams.set('filters[level][$ne]', 'Debug')
     core.notice(

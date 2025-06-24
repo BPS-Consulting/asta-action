@@ -11533,7 +11533,6 @@ class Api {
     }
     async startRun(variantId = this.inputs.variantId) {
         const { parameters } = this.inputs;
-        console.log(`Getting parameters from run template ${parameters}`);
         const runParameters = typeof parameters === 'string'
             ? (await this._api.api.runTemplateControllerFindOne(variantId, parameters, { secure: true })).data
             : parameters;
@@ -11547,9 +11546,7 @@ class Api {
         const body = {
             parameters: paramsToUse,
         };
-        console.log(`Start run request:\n${JSON.stringify(body, null, 2)}`);
         const res = await this._api.api.startRunControllerStartRun(variantId, body, { secure: true });
-        console.log(`Start run response: ${JSON.stringify(res, null, 2)}`);
         const data = res.data;
         if (typeof data !== 'object' && !data)
             throw new TypeError(`Missing or invalid data returned from start run; expected an object but got ${typeof data}`);
@@ -45795,7 +45792,11 @@ async function main() {
 async function startRun(api, inputs) {
     core.debug('Starting run...');
     const runId = await api.startRun();
-    const runLogUrl = new URL(`/app/${inputs.variantId}/log`, constants_1.COMPANION_BASE_URL);
+    const baseUrl = (inputs.repositoryUrl.includes('localhost') &&
+        'http://localhost:3000') ||
+        (inputs.repositoryUrl.includes('dev') && 'https://dev.sqabot.ai/') ||
+        constants_1.COMPANION_BASE_URL;
+    const runLogUrl = new URL(`/app/${inputs.variantId}/log`, baseUrl);
     runLogUrl.searchParams.set('run', runId);
     runLogUrl.searchParams.set('filters[level][$ne]', 'Debug');
     core.notice(`

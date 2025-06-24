@@ -50,7 +50,6 @@ export class Api {
     public async startRun(variantId = this.inputs.variantId): Promise<string> {
         const { parameters } = this.inputs
 
-        console.log(`Getting parameters from run template ${parameters}`)
         const runParameters =
             typeof parameters === 'string'
                 ? (
@@ -74,14 +73,12 @@ export class Api {
         const body: StartRunRequestDTO = {
             parameters: paramsToUse,
         }
-        console.log(`Start run request:\n${JSON.stringify(body, null, 2)}`)
 
         const res = await this._api.api.startRunControllerStartRun(
             variantId,
             body,
             { secure: true }
         )
-        console.log(`Start run response: ${JSON.stringify(res, null, 2)}`)
         const data: unknown = res.data
         if (typeof data !== 'object' && !data)
             throw new TypeError(
