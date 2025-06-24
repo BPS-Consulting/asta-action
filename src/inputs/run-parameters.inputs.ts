@@ -42,11 +42,11 @@ export const RunParametersSchema = z
         depth: z.coerce.number().default(3),
         duration: z.coerce.number(),
         stopAfterFlows: z.coerce.boolean().optional().default(false),
-        workQueueConfig: z.string().optional().default("default"),
+        workQueueConfig: z.string().optional().default('default'),
         formTestingConfig: z.record(z.unknown()).optional(),
         fastTestTables: z.coerce.boolean().optional().default(false),
         extraHTTPHeaders: z.record(z.unknown()).optional().default({}),
-        skipComponents: z.string().optional().default(""),
+        skipComponents: z.string().optional().default(''),
         stopOnFlowError: z.coerce.boolean().optional().default(false),
         enableModeling: z.coerce.boolean().optional().default(true),
         useDatasetsForForms: z.coerce.boolean().optional().default(false),
@@ -93,11 +93,11 @@ export const getRunParameters = (parameters: string): RunParameters => {
         try {
             parsed = JSON.parse(parameters)
         } catch (e) {
-            const error =new TypeError(
+            const error = new TypeError(
                 'Unable to parse run parameters from your workflow file. ' +
                     'Please ensure that your parameters are valid JSON or YAML objects.'
-            );
-            (error as any).cause = e
+            )
+            ;(error as any).cause = e
             throw error
         }
     }

@@ -2,6 +2,9 @@ import fetch from 'cross-fetch'
 import { Inputs } from '../inputs'
 import {
     Api as ApiInternal,
+    RunParameters,
+    RunTemplate,
+    RunTemplateAssets,
     StartRunRequestDTO,
     type RequestParams,
 } from './api'
@@ -56,15 +59,20 @@ export class Api {
                           parameters,
                           { secure: true }
                       )
-                  ).data.data
+                  ).data
                 : parameters
 
-        if (typeof parameters === 'string' && !(runParameters as any).name) {
-            ;(runParameters as any).name = `run-${parameters}`
-        }
+        const paramsToUse: RunParameters =
+            typeof parameters === 'string'
+                ? ({
+                      _id: (runParameters as RunTemplate)._id,
+                      name: (runParameters as RunTemplate).name,
+                      ...(runParameters as RunTemplate).data,
+                  } as RunParameters)
+                : (runParameters as unknown as RunParameters)
 
         const body: StartRunRequestDTO = {
-            parameters: runParameters as any, //TODO: fix this
+            parameters: paramsToUse,
         }
         console.log(`Start run request:\n${JSON.stringify(body, null, 2)}`)
 

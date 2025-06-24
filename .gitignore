@@ -23,6 +23,7 @@ coverage
 # Keys
 *.key
 *.pem
+.pat
 
 # Temp files
 *.tmp

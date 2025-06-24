@@ -11535,14 +11535,17 @@ class Api {
         const { parameters } = this.inputs;
         console.log(`Getting parameters from run template ${parameters}`);
         const runParameters = typeof parameters === 'string'
-            ? (await this._api.api.runTemplateControllerFindOne(variantId, parameters, { secure: true })).data.data
+            ? (await this._api.api.runTemplateControllerFindOne(variantId, parameters, { secure: true })).data
             : parameters;
-        if (typeof parameters === 'string' && !runParameters.name) {
-            ;
-            runParameters.name = `run-${parameters}`;
-        }
+        const paramsToUse = typeof parameters === 'string'
+            ? {
+                _id: runParameters._id,
+                name: runParameters.name,
+                ...runParameters.data,
+            }
+            : runParameters;
         const body = {
-            parameters: runParameters,
+            parameters: paramsToUse,
         };
         console.log(`Start run request:\n${JSON.stringify(body, null, 2)}`);
         const res = await this._api.api.startRunControllerStartRun(variantId, body, { secure: true });
@@ -11722,11 +11725,11 @@ exports.RunParametersSchema = zod_1.z
     depth: zod_1.z.coerce.number().default(3),
     duration: zod_1.z.coerce.number(),
     stopAfterFlows: zod_1.z.coerce.boolean().optional().default(false),
-    workQueueConfig: zod_1.z.string().optional().default("default"),
+    workQueueConfig: zod_1.z.string().optional().default('default'),
     formTestingConfig: zod_1.z.record(zod_1.z.unknown()).optional(),
     fastTestTables: zod_1.z.coerce.boolean().optional().default(false),
     extraHTTPHeaders: zod_1.z.record(zod_1.z.unknown()).optional().default({}),
-    skipComponents: zod_1.z.string().optional().default(""),
+    skipComponents: zod_1.z.string().optional().default(''),
     stopOnFlowError: zod_1.z.coerce.boolean().optional().default(false),
     enableModeling: zod_1.z.coerce.boolean().optional().default(true),
     useDatasetsForForms: zod_1.z.coerce.boolean().optional().default(false),
