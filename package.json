@@ -1,48 +1,50 @@
 {
-  "name": "asta-action",
-  "description": "Test your web application with Asta",
-  "version": "0.0.7-alpha.1",
-  "license": "SEE LICENSE in LICENSE.md",
-  "author": "Business Performance Systems, LLC",
-  "packageManager": "yarn@4.4.0",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
-  "sideEffects": false,
-  "engines": {
-    "node": ">=16.0.0",
-    "yarn": ">=3.6.0"
-  },
-  "scripts": {
-    "build": "webpack",
-    "typecheck": "tsc --noEmit",
-    "format": "prettier --write src",
-    "lint": "oxlint --import-plugin --config .oxlintrc.json src",
-    "codegen": "yarn swagger-typescript-api --path swagger.json --output src/codegen --name api.ts",
-    "test": "jest"
-  },
-  "dependencies": {
-    "@actions/core": "^1.10.1",
-    "@actions/github": "^6.0.0",
-    "cross-fetch": "^4.0.0",
-    "deepmerge": "^4.3.1",
-    "js-yaml": "^4.1.0",
-    "source-map-support": "^0.5.21",
-    "tslib": "^2.6.3",
-    "zod": "^3.23.8"
-  },
-  "devDependencies": {
-    "@swc/core": "^1.7.14",
-    "@swc/jest": "^0.2.36",
-    "@types/jest": "^29.5.12",
-    "@types/js-yaml": "^4.0.9",
-    "@types/node": "^20.16.1",
-    "jest": "^29.7.0",
-    "oxlint": "^0.8.0",
-    "prettier": "^3.3.3",
-    "swagger-typescript-api": "^13.0.21",
-    "ts-loader": "^9.5.1",
-    "typescript": "^5.5.4",
-    "webpack": "^5.94.0",
-    "webpack-cli": "^5.1.4"
-  }
+    "name": "asta-action",
+    "description": "Test your web application with Asta",
+    "version": "0.0.8",
+    "license": "SEE LICENSE in LICENSE.md",
+    "author": "Business Performance Systems, LLC",
+    "packageManager": "yarn@4.4.0",
+    "main": "dist/index.js",
+    "types": "dist/index.d.ts",
+    "sideEffects": false,
+    "engines": {
+        "node": ">=16.0.0",
+        "yarn": ">=3.6.0"
+    },
+    "scripts": {
+        "build": "webpack",
+        "typecheck": "tsc --noEmit",
+        "format": "prettier --write src",
+        "lint": "oxlint --import-plugin --config .oxlintrc.json src",
+        "codegen": "yarn swagger-typescript-api --path swagger.json --output src/codegen --name api.ts && yarn generate-run-parameters-schema",
+        "generate-run-parameters-schema": "tsx scripts/generate-run-parameters-schema.ts",
+        "test": "jest"
+    },
+    "dependencies": {
+        "@actions/core": "^1.10.1",
+        "@actions/github": "^6.0.0",
+        "cross-fetch": "^4.0.0",
+        "deepmerge": "^4.3.1",
+        "js-yaml": "^4.1.0",
+        "source-map-support": "^0.5.21",
+        "tslib": "^2.6.3",
+        "zod": "^3.23.8"
+    },
+    "devDependencies": {
+        "@swc/core": "^1.7.14",
+        "@swc/jest": "^0.2.36",
+        "@types/jest": "^29.5.12",
+        "@types/js-yaml": "^4.0.9",
+        "@types/node": "^20.16.1",
+        "jest": "^29.7.0",
+        "oxlint": "^0.8.0",
+        "prettier": "^3.3.3",
+        "swagger-typescript-api": "^13.0.21",
+        "ts-loader": "^9.5.1",
+        "tsx": "^4.19.1",
+        "typescript": "^5.5.4",
+        "webpack": "^5.94.0",
+        "webpack-cli": "^5.1.4"
+    }
 }

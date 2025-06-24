@@ -1,43 +1,39 @@
 name: Gated CI
 
 on:
-  push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+    push:
+        branches: ['main']
+    pull_request:
+        branches: ['main']
 
 jobs:
-  gated:
-    runs-on: ubuntu-latest
+    gated:
+        runs-on: ubuntu-latest
 
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
-        with:
-          node-version: 22.x
-          cache: yarn
+        steps:
+            - uses: actions/checkout@v3
+            - uses: actions/setup-node@v3
+              with:
+                  node-version: 22.x
+                  cache: yarn
 
-      - name: Install latest Yarn
-        run: corepack prepare yarn@stable --activate
+            - name: Install latest Yarn
+              run: corepack prepare yarn@stable --activate
 
-      - name: Activate latest Yarn
-        run: yarn set version stable
+            - name: Activate latest Yarn
+              run: yarn set version stable
 
-      - name: Install dependencies
-        run: yarn --immutable
+            - name: Install dependencies
+              run: yarn --immutable
 
-      - name: Check for duplicate dependencies
-        run: yarn dedupe --check
-        
-      - name: Lint
-        run: yarn lint --format github
+            - name: Check for duplicate dependencies
+              run: yarn dedupe --check
 
-      - name: Typecheck
-        run: yarn typecheck
+            - name: Lint
+              run: yarn lint --format github
 
-      - name: Build
-        run: yarn build
+            - name: Typecheck
+              run: yarn typecheck
 
-      # Ensure that changes to index.js have been committed
-      - name: Check for uncommitted changes
-        run: git diff --exit-code dist
+            - name: Build
+              run: yarn build

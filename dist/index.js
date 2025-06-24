@@ -1987,150 +1987,6 @@ exports["default"] = fetch
 
 /***/ }),
 
-/***/ "./node_modules/deepmerge/dist/cjs.js":
-/*!********************************************!*\
-  !*** ./node_modules/deepmerge/dist/cjs.js ***!
-  \********************************************/
-/***/ ((module) => {
-
-"use strict";
-
-
-var isMergeableObject = function isMergeableObject(value) {
-	return isNonNullObject(value)
-		&& !isSpecial(value)
-};
-
-function isNonNullObject(value) {
-	return !!value && typeof value === 'object'
-}
-
-function isSpecial(value) {
-	var stringValue = Object.prototype.toString.call(value);
-
-	return stringValue === '[object RegExp]'
-		|| stringValue === '[object Date]'
-		|| isReactElement(value)
-}
-
-// see https://github.com/facebook/react/blob/b5ac963fb791d1298e7f396236383bc955f916c1/src/isomorphic/classic/element/ReactElement.js#L21-L25
-var canUseSymbol = typeof Symbol === 'function' && Symbol.for;
-var REACT_ELEMENT_TYPE = canUseSymbol ? Symbol.for('react.element') : 0xeac7;
-
-function isReactElement(value) {
-	return value.$$typeof === REACT_ELEMENT_TYPE
-}
-
-function emptyTarget(val) {
-	return Array.isArray(val) ? [] : {}
-}
-
-function cloneUnlessOtherwiseSpecified(value, options) {
-	return (options.clone !== false && options.isMergeableObject(value))
-		? deepmerge(emptyTarget(value), value, options)
-		: value
-}
-
-function defaultArrayMerge(target, source, options) {
-	return target.concat(source).map(function(element) {
-		return cloneUnlessOtherwiseSpecified(element, options)
-	})
-}
-
-function getMergeFunction(key, options) {
-	if (!options.customMerge) {
-		return deepmerge
-	}
-	var customMerge = options.customMerge(key);
-	return typeof customMerge === 'function' ? customMerge : deepmerge
-}
-
-function getEnumerableOwnPropertySymbols(target) {
-	return Object.getOwnPropertySymbols
-		? Object.getOwnPropertySymbols(target).filter(function(symbol) {
-			return Object.propertyIsEnumerable.call(target, symbol)
-		})
-		: []
-}
-
-function getKeys(target) {
-	return Object.keys(target).concat(getEnumerableOwnPropertySymbols(target))
-}
-
-function propertyIsOnObject(object, property) {
-	try {
-		return property in object
-	} catch(_) {
-		return false
-	}
-}
-
-// Protects from prototype poisoning and unexpected merging up the prototype chain.
-function propertyIsUnsafe(target, key) {
-	return propertyIsOnObject(target, key) // Properties are safe to merge if they don't exist in the target yet,
-		&& !(Object.hasOwnProperty.call(target, key) // unsafe if they exist up the prototype chain,
-			&& Object.propertyIsEnumerable.call(target, key)) // and also unsafe if they're nonenumerable.
-}
-
-function mergeObject(target, source, options) {
-	var destination = {};
-	if (options.isMergeableObject(target)) {
-		getKeys(target).forEach(function(key) {
-			destination[key] = cloneUnlessOtherwiseSpecified(target[key], options);
-		});
-	}
-	getKeys(source).forEach(function(key) {
-		if (propertyIsUnsafe(target, key)) {
-			return
-		}
-
-		if (propertyIsOnObject(target, key) && options.isMergeableObject(source[key])) {
-			destination[key] = getMergeFunction(key, options)(target[key], source[key], options);
-		} else {
-			destination[key] = cloneUnlessOtherwiseSpecified(source[key], options);
-		}
-	});
-	return destination
-}
-
-function deepmerge(target, source, options) {
-	options = options || {};
-	options.arrayMerge = options.arrayMerge || defaultArrayMerge;
-	options.isMergeableObject = options.isMergeableObject || isMergeableObject;
-	// cloneUnlessOtherwiseSpecified is added to `options` so that custom arrayMerge()
-	// implementations can use it. The caller may not replace it.
-	options.cloneUnlessOtherwiseSpecified = cloneUnlessOtherwiseSpecified;
-
-	var sourceIsArray = Array.isArray(source);
-	var targetIsArray = Array.isArray(target);
-	var sourceAndTargetTypesMatch = sourceIsArray === targetIsArray;
-
-	if (!sourceAndTargetTypesMatch) {
-		return cloneUnlessOtherwiseSpecified(source, options)
-	} else if (sourceIsArray) {
-		return options.arrayMerge(target, source, options)
-	} else {
-		return mergeObject(target, source, options)
-	}
-}
-
-deepmerge.all = function deepmergeAll(array, options) {
-	if (!Array.isArray(array)) {
-		throw new Error('first argument should be an array')
-	}
-
-	return array.reduce(function(prev, next) {
-		return deepmerge(prev, next, options)
-	}, {})
-};
-
-var deepmerge_1 = deepmerge;
-
-module.exports = deepmerge_1;
-
-
-/***/ }),
-
 /***/ "./node_modules/js-yaml/index.js":
 /*!***************************************!*\
   !*** ./node_modules/js-yaml/index.js ***!
@@ -10928,6 +10784,7 @@ class Api extends HttpClient {
             authControllerGetPermissions: (params = {}) => this.request({
                 path: `/api/v2/auth/whoami`,
                 method: 'GET',
+                format: 'json',
                 ...params,
             }),
             authControllerLogOut: (params = {}) => this.request({
@@ -10951,12 +10808,6 @@ class Api extends HttpClient {
             runsControllerHasRuns: (id, params = {}) => this.request({
                 path: `/api/v2/run/variant/${id}/hasRuns`,
                 method: 'GET',
-                ...params,
-            }),
-            runsControllerGetCurrentPage: (runId, params = {}) => this.request({
-                path: `/api/v2/run/${runId}/currentPage`,
-                method: 'GET',
-                format: 'json',
                 ...params,
             }),
             runsControllerRemove: (variantId, params = {}) => this.request({
@@ -11028,8 +10879,8 @@ class Api extends HttpClient {
                 format: 'json',
                 ...params,
             }),
-            runsStatusControllerGetStatus: (id, params = {}) => this.request({
-                path: `/api/v2/run/${id}/status`,
+            runsStatusControllerGetStatus: (appId, runId, params = {}) => this.request({
+                path: `/api/v2/run/${runId}/status/${appId}`,
                 method: 'GET',
                 format: 'json',
                 ...params,
@@ -11271,6 +11122,33 @@ class Api extends HttpClient {
                 format: 'json',
                 ...params,
             }),
+            fileControllerUpload: (appId, query, data, params = {}) => this.request({
+                path: `/api/v2/file/${appId}`,
+                method: 'POST',
+                query: query,
+                body: data,
+                type: ContentType.FormData,
+                ...params,
+            }),
+            fileControllerGetFile: (appId, query, params = {}) => this.request({
+                path: `/api/v2/file/${appId}`,
+                method: 'GET',
+                query: query,
+                format: 'json',
+                ...params,
+            }),
+            fileControllerUpdateKey: (appId, key, data, params = {}) => this.request({
+                path: `/api/v2/file/${appId}/${key}`,
+                method: 'PUT',
+                body: data,
+                type: ContentType.Json,
+                ...params,
+            }),
+            fileControllerRemove: (appId, key, params = {}) => this.request({
+                path: `/api/v2/file/${appId}/${key}`,
+                method: 'DELETE',
+                ...params,
+            }),
             tagsControllerGetTagsWithIds: (query, params = {}) => this.request({
                 path: `/api/v2/tags`,
                 method: 'GET',
@@ -11314,9 +11192,10 @@ class Api extends HttpClient {
                 format: 'json',
                 ...params,
             }),
-            applicationControllerGetApplications: (params = {}) => this.request({
+            applicationControllerGetApplications: (query, params = {}) => this.request({
                 path: `/api/v2/applications`,
                 method: 'GET',
+                query: query,
                 format: 'json',
                 ...params,
             }),
@@ -11352,9 +11231,10 @@ class Api extends HttpClient {
                 format: 'json',
                 ...params,
             }),
-            applicationControllerGetApplicationWithParent: (id, params = {}) => this.request({
+            applicationControllerGetApplicationWithParent: (id, query, params = {}) => this.request({
                 path: `/api/v2/applications/parent/${id}`,
                 method: 'GET',
+                query: query,
                 format: 'json',
                 ...params,
             }),
@@ -11442,9 +11322,16 @@ class Api extends HttpClient {
                 format: 'json',
                 ...params,
             }),
+            userControllerGetAllPaTs: (params = {}) => this.request({
+                path: `/api/v2/users/pats`,
+                method: 'GET',
+                format: 'json',
+                ...params,
+            }),
             userControllerRevokePat: (id, params = {}) => this.request({
                 path: `/api/v2/users/pat/${id}`,
                 method: 'DELETE',
+                format: 'json',
                 ...params,
             }),
             userControllerGetUsers: (query, params = {}) => this.request({
@@ -11525,9 +11412,11 @@ class Api extends HttpClient {
                 method: 'DELETE',
                 ...params,
             }),
-            workspaceControllerAddUnlimitedPlan: (wsId, params = {}) => this.request({
-                path: `/api/v2/workspace/${wsId}/add-unlimited-plan`,
+            workspaceControllerUpdateWorkspacePlan: (wsId, data, params = {}) => this.request({
+                path: `/api/v2/workspace/${wsId}/update-workspace-plan`,
                 method: 'POST',
+                body: data,
+                type: ContentType.Json,
                 format: 'json',
                 ...params,
             }),
@@ -11620,7 +11509,6 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.Api = void 0;
 const tslib_1 = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.mjs");
 const cross_fetch_1 = tslib_1.__importDefault(__webpack_require__(/*! cross-fetch */ "./node_modules/cross-fetch/dist/node-ponyfill.js"));
-const deepmerge_1 = tslib_1.__importDefault(__webpack_require__(/*! deepmerge */ "./node_modules/deepmerge/dist/cjs.js"));
 const api_1 = __webpack_require__(/*! ./api */ "./src/codegen/api.ts");
 class Api {
     constructor(inputs) {
@@ -11631,35 +11519,33 @@ class Api {
             securityWorker: this.authParams,
             customFetch: cross_fetch_1.default,
         });
-        const { apiKey, apiKeyId } = inputs;
-        this._api.setSecurityData({ apiKey, apiKeyId });
+        this._api.setSecurityData({ pat: inputs.pat });
     }
-    async getApplication(variantId = this.inputs.application) {
-        const res = await this._api.api.applicationControllerGetApplication(variantId, { secure: true });
-        return res.data;
-    }
-    async getVariant(variantId = this.inputs.variant) {
+    async getVariant(variantId = this.inputs.variantId) {
         const res = await this._api.api.variantControllerGetVariant(variantId, { secure: true });
         return res;
     }
-    async startRun(variantId = this.inputs.variant) {
-        const { runTemplate, application, parameters: parameterOverrides, } = this.inputs;
-        console.log(`Getting parameters from run template ${runTemplate}`);
-        const paramsFromRunTemplate = await this._api.api.runTemplateControllerFindOne(application, runTemplate, { secure: true });
-        const params = (0, deepmerge_1.default)(paramsFromRunTemplate.data.data, parameterOverrides);
+    async whoami() {
+        const res = await this._api.api.authControllerGetPermissions({
+            secure: true,
+        });
+        return res;
+    }
+    async startRun(variantId = this.inputs.variantId) {
+        const { parameters } = this.inputs;
+        const runParameters = typeof parameters === 'string'
+            ? (await this._api.api.runTemplateControllerFindOne(variantId, parameters, { secure: true })).data
+            : parameters;
+        const paramsToUse = typeof parameters === 'string'
+            ? {
+                _id: runParameters._id,
+                name: runParameters.name,
+                ...runParameters.data,
+            }
+            : runParameters;
         const body = {
-            runOn: 'server',
-            applicationId: variantId,
-            parametersId: null,
-            parameters: params,
-            workQueue: [],
-            runId: null,
-            runNumber: null,
-            driverId: null,
-            agentId: null,
-            user: null,
+            parameters: paramsToUse,
         };
-        console.log(`Start run request:\n${JSON.stringify(body, null, 2)}`);
         const res = await this._api.api.startRunControllerStartRun(variantId, body, { secure: true });
         const data = res.data;
         if (typeof data !== 'object' && !data)
@@ -11674,23 +11560,22 @@ class Api {
             secure: true,
         });
     }
-    async getRunLogs(runId, params = {}, applicationId = this.inputs.variant) {
+    async getRunLogs(runId, params = {}, variantId = this.inputs.variantId) {
         const requestParams = { query: params, secure: true };
-        const res = await this._api.api.runsLogControllerV2GetRunLog(applicationId, runId, requestParams.query, requestParams);
+        const res = await this._api.api.runsLogControllerV2GetRunLog(variantId, runId, requestParams.query, requestParams);
         return res.data;
     }
-    async getRunStatus(runId) {
-        const res = await this._api.api.runsStatusControllerGetStatus(runId);
+    async getRunStatus(variantId, runId) {
+        const res = await this._api.api.runsStatusControllerGetStatus(variantId, runId, { secure: true });
         return res.data;
     }
     authParams(authData) {
         if (!authData)
             return {};
-        const { apiKeyId, apiKey } = authData;
-        const token = btoa(`${apiKeyId}:${apiKey}`);
+        const { pat } = authData;
         return {
             headers: {
-                Authorization: `Bearer ${token}`,
+                Authorization: `Bearer ${pat}`,
             },
         };
     }
@@ -11728,13 +11613,13 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.ActionInputsSchema = void 0;
 const zod_1 = __webpack_require__(/*! zod */ "./node_modules/zod/lib/index.js");
 const run_parameters_inputs_1 = __webpack_require__(/*! ./run-parameters.inputs */ "./src/inputs/run-parameters.inputs.ts");
+const constants_1 = __webpack_require__(/*! ../constants */ "./src/constants.ts");
 exports.ActionInputsSchema = zod_1.z.object({
-    application: zod_1.z.string().nonempty(),
-    variant: zod_1.z.string().nonempty(),
-    runTemplate: zod_1.z.string().nonempty(),
-    parameters: run_parameters_inputs_1.RunParametersSchema,
-    apiKey: zod_1.z.string().nonempty(),
-    apiKeyId: zod_1.z.string().nonempty(),
+    pat: zod_1.z.string().min(1),
+    variantId: zod_1.z.string().min(1),
+    parameters: zod_1.z.union([zod_1.z.string(), run_parameters_inputs_1.RunParametersSchema]),
+    repositoryUrl: zod_1.z.string().url().default(constants_1.REPOSITORY_BASE_URL),
+    expectFailure: zod_1.z.coerce.boolean().default(true),
 });
 
 
@@ -11762,16 +11647,21 @@ const InputsSchema = action_inputs_1.ActionInputsSchema.extend({
 });
 exports.InputsSchema = InputsSchema;
 const getInputs = () => {
-    const { ASTA_REPOSITORY_URL, ASTA_API_KEY, ASTA_API_KEY_SECRET, ASTA_API_KEY_ID, ASTA_EXPECT_FAILURE, } = process.env;
+    const { ASTA_REPOSITORY_URL, ASTA_EXPECT_FAILURE } = process.env;
+    const parametersInput = core.getInput('parameters');
+    let parameters;
+    try {
+        parameters = (0, run_parameters_inputs_1.getRunParameters)(parametersInput);
+    }
+    catch {
+        parameters = parametersInput;
+    }
     const inputs = InputsSchema.parse({
-        application: core.getInput('application'),
-        variant: core.getInput('variant'),
-        runTemplate: core.getInput('run-template'),
-        parameters: (0, run_parameters_inputs_1.getRunParameters)(core.getInput('parameters')),
-        apiKey: core.getInput('api-key') || ASTA_API_KEY || ASTA_API_KEY_SECRET,
-        apiKeyId: core.getInput('api-key-id') || ASTA_API_KEY_ID,
-        repositoryUrl: ASTA_REPOSITORY_URL,
-        expectFailure: ASTA_EXPECT_FAILURE,
+        pat: core.getInput('pat'),
+        variantId: core.getInput('variantId'),
+        parameters,
+        repositoryUrl: core.getInput('repositoryUrl') || ASTA_REPOSITORY_URL,
+        expectFailure: core.getInput('expectFailure') || ASTA_EXPECT_FAILURE,
     });
     return inputs;
 };
@@ -11793,13 +11683,64 @@ exports.getRunParameters = exports.RunParametersSchema = void 0;
 const tslib_1 = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.mjs");
 const zod_1 = __webpack_require__(/*! zod */ "./node_modules/zod/lib/index.js");
 const js_yaml_1 = tslib_1.__importDefault(__webpack_require__(/*! js-yaml */ "./node_modules/js-yaml/index.js"));
+const defaultRunParameters = {
+    path: '',
+    depth: 3,
+    duration: 0,
+    stopAfterFlows: false,
+    workQueueConfig: 'default',
+    formTestingConfig: {},
+    fastTestTables: false,
+    extraHTTPHeaders: {},
+    skipComponents: '',
+    stopOnFlowError: false,
+    enableModeling: true,
+    useDatasetsForForms: false,
+    fastTestLinks: false,
+    pageLoadTimeout: 3000,
+    actionRetryAttempts: 1,
+    testableDomains: [],
+    assets: {
+        rules: [],
+        data: [],
+        activities: [],
+    },
+    extensions: {
+        accessibility: false,
+        brokenLinks: false,
+        resources: false,
+        performance: false,
+        functional: false,
+    },
+    workQueue: [],
+    name: '',
+    _id: '',
+};
 exports.RunParametersSchema = zod_1.z
     .object({
+    path: zod_1.z.string(),
+    depth: zod_1.z.coerce.number().default(3),
+    duration: zod_1.z.coerce.number(),
     stopAfterFlows: zod_1.z.coerce.boolean().optional().default(false),
-    pageLoadTimeout: zod_1.z.coerce.number().optional().default(15),
-    actionRetryAttempts: zod_1.z.coerce.number().optional().default(3),
+    workQueueConfig: zod_1.z.string().optional().default('default'),
+    formTestingConfig: zod_1.z.record(zod_1.z.unknown()).optional(),
+    fastTestTables: zod_1.z.coerce.boolean().optional().default(false),
+    extraHTTPHeaders: zod_1.z.record(zod_1.z.unknown()).optional().default({}),
+    skipComponents: zod_1.z.string().optional().default(''),
+    stopOnFlowError: zod_1.z.coerce.boolean().optional().default(false),
+    enableModeling: zod_1.z.coerce.boolean().optional().default(true),
+    useDatasetsForForms: zod_1.z.coerce.boolean().optional().default(false),
+    fastTestLinks: zod_1.z.coerce.boolean().optional().default(false),
+    pageLoadTimeout: zod_1.z.coerce.number().optional().default(3000),
+    actionRetryAttempts: zod_1.z.coerce.number().optional().default(1),
+    testableDomains: zod_1.z.array(zod_1.z.string()),
+    assets: zod_1.z.record(zod_1.z.unknown()),
+    extensions: zod_1.z.record(zod_1.z.unknown()),
+    workQueue: zod_1.z.array(zod_1.z.unknown()),
+    name: zod_1.z.string(),
+    _id: zod_1.z.string(),
 })
-    .default({});
+    .default(defaultRunParameters);
 const getRunParameters = (parameters) => {
     if (!parameters)
         return exports.RunParametersSchema.parse({});
@@ -11807,13 +11748,15 @@ const getRunParameters = (parameters) => {
     try {
         parsed = js_yaml_1.default.load(parameters);
     }
-    catch (e) {
+    catch {
         try {
             parsed = JSON.parse(parameters);
         }
         catch (e) {
-            throw new TypeError('Unable to parse run parameters from your workflow file. ' +
+            const error = new TypeError('Unable to parse run parameters from your workflow file. ' +
                 'Please ensure that your parameters are valid JSON or YAML objects.');
+            error.cause = e;
+            throw error;
         }
     }
     const validated = exports.RunParametersSchema.parse(parsed);
@@ -45685,7 +45628,7 @@ module.exports = /*#__PURE__*/JSON.parse('[[[0,44],"disallowed_STD3_valid"],[[45
 /***/ ((module) => {
 
 "use strict";
-module.exports = /*#__PURE__*/JSON.parse('{"name":"asta-action","description":"Test your web application with Asta","version":"0.0.7-alpha.1","license":"SEE LICENSE in LICENSE.md","author":"Business Performance Systems, LLC","packageManager":"yarn@4.4.0","main":"dist/index.js","types":"dist/index.d.ts","sideEffects":false,"engines":{"node":">=16.0.0","yarn":">=3.6.0"},"scripts":{"build":"webpack","typecheck":"tsc --noEmit","format":"prettier --write src","lint":"oxlint --import-plugin --config .oxlintrc.json src","codegen":"yarn swagger-typescript-api --path swagger.json --output src/codegen --name api.ts","test":"jest"},"dependencies":{"@actions/core":"^1.10.1","@actions/github":"^6.0.0","cross-fetch":"^4.0.0","deepmerge":"^4.3.1","js-yaml":"^4.1.0","source-map-support":"^0.5.21","tslib":"^2.6.3","zod":"^3.23.8"},"devDependencies":{"@swc/core":"^1.7.14","@swc/jest":"^0.2.36","@types/jest":"^29.5.12","@types/js-yaml":"^4.0.9","@types/node":"^20.16.1","jest":"^29.7.0","oxlint":"^0.8.0","prettier":"^3.3.3","swagger-typescript-api":"^13.0.21","ts-loader":"^9.5.1","typescript":"^5.5.4","webpack":"^5.94.0","webpack-cli":"^5.1.4"}}');
+module.exports = /*#__PURE__*/JSON.parse('{"name":"asta-action","description":"Test your web application with Asta","version":"0.0.8","license":"SEE LICENSE in LICENSE.md","author":"Business Performance Systems, LLC","packageManager":"yarn@4.4.0","main":"dist/index.js","types":"dist/index.d.ts","sideEffects":false,"engines":{"node":">=16.0.0","yarn":">=3.6.0"},"scripts":{"build":"webpack","typecheck":"tsc --noEmit","format":"prettier --write src","lint":"oxlint --import-plugin --config .oxlintrc.json src","codegen":"yarn swagger-typescript-api --path swagger.json --output src/codegen --name api.ts && yarn generate-run-parameters-schema","generate-run-parameters-schema":"tsx scripts/generate-run-parameters-schema.ts","test":"jest"},"dependencies":{"@actions/core":"^1.10.1","@actions/github":"^6.0.0","cross-fetch":"^4.0.0","deepmerge":"^4.3.1","js-yaml":"^4.1.0","source-map-support":"^0.5.21","tslib":"^2.6.3","zod":"^3.23.8"},"devDependencies":{"@swc/core":"^1.7.14","@swc/jest":"^0.2.36","@types/jest":"^29.5.12","@types/js-yaml":"^4.0.9","@types/node":"^20.16.1","jest":"^29.7.0","oxlint":"^0.8.0","prettier":"^3.3.3","swagger-typescript-api":"^13.0.21","ts-loader":"^9.5.1","tsx":"^4.19.1","typescript":"^5.5.4","webpack":"^5.94.0","webpack-cli":"^5.1.4"}}');
 
 /***/ })
 
@@ -45790,11 +45733,15 @@ const constants_1 = __webpack_require__(/*! ./constants */ "./src/constants.ts")
 const package_json_1 = tslib_1.__importDefault(__webpack_require__(/*! ../package.json */ "./package.json"));
 async function main() {
     const POLL_INTERVAL = 1000;
-    core.debug(`Startign asta-action@${package_json_1.default.version}...`);
+    core.debug(`Starting asta-action@${package_json_1.default.version}...`);
     core.debug(`Parsing inputs...`);
     const inputs = (0, inputs_1.getInputs)();
     const api = new codegen_1.Api(inputs);
-    core.debug(`Starting run for application "${inputs.application}"`);
+    const [user, variant] = await Promise.all([
+        api.whoami(),
+        api.getVariant(inputs.variantId),
+    ]);
+    core.debug(`Starting run for variant "${variant.name}" as ${user}`);
     const runId = await startRun(api, inputs);
     core.setOutput('run-id', runId);
     process.on('SIGINT', () => {
@@ -45805,7 +45752,7 @@ async function main() {
     let runStatus;
     let lastRunLogNumber = 0;
     let numErrors = 0;
-    for (runStatus = await api.getRunStatus(runId); runStatus.runningState !== 'stopped'; runStatus = await api.getRunStatus(runId)) {
+    for (runStatus = await api.getRunStatus(inputs.variantId, runId); runStatus.status !== 'stopped'; runStatus = await api.getRunStatus(inputs.variantId, runId)) {
         core.debug(`Run status: ${JSON.stringify(runStatus, null, 2)}`);
         const { data: logs } = await api.getRunLogs(runId, {
             offset: lastRunLogNumber,
@@ -45843,19 +45790,17 @@ async function main() {
     }
 }
 async function startRun(api, inputs) {
-    const application = await api.getApplication();
-    core.debug(`Found application:\n${JSON.stringify(application, null, 2)}`);
-    console.log(`Testing application "${application.data.name}"`);
-    const variant = await api.getVariant();
-    core.debug(`Found variant:\n${JSON.stringify(variant, null, 2)}`);
-    console.log(`Testing variant "${variant.name}"`);
     core.debug('Starting run...');
     const runId = await api.startRun();
-    const runLogUrl = new URL(`/app/${inputs.variant}/log`, constants_1.COMPANION_BASE_URL);
+    const baseUrl = (inputs.repositoryUrl.includes('localhost') &&
+        'http://localhost:3000') ||
+        (inputs.repositoryUrl.includes('dev') && 'https://dev.sqabot.ai/') ||
+        constants_1.COMPANION_BASE_URL;
+    const runLogUrl = new URL(`/app/${inputs.variantId}/log`, baseUrl);
     runLogUrl.searchParams.set('run', runId);
     runLogUrl.searchParams.set('filters[level][$ne]', 'Debug');
     core.notice(`
-Started run ${runId} for ${application.data.name} (${variant.name})
+Started run ${runId} for ${inputs.variantId} (${inputs.variantId})
     
 View detailed logs here: ${runLogUrl.toString()}
 `.trim());
