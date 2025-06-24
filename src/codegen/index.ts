@@ -4,7 +4,6 @@ import {
     Api as ApiInternal,
     RunParameters,
     RunTemplate,
-    RunTemplateAssets,
     StartRunRequestDTO,
     type RequestParams,
 } from './api'
