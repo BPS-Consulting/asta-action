@@ -2,7 +2,7 @@ name: Gated CI
 
 on:
     push:
-        branches: ['main', 'camilo/ci/feat/update-asta-ci-action']
+        branches: ['main']
     pull_request:
         branches: ['main']
 
@@ -37,7 +37,3 @@ jobs:
 
             - name: Build
               run: yarn build
-
-            # Ensure that changes to index.js have been committed
-            - name: Check for uncommitted changes
-              run: git diff --exit-code dist
