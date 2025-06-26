@@ -1,7 +1,7 @@
 {
     "name": "asta-action",
     "description": "Test your web application with Asta",
-    "version": "0.0.8",
+    "version": "0.0.9",
     "license": "SEE LICENSE in LICENSE.md",
     "author": "Business Performance Systems, LLC",
     "packageManager": "yarn@4.4.0",
