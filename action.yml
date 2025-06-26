@@ -2,37 +2,33 @@ name: 'asta'
 description: 'Test a web application with ASTA'
 
 inputs:
+    pat:
+        description: |
+            A Personal Access Token (PAT) used to authenticate the run.
+        required: true
 
-  application:
-    description: 'The application to test. This can be a name or an ID'
-    required: true
+    variantId:
+        description: 'The ID or name of the application variant to test'
+        required: true
 
-  variant:
-    description: 'The application variant to test. This can be a name or an ID'
-    required: true
+    parameters:
+        description: 'Run template ID (string) or custom parameters (YAML/JSON)'
+        required: true
 
-  run-template:
-    description: 'Configure the test run with an existing run template. This can be a template name or id'
-    required: false
+    repositoryUrl:
+        description: 'ASTA repository base URL'
+        required: false
+        default: 'https://sqabot.ai'
 
-  parameters:
-    description: 'Parameters to configure the test run. These will override settings obtained from the `run-template`'
-    required: false
+    expectFailure:
+        description: 'Set to true if the test is expected to fail'
+        required: false
+        default: 'false'
 
-  api-key:
-    description: |
-      A Personal Access Token (PAT) used to authenticate the run. Alternatively,
-       you can provide an API key using the ASTA_API_KEY environment variable.
-
-  api-key-id:
-    description: |
-      The ID of your Personal Access Token (PAT). May also be set via the
-      ASTA_API_KEY_ID environment variable.
-    
 outputs:
-  run-id:
-    description: The unique ID of the ASTA run executed in this workflow
+    run-id:
+        description: The unique ID of the ASTA test run
 
 runs:
-  using: 'node20'
-  main: 'dist/index.js'
+    using: 'node20'
+    main: 'dist/index.js'
