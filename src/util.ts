@@ -16,3 +16,23 @@ export const toError = (err: unknown): Error => {
 
 export const sleep = (ms: number) =>
     new Promise(resolve => setTimeout(resolve, ms))
+
+/**
+ * Wraps a promise with a timeout
+ * @param promise The promise to wrap
+ * @param timeoutMs Timeout in milliseconds
+ * @param errorMessage Error message if timeout occurs
+ * @returns Promise that rejects if timeout is reached
+ */
+export const withTimeout = <T>(
+    promise: Promise<T>,
+    timeoutMs: number,
+    errorMessage: string = `Operation timed out after ${timeoutMs}ms`
+): Promise<T> => {
+    return Promise.race([
+        promise,
+        new Promise<never>((_, reject) => {
+            setTimeout(() => reject(new Error(errorMessage)), timeoutMs)
+        }),
+    ])
+}

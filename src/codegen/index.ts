@@ -31,7 +31,7 @@ export class Api {
             variantId,
             { secure: true }
         )
-        return res
+        return await res.json()
     }
 
     public async whoami() {

@@ -11523,7 +11523,7 @@ class Api {
     }
     async getVariant(variantId = this.inputs.variantId) {
         const res = await this._api.api.variantControllerGetVariant(variantId, { secure: true });
-        return res;
+        return await res.json();
     }
     async whoami() {
         const res = await this._api.api.authControllerGetPermissions({
@@ -11776,7 +11776,7 @@ exports.getRunParameters = getRunParameters;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.sleep = exports.toError = void 0;
+exports.withTimeout = exports.sleep = exports.toError = void 0;
 const toError = (err) => {
     if (err instanceof Error) {
         return err;
@@ -11791,6 +11791,15 @@ const toError = (err) => {
 exports.toError = toError;
 const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 exports.sleep = sleep;
+const withTimeout = (promise, timeoutMs, errorMessage = `Operation timed out after ${timeoutMs}ms`) => {
+    return Promise.race([
+        promise,
+        new Promise((_, reject) => {
+            setTimeout(() => reject(new Error(errorMessage)), timeoutMs);
+        }),
+    ]);
+};
+exports.withTimeout = withTimeout;
 
 
 /***/ }),
@@ -45733,6 +45742,7 @@ const constants_1 = __webpack_require__(/*! ./constants */ "./src/constants.ts")
 const package_json_1 = tslib_1.__importDefault(__webpack_require__(/*! ../package.json */ "./package.json"));
 async function main() {
     const POLL_INTERVAL = 1000;
+    const MAX_RETRIES = 3;
     core.debug(`Starting asta-action@${package_json_1.default.version}...`);
     core.debug(`Parsing inputs...`);
     const inputs = (0, inputs_1.getInputs)();
@@ -45741,7 +45751,7 @@ async function main() {
         api.whoami(),
         api.getVariant(inputs.variantId),
     ]);
-    core.debug(`Starting run for variant "${variant.name}" as ${user}`);
+    core.debug(`Starting run for variant "${variant.data.name}" as ${user.data.data.email}`);
     const runId = await startRun(api, inputs);
     core.setOutput('run-id', runId);
     process.on('SIGINT', () => {
@@ -45752,26 +45762,96 @@ async function main() {
     let runStatus;
     let lastRunLogNumber = 0;
     let numErrors = 0;
-    for (runStatus = await api.getRunStatus(inputs.variantId, runId); runStatus.status !== 'stopped'; runStatus = await api.getRunStatus(inputs.variantId, runId)) {
-        core.debug(`Run status: ${JSON.stringify(runStatus, null, 2)}`);
-        const { data: logs } = await api.getRunLogs(runId, {
-            offset: lastRunLogNumber,
-            limit: 50,
-        });
-        if (logs.length) {
-            lastRunLogNumber = Number(logs[logs.length - 1].id);
+    let consecutiveErrors = 0;
+    let loopCount = 0;
+    const MAX_LOOP_ITERATIONS = 1000;
+    try {
+        runStatus = await api.getRunStatus(inputs.variantId, runId);
+        while (runStatus) {
+            loopCount++;
+            if (loopCount > MAX_LOOP_ITERATIONS) {
+                core.notice(`Loop exited because it reached maximum iterations (${MAX_LOOP_ITERATIONS})`);
+                break;
+            }
+            const currentStatus = getRunStatusValue(runStatus);
+            const isActive = isRunActive(currentStatus);
+            try {
+                let logs;
+                try {
+                    const result = await (0, util_1.withTimeout)(api.getRunLogs(runId, {
+                        offset: lastRunLogNumber,
+                        limit: 50,
+                    }), 30000, `getRunLogs timed out after 30 seconds`);
+                    logs = result.data;
+                }
+                catch (logsError) {
+                    core.warning(`Failed to get run logs: ${logsError instanceof Error ? logsError.message : String(logsError)}`);
+                    logs = null;
+                }
+                if (logs && logs.length) {
+                    lastRunLogNumber = Number(logs[logs.length - 1].id) + 1;
+                }
+                if (logs) {
+                    for (const log of logs) {
+                        try {
+                            onLog(log);
+                            if (isErrorLog(log))
+                                numErrors++;
+                        }
+                        catch (logError) {
+                            core.warning(`Error processing log entry: ${logError}`);
+                        }
+                    }
+                }
+                if (!isActive) {
+                    core.notice(`Loop exited because run status is "${currentStatus}" (not active)`);
+                    break;
+                }
+                consecutiveErrors = 0;
+                await (0, util_1.sleep)(POLL_INTERVAL);
+                try {
+                    runStatus = await (0, util_1.withTimeout)(api.getRunStatus(inputs.variantId, runId), 30000, `getRunStatus timed out after 30 seconds`);
+                }
+                catch (statusError) {
+                    console.error('ERROR in getRunStatus:', statusError);
+                    console.error('getRunStatus error details:', {
+                        message: statusError instanceof Error
+                            ? statusError.message
+                            : String(statusError),
+                        stack: statusError instanceof Error
+                            ? statusError.stack
+                            : 'No stack',
+                        variantId: inputs.variantId,
+                        runId,
+                    });
+                    throw statusError;
+                }
+            }
+            catch (error) {
+                consecutiveErrors++;
+                const errorMsg = error instanceof Error ? error.message : String(error);
+                core.warning(`API call failed (attempt ${consecutiveErrors}/${MAX_RETRIES}): ${errorMsg}`);
+                if (consecutiveErrors >= MAX_RETRIES) {
+                    core.error(`Too many consecutive API failures. Stopping polling.`);
+                    throw error;
+                }
+                await (0, util_1.sleep)(POLL_INTERVAL * 2);
+                try {
+                    runStatus = await api.getRunStatus(inputs.variantId, runId);
+                }
+                catch (statusError) {
+                    core.warning(`Failed to get run status after error: ${statusError}`);
+                    continue;
+                }
+            }
         }
-        else {
-            core.debug(`No logs found for run ${runId}`);
-        }
-        for (const log of logs) {
-            onLog(log);
-            if (isErrorLog(log))
-                numErrors++;
-        }
-        await (0, util_1.sleep)(POLL_INTERVAL);
     }
-    core.debug(`Final run status: ${JSON.stringify(runStatus, null, 2)}`);
+    catch (error) {
+        const errorMsg = error instanceof Error ? error.message : String(error);
+        core.error(`Fatal error in polling loop after ${loopCount} iterations: ${errorMsg}`);
+        core.debug(`Error details: ${error instanceof Error ? error.stack : 'No stack trace'}`);
+        throw error;
+    }
     if (numErrors > 0) {
         if (inputs.expectFailure) {
             core.notice(`Test run failed with ${numErrors} errors, as expected`);
@@ -45819,6 +45899,24 @@ function onLog(log) {
 }
 function isErrorLog(log) {
     return log['level']?.toLowerCase?.() === 'error';
+}
+function isRunActive(status) {
+    const activeStatuses = ['starting', 'running', 'paused', 'stopping'];
+    return activeStatuses.includes(status);
+}
+function getRunStatusValue(runStatus) {
+    if (typeof runStatus === 'string') {
+        return runStatus;
+    }
+    if (runStatus && typeof runStatus === 'object') {
+        const status = runStatus.status || runStatus.runningState || runStatus.state;
+        if (status) {
+            return status;
+        }
+        core.debug(`No status field found in runStatus object: ${JSON.stringify(runStatus)}`);
+        return 'unknown';
+    }
+    return 'unknown';
 }
 main().catch(err => {
     core.debug(err.stack);
