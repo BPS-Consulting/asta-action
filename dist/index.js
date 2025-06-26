@@ -11561,9 +11561,12 @@ class Api {
         });
     }
     async getRunLogs(runId, params = {}, variantId = this.inputs.variantId) {
-        const requestParams = { query: params, secure: true };
-        const res = await this._api.api.runsLogControllerV2GetRunLog(variantId, runId, requestParams.query, requestParams);
-        return res.data;
+        const res = await (0, cross_fetch_1.default)(`${this.inputs.repositoryUrl}/api/v2/runs/${variantId}/log/${runId}?offset=${params.offset || 0}&limit=${params.limit || 50}`, {
+            headers: {
+                Authorization: `Bearer ${this.inputs.pat}`,
+            },
+        }).then(res => res.json());
+        return res;
     }
     async getRunStatus(variantId, runId) {
         const res = await this._api.api.runsStatusControllerGetStatus(variantId, runId, { secure: true });

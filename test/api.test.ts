@@ -15,11 +15,13 @@ jest.mock('../src/codegen/api', () => {
                     data: { permissions: ['read', 'write'] },
                 }),
                 variantControllerGetVariant: jest.fn().mockResolvedValue({
-                    data: {
-                        _id: '6761e2a564e3d83226978099',
-                        name: 'Test Variant',
-                        type: 'variant',
-                    },
+                    json: jest.fn().mockResolvedValue({
+                        data: {
+                            _id: '6761e2a564e3d83226978099',
+                            name: 'Test Variant',
+                            type: 'variant',
+                        },
+                    }),
                 }),
                 startRunControllerStartRun: jest.fn().mockResolvedValue({
                     data: {
@@ -92,6 +94,9 @@ jest.mock('../src/codegen/api', () => {
     }
 })
 
+// Mock cross-fetch module for getRunLogs
+jest.mock('cross-fetch', () => jest.fn())
+
 let inputs: Inputs
 let mockInputs: Inputs
 
@@ -120,11 +125,37 @@ beforeAll(async () => {
 describe('the API', () => {
     let api: Api
     let mockApi: any
+    let mockFetch: jest.MockedFunction<any>
 
     beforeEach(() => {
+        // Get the mocked cross-fetch function
+        mockFetch = require('cross-fetch') as jest.MockedFunction<any>
+        mockFetch.mockClear()
+
         api = new Api(inputs)
         // Get the mocked internal API for specific test assertions
         mockApi = (api as any)._api
+
+        // Mock fetch to return a proper Response-like object
+        // The getRunLogs method does: fetch(...).then(res => res.json()) and then returns res.data
+        mockFetch.mockImplementation(() => {
+            return Promise.resolve({
+                json: () =>
+                    Promise.resolve({
+                        data: [
+                            {
+                                id: 1,
+                                type: 'Info',
+                                level: 'Info',
+                                timestamp: '2023-01-01T00:00:00.000Z',
+                                msg: 'Test log entry',
+                                data: {},
+                            },
+                        ],
+                        totalCount: 1,
+                    }),
+            } as any)
+        })
     })
 
     describe('Authentication and User Operations', () => {
@@ -216,7 +247,16 @@ describe('the API', () => {
             expect(res).toBeDefined()
             expect(res).toHaveProperty('data')
             expect(Array.isArray(res.data)).toBe(true)
-            expect(mockApi.api.runsLogControllerV2GetRunLog).toHaveBeenCalled()
+            expect(mockFetch).toHaveBeenCalledWith(
+                expect.stringContaining(
+                    `/api/v2/runs/${inputs.variantId}/log/${mockRunId}`
+                ),
+                expect.objectContaining({
+                    headers: {
+                        Authorization: `Bearer ${inputs.pat}`,
+                    },
+                })
+            )
         })
 
         it('can get run logs with pagination', async () => {
@@ -227,13 +267,13 @@ describe('the API', () => {
             expect(res).toBeDefined()
             expect(res).toHaveProperty('data')
             expect(Array.isArray(res.data)).toBe(true)
-            expect(
-                mockApi.api.runsLogControllerV2GetRunLog
-            ).toHaveBeenCalledWith(
-                inputs.variantId,
-                mockRunId,
-                { limit: 10, offset: 0 },
-                { query: { limit: 10, offset: 0 }, secure: true }
+            expect(mockFetch).toHaveBeenCalledWith(
+                expect.stringContaining('offset=0&limit=10'),
+                expect.objectContaining({
+                    headers: {
+                        Authorization: `Bearer ${inputs.pat}`,
+                    },
+                })
             )
         })
 
@@ -242,13 +282,15 @@ describe('the API', () => {
             expect(res).toBeDefined()
             expect(res).toHaveProperty('data')
             expect(Array.isArray(res.data)).toBe(true)
-            expect(
-                mockApi.api.runsLogControllerV2GetRunLog
-            ).toHaveBeenCalledWith(
-                inputs.variantId,
-                mockRunId,
-                {},
-                { query: {}, secure: true }
+            expect(mockFetch).toHaveBeenCalledWith(
+                expect.stringContaining(
+                    `/api/v2/runs/${inputs.variantId}/log/${mockRunId}`
+                ),
+                expect.objectContaining({
+                    headers: {
+                        Authorization: `Bearer ${inputs.pat}`,
+                    },
+                })
             )
         })
 
@@ -272,9 +314,7 @@ describe('the API', () => {
         })
 
         it('handles invalid run ID for logs', async () => {
-            mockApi.api.runsLogControllerV2GetRunLog.mockRejectedValueOnce(
-                new Error('Run not found')
-            )
+            mockFetch.mockRejectedValueOnce(new Error('Run not found'))
 
             await expect(api.getRunLogs('invalid-run-id')).rejects.toThrow(
                 'Run not found'
@@ -305,7 +345,9 @@ describe('the API', () => {
             const mockRunId = 'mock-run-id-123'
             const res = await api.getRunLogs(mockRunId, {})
             expect(res).toBeDefined()
-            expect(mockApi.api.runsLogControllerV2GetRunLog).toHaveBeenCalled()
+            expect(res).toHaveProperty('data')
+            expect(Array.isArray(res.data)).toBe(true)
+            expect(mockFetch).toHaveBeenCalled()
         })
 
         it('creates API instance with valid inputs', () => {

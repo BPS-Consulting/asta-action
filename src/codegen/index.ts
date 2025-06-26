@@ -104,14 +104,16 @@ export class Api {
         params: PaginationParams = {},
         variantId = this.inputs.variantId
     ) {
-        const requestParams = { query: params, secure: true }
-        const res = await this._api.api.runsLogControllerV2GetRunLog(
-            variantId,
-            runId,
-            requestParams.query,
-            requestParams
-        )
-        return res.data
+        //Using fetch instead of the internal API because the internal API is not working for logs (maybe because of the query params)
+        const res = await fetch(
+            `${this.inputs.repositoryUrl}/api/v2/runs/${variantId}/log/${runId}?offset=${params.offset || 0}&limit=${params.limit || 50}`,
+            {
+                headers: {
+                    Authorization: `Bearer ${this.inputs.pat}`,
+                },
+            }
+        ).then(res => res.json())
+        return res
     }
 
     public async getRunStatus(variantId: string, runId: string) {
