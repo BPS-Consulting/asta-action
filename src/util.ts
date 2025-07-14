@@ -9,8 +9,17 @@ export const toError = (err: unknown): Error => {
         return err
     } else if (typeof err === 'string') {
         return new Error(err)
+    } else if (err === undefined) {
+        return new Error('')
     } else {
-        return new Error(JSON.stringify(err))
+        // Safely stringify error objects to prevent BSON serialization issues
+        const errorString =
+            typeof err === 'object' && err !== null
+                ? JSON.stringify(err).length > 1024 * 1024
+                    ? '[Large error object - truncated]'
+                    : JSON.stringify(err)
+                : String(err)
+        return new Error(errorString)
     }
 }
 

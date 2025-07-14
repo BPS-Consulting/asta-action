@@ -205,6 +205,37 @@ View detailed logs here: ${runLogUrl.toString()}
     return runId
 }
 
+/**
+ * Safely stringify an object with size limits to prevent BSON serialization errors
+ */
+function safeStringify(obj: any, maxSize = 1024 * 1024): string {
+    const fullString = JSON.stringify(obj)
+
+    if (fullString.length <= maxSize) {
+        return fullString
+    }
+
+    // For RunLogEntryDTO objects, truncate the large fields
+    if (obj && typeof obj === 'object' && 'data' in obj && 'state' in obj) {
+        const truncatedObj = {
+            ...obj,
+            data: '[Truncated - data too large]',
+            state: '[Truncated - state too large]',
+        }
+        return (
+            JSON.stringify(truncatedObj) +
+            ` [Original size: ${fullString.length} bytes]`
+        )
+    }
+
+    // For other objects, truncate the string representation
+    const truncated = fullString.substring(0, maxSize - 100)
+    return (
+        truncated +
+        `... [Truncated at ${maxSize} bytes, original size: ${fullString.length} bytes]`
+    )
+}
+
 function onLog(log: RunLogEntryDTO) {
     const msg = log.msg || (log as Record<string, any>)['message']
 
@@ -212,7 +243,12 @@ function onLog(log: RunLogEntryDTO) {
 
     if (isErrorLog(log)) {
         // numErrors++
-        core.error(msg ? String(msg) : JSON.stringify(log))
+        if (msg) {
+            core.error(String(msg))
+        } else {
+            // Prevent BSON serialization errors by limiting log size
+            core.error(safeStringify(log))
+        }
     } else {
         console.log(`[${log.level} - ${log.type}] ${msg}`)
     }
@@ -247,7 +283,7 @@ function getRunStatusValue(runStatus: any): string {
         }
 
         core.debug(
-            `No status field found in runStatus object: ${JSON.stringify(runStatus)}`
+            `No status field found in runStatus object: ${safeStringify(runStatus)}`
         )
         return 'unknown'
     }
