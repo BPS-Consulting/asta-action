@@ -3,7 +3,7 @@ import * as core from '@actions/core'
 import { Api } from './codegen'
 import { getInputs, type Inputs } from './inputs'
 import { sleep, toError, withTimeout } from './util'
-import { RunLogEntryDTO } from './codegen/api'
+import { OptimizedLogEntryDto } from './codegen/api'
 import { COMPANION_BASE_URL } from './constants'
 
 import pkg from '../package.json'
@@ -37,6 +37,12 @@ async function main() {
     let runStatus: Awaited<ReturnType<typeof api.getRunStatus>> | undefined
     let lastRunLogNumber = 0
     let numErrors = 0
+    let errorsByImpact = {
+        critical: 0,
+        serious: 0,
+        moderate: 0,
+        minor: 0,
+    }
     let consecutiveErrors = 0
     let loopCount = 0
     const MAX_LOOP_ITERATIONS = 1000
@@ -85,7 +91,18 @@ async function main() {
                     for (const log of logs) {
                         try {
                             onLog(log)
-                            if (isErrorLog(log)) numErrors++
+                            if (isErrorLog(log)) {
+                                numErrors++
+                                // Track errors by impact level
+                                const impact =
+                                    log.impact as keyof typeof errorsByImpact
+                                if (
+                                    impact &&
+                                    errorsByImpact.hasOwnProperty(impact)
+                                ) {
+                                    errorsByImpact[impact]++
+                                }
+                            }
                         } catch (logError) {
                             core.warning(
                                 `Error processing log entry: ${logError}`
@@ -166,11 +183,26 @@ async function main() {
         throw error
     }
 
+    // Log error counts by impact to console
+    const errorSummary = `critical ${errorsByImpact.critical}, serious ${errorsByImpact.serious}, moderate ${errorsByImpact.moderate}, minor ${errorsByImpact.minor}`
+    console.log(`Error counts by impact: ${errorSummary}`)
+
+    // Set outputs for error counts by impact
+    core.setOutput('errors-critical', errorsByImpact.critical)
+    core.setOutput('errors-serious', errorsByImpact.serious)
+    core.setOutput('errors-moderate', errorsByImpact.moderate)
+    core.setOutput('errors-minor', errorsByImpact.minor)
+    core.setOutput('errors-total', numErrors)
+
     if (numErrors > 0) {
         if (inputs.expectFailure) {
-            core.notice(`Test run failed with ${numErrors} errors, as expected`)
+            core.notice(
+                `Test run failed with ${numErrors} errors (${errorSummary}), as expected`
+            )
         } else {
-            core.setFailed(`Test run failed with ${numErrors} errors`)
+            core.setFailed(
+                `Test run failed with ${numErrors} errors (${errorSummary})`
+            )
         }
     } else {
         if (inputs.expectFailure) {
@@ -236,7 +268,7 @@ function safeStringify(obj: any, maxSize = 1024 * 1024): string {
     )
 }
 
-function onLog(log: RunLogEntryDTO) {
+function onLog(log: OptimizedLogEntryDto) {
     const msg = log.msg || (log as Record<string, any>)['message']
 
     if (!msg) return
@@ -253,7 +285,7 @@ function onLog(log: RunLogEntryDTO) {
         console.log(`[${log.level} - ${log.type}] ${msg}`)
     }
 }
-function isErrorLog(log: RunLogEntryDTO): boolean {
+function isErrorLog(log: OptimizedLogEntryDto): boolean {
     return (log['level'] as string)?.toLowerCase?.() === 'error'
 }
 

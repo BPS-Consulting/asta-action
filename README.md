@@ -11,6 +11,7 @@ This action allows you to integrate ASTA web application testing into your CI/CD
 -   🚀 Start automated test runs on your web applications
 -   📊 Real-time monitoring of test progress and logs
 -   ✅ Automatic pass/fail reporting in GitHub workflows
+-   🎯 **Detailed error reporting by impact level** (critical, serious, moderate, minor)
 -   🔗 Direct links to detailed test results in the ASTA companion app
 -   🛠️ Flexible configuration with run templates or custom parameters
 -   📋 Support for both simple and complex test configurations
@@ -47,9 +48,14 @@ jobs:
 
 ## Outputs
 
-| Output   | Description                        |
-| -------- | ---------------------------------- |
-| `run-id` | The unique ID of the ASTA test run |
+| Output            | Description                                  |
+| ----------------- | -------------------------------------------- |
+| `run-id`          | The unique ID of the ASTA test run           |
+| `errors-total`    | Total number of errors found during the test |
+| `errors-critical` | Number of critical impact errors             |
+| `errors-serious`  | Number of serious impact errors              |
+| `errors-moderate` | Number of moderate impact errors             |
+| `errors-minor`    | Number of minor impact errors                |
 
 ## Configuration Options
 
@@ -157,11 +163,28 @@ jobs:
               with:
                   script: |
                       const runId = '${{ steps.asta-tests.outputs.run-id }}';
+                      const totalErrors = '${{ steps.asta-tests.outputs.errors-total }}';
+                      const critical = '${{ steps.asta-tests.outputs.errors-critical }}';
+                      const serious = '${{ steps.asta-tests.outputs.errors-serious }}';
+                      const moderate = '${{ steps.asta-tests.outputs.errors-moderate }}';
+                      const minor = '${{ steps.asta-tests.outputs.errors-minor }}';
+
+                      let body = `🤖 ASTA test run completed: ${runId}\n\n`;
+                      if (totalErrors > 0) {
+                        body += `❌ **${totalErrors} errors found:**\n`;
+                        if (critical > 0) body += `- 🔴 Critical: ${critical}\n`;
+                        if (serious > 0) body += `- 🟠 Serious: ${serious}\n`;
+                        if (moderate > 0) body += `- 🟡 Moderate: ${moderate}\n`;
+                        if (minor > 0) body += `- 🔵 Minor: ${minor}\n`;
+                      } else {
+                        body += `✅ No errors found!`;
+                      }
+
                       github.rest.issues.createComment({
                         issue_number: context.issue.number,
                         owner: context.repo.owner,
                         repo: context.repo.repo,
-                        body: `🤖 ASTA test run completed: ${runId}`
+                        body: body
                       });
 ```
 
@@ -221,6 +244,108 @@ jobs:
                         - myapp.com
                       extensions:
                         functional: true
+```
+
+## Error Reporting and Impact Levels
+
+The ASTA Action provides detailed error reporting with impact level categorization. This helps teams prioritize fixes based on the severity of issues found during testing.
+
+### Impact Levels
+
+Errors are categorized into four impact levels:
+
+-   **🔴 Critical**: Severe issues that prevent core functionality or create major accessibility barriers
+-   **🟠 Serious**: Significant problems that impact user experience or accessibility
+-   **🟡 Moderate**: Noticeable issues that should be addressed but don't prevent basic functionality
+-   **🔵 Minor**: Small improvements or minor accessibility enhancements
+
+### Console Output
+
+During test execution, you'll see error counts logged to the console:
+
+```
+Error counts by impact: critical 2, serious 5, moderate 1, minor 3
+```
+
+### Using Error Outputs in Workflows
+
+You can use the error count outputs to create conditional logic in your workflows:
+
+```yaml
+- name: Run ASTA Tests
+  id: asta-tests
+  uses: your-org/asta-action@v1
+  with:
+      pat: ${{ secrets.ASTA_PAT }}
+      variantId: ${{ vars.ASTA_VARIANT_ID }}
+      parameters: ${{ vars.ASTA_TEMPLATE_ID }}
+
+- name: Check Critical Errors
+  if: steps.asta-tests.outputs.errors-critical > 0
+  run: |
+      echo "❌ Found ${{ steps.asta-tests.outputs.errors-critical }} critical errors!"
+      echo "This requires immediate attention before deployment."
+      exit 1
+
+- name: Report Error Summary
+  run: |
+      echo "📊 Test Results Summary:"
+      echo "Total Errors: ${{ steps.asta-tests.outputs.errors-total }}"
+      echo "Critical: ${{ steps.asta-tests.outputs.errors-critical }}"
+      echo "Serious: ${{ steps.asta-tests.outputs.errors-serious }}"
+      echo "Moderate: ${{ steps.asta-tests.outputs.errors-moderate }}"
+      echo "Minor: ${{ steps.asta-tests.outputs.errors-minor }}"
+
+- name: Create Quality Gate
+  if: steps.asta-tests.outputs.errors-critical > 0 || steps.asta-tests.outputs.errors-serious > 10
+  run: |
+      echo "Quality gate failed: Too many high-impact errors"
+      exit 1
+```
+
+### Slack/Teams Integration Example
+
+```yaml
+- name: Send Results to Slack
+  if: always()
+  uses: 8398a7/action-slack@v3
+  with:
+      status: ${{ job.status }}
+      custom_payload: |
+          {
+            "blocks": [
+              {
+                "type": "section",
+                "text": {
+                  "type": "mrkdwn",
+                  "text": "🤖 ASTA Test Results for `${{ github.repository }}`"
+                }
+              },
+              {
+                "type": "section",
+                "fields": [
+                  {
+                    "type": "mrkdwn",
+                    "text": "*Total Errors:* ${{ steps.asta-tests.outputs.errors-total }}"
+                  },
+                  {
+                    "type": "mrkdwn", 
+                    "text": "*Critical:* ${{ steps.asta-tests.outputs.errors-critical }}"
+                  },
+                  {
+                    "type": "mrkdwn",
+                    "text": "*Serious:* ${{ steps.asta-tests.outputs.errors-serious }}"
+                  },
+                  {
+                    "type": "mrkdwn",
+                    "text": "*Moderate:* ${{ steps.asta-tests.outputs.errors-moderate }}"
+                  }
+                ]
+              }
+            ]
+          }
+  env:
+      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 ```
 
 ## Running from Console/CLI

@@ -10554,6 +10554,14 @@ class Api extends HttpClient {
                 format: 'json',
                 ...params,
             }),
+            datasetControllerGenerateDefaultData: (appId, data, params = {}) => this.request({
+                path: `/api/v2/assets/${appId}/dataset/generate-default-data`,
+                method: 'POST',
+                body: data,
+                type: ContentType.Json,
+                format: 'json',
+                ...params,
+            }),
             flowControllerFindAllTableData: (appId, query, params = {}) => this.request({
                 path: `/api/v2/assets/${appId}/flow/application/table-data`,
                 method: 'GET',
@@ -10826,59 +10834,6 @@ class Api extends HttpClient {
                 method: 'POST',
                 ...params,
             }),
-            runParametersControllerGetAll: (params = {}) => this.request({
-                path: `/api/v2/run/parameters`,
-                method: 'GET',
-                ...params,
-            }),
-            runParametersControllerCreate: (params = {}) => this.request({
-                path: `/api/v2/run/parameters`,
-                method: 'POST',
-                ...params,
-            }),
-            runParametersControllerGet: (id, params = {}) => this.request({
-                path: `/api/v2/run/parameters/${id}`,
-                method: 'GET',
-                ...params,
-            }),
-            runParametersControllerUpdate: (id, params = {}) => this.request({
-                path: `/api/v2/run/parameters/${id}`,
-                method: 'PUT',
-                ...params,
-            }),
-            runParametersControllerDelete: (id, params = {}) => this.request({
-                path: `/api/v2/run/parameters/${id}/delete`,
-                method: 'POST',
-                ...params,
-            }),
-            runsLogControllerGetRunLog: (runId, params = {}) => this.request({
-                path: `/api/v2/run/${runId}/log`,
-                method: 'GET',
-                format: 'json',
-                ...params,
-            }),
-            runsLogControllerUpdateRunLog: (runId, data, params = {}) => this.request({
-                path: `/api/v2/run/${runId}/log`,
-                method: 'PUT',
-                body: data,
-                type: ContentType.Json,
-                format: 'json',
-                ...params,
-            }),
-            runsLogControllerGetLogs: (params = {}) => this.request({
-                path: `/api/v2/run/log`,
-                method: 'GET',
-                format: 'json',
-                ...params,
-            }),
-            runsLogControllerAppendRunLog: (runId, data, params = {}) => this.request({
-                path: `/api/v2/run/${runId}/log/append`,
-                method: 'POST',
-                body: data,
-                type: ContentType.Json,
-                format: 'json',
-                ...params,
-            }),
             runsStatusControllerGetStatus: (appId, runId, params = {}) => this.request({
                 path: `/api/v2/run/${runId}/status/${appId}`,
                 method: 'GET',
@@ -10907,11 +10862,6 @@ class Api extends HttpClient {
                 format: 'json',
                 ...params,
             }),
-            startOptionsControllerGetStartOptions: (params = {}) => this.request({
-                path: `/api/v2/run/options`,
-                method: 'GET',
-                ...params,
-            }),
             runsLogControllerV2GetRun: (id, runNumber, params = {}) => this.request({
                 path: `/api/v2/runs/${id}/run/${runNumber}`,
                 method: 'GET',
@@ -10922,6 +10872,19 @@ class Api extends HttpClient {
                 path: `/api/v2/runs/${id}/log/${runNumber}`,
                 method: 'GET',
                 query: query,
+                format: 'json',
+                ...params,
+            }),
+            runsLogControllerV2GetLogEntry: (id, runNumber, entryId, params = {}) => this.request({
+                path: `/api/v2/runs/${id}/log/${runNumber}/entry/${entryId}`,
+                method: 'GET',
+                ...params,
+            }),
+            runsLogControllerV2AppendRunLog: (runId, data, params = {}) => this.request({
+                path: `/api/v2/runs/${runId}/log/append`,
+                method: 'POST',
+                body: data,
+                type: ContentType.Json,
                 format: 'json',
                 ...params,
             }),
@@ -11079,6 +11042,47 @@ class Api extends HttpClient {
                 format: 'json',
                 ...params,
             }),
+            workspaceControllerGetWorkspaces: (query, params = {}) => this.request({
+                path: `/api/v2/workspace`,
+                method: 'GET',
+                query: query,
+                format: 'json',
+                ...params,
+            }),
+            workspaceControllerCreateWorkspace: (data, params = {}) => this.request({
+                path: `/api/v2/workspace`,
+                method: 'POST',
+                body: data,
+                type: ContentType.Json,
+                format: 'json',
+                ...params,
+            }),
+            workspaceControllerGetWorkspace: (id, params = {}) => this.request({
+                path: `/api/v2/workspace/${id}`,
+                method: 'GET',
+                format: 'json',
+                ...params,
+            }),
+            workspaceControllerUpdateWorkspace: (id, data, params = {}) => this.request({
+                path: `/api/v2/workspace/${id}`,
+                method: 'PUT',
+                body: data,
+                type: ContentType.Json,
+                ...params,
+            }),
+            workspaceControllerDeleteWorkspace: (id, params = {}) => this.request({
+                path: `/api/v2/workspace/${id}`,
+                method: 'DELETE',
+                ...params,
+            }),
+            workspaceControllerUpdateWorkspacePlan: (wsId, data, params = {}) => this.request({
+                path: `/api/v2/workspace/${wsId}/update-workspace-plan`,
+                method: 'POST',
+                body: data,
+                type: ContentType.Json,
+                format: 'json',
+                ...params,
+            }),
             usageControllerGetWorkspaceUsage: (id, query, params = {}) => this.request({
                 path: `/api/v2/usage/${id}`,
                 method: 'GET',
@@ -11092,6 +11096,26 @@ class Api extends HttpClient {
                 body: data,
                 type: ContentType.Json,
                 format: 'json',
+                ...params,
+            }),
+            screenshotControllerCreateScreenshotEntity: (params = {}) => this.request({
+                path: `/api/v2/screenshots`,
+                method: 'POST',
+                ...params,
+            }),
+            screenshotControllerAddPublicScreenshot: (id, params = {}) => this.request({
+                path: `/api/v2/screenshots/public/${id}`,
+                method: 'POST',
+                ...params,
+            }),
+            screenshotControllerUploadScreenshot: (screenshotId, params = {}) => this.request({
+                path: `/api/v2/screenshots/${screenshotId}`,
+                method: 'POST',
+                ...params,
+            }),
+            screenshotControllerGetScreenshot: (screenshotId, params = {}) => this.request({
+                path: `/api/v2/screenshots/${screenshotId}`,
+                method: 'GET',
                 ...params,
             }),
             analyticsControllerGetRunRuleStatistics: (appId, runId, query, params = {}) => this.request({
@@ -11249,65 +11273,6 @@ class Api extends HttpClient {
                 format: 'json',
                 ...params,
             }),
-            issueControllerCreate: (params = {}) => this.request({
-                path: `/api/v2/issues`,
-                method: 'POST',
-                ...params,
-            }),
-            issueControllerGetAll: (params = {}) => this.request({
-                path: `/api/v2/issues`,
-                method: 'GET',
-                ...params,
-            }),
-            issueControllerUpdateOne: (data, params = {}) => this.request({
-                path: `/api/v2/issues`,
-                method: 'PUT',
-                body: data,
-                type: ContentType.Json,
-                ...params,
-            }),
-            issueControllerGet: (id, params = {}) => this.request({
-                path: `/api/v2/issues/${id}`,
-                method: 'GET',
-                ...params,
-            }),
-            issueControllerDelete: (id, params = {}) => this.request({
-                path: `/api/v2/issues/${id}`,
-                method: 'DELETE',
-                ...params,
-            }),
-            issueControllerUpdate: (id, data, params = {}) => this.request({
-                path: `/api/v2/issues/${id}`,
-                method: 'PUT',
-                body: data,
-                type: ContentType.Json,
-                ...params,
-            }),
-            issueControllerGetLogs: (id, appId, params = {}) => this.request({
-                path: `/api/v2/issues/${id}/logs/${appId}`,
-                method: 'GET',
-                ...params,
-            }),
-            screenshotControllerCreateScreenshotEntity: (params = {}) => this.request({
-                path: `/api/v2/screenshots`,
-                method: 'POST',
-                ...params,
-            }),
-            screenshotControllerAddPublicScreenshot: (id, params = {}) => this.request({
-                path: `/api/v2/screenshots/public/${id}`,
-                method: 'POST',
-                ...params,
-            }),
-            screenshotControllerUploadScreenshot: (screenshotId, params = {}) => this.request({
-                path: `/api/v2/screenshots/${screenshotId}`,
-                method: 'POST',
-                ...params,
-            }),
-            screenshotControllerGetScreenshot: (screenshotId, params = {}) => this.request({
-                path: `/api/v2/screenshots/${screenshotId}`,
-                method: 'GET',
-                ...params,
-            }),
             userControllerCreatePat: (data, params = {}) => this.request({
                 path: `/api/v2/users/pat`,
                 method: 'POST',
@@ -11379,47 +11344,6 @@ class Api extends HttpClient {
                 format: 'json',
                 ...params,
             }),
-            workspaceControllerGetWorkspaces: (query, params = {}) => this.request({
-                path: `/api/v2/workspace`,
-                method: 'GET',
-                query: query,
-                format: 'json',
-                ...params,
-            }),
-            workspaceControllerCreateWorkspace: (data, params = {}) => this.request({
-                path: `/api/v2/workspace`,
-                method: 'POST',
-                body: data,
-                type: ContentType.Json,
-                format: 'json',
-                ...params,
-            }),
-            workspaceControllerGetWorkspace: (id, params = {}) => this.request({
-                path: `/api/v2/workspace/${id}`,
-                method: 'GET',
-                format: 'json',
-                ...params,
-            }),
-            workspaceControllerUpdateWorkspace: (id, data, params = {}) => this.request({
-                path: `/api/v2/workspace/${id}`,
-                method: 'PUT',
-                body: data,
-                type: ContentType.Json,
-                ...params,
-            }),
-            workspaceControllerDeleteWorkspace: (id, params = {}) => this.request({
-                path: `/api/v2/workspace/${id}`,
-                method: 'DELETE',
-                ...params,
-            }),
-            workspaceControllerUpdateWorkspacePlan: (wsId, data, params = {}) => this.request({
-                path: `/api/v2/workspace/${wsId}/update-workspace-plan`,
-                method: 'POST',
-                body: data,
-                type: ContentType.Json,
-                format: 'json',
-                ...params,
-            }),
             inviteUserControllerGetInvites: (query, params = {}) => this.request({
                 path: `/api/v2/invite-user`,
                 method: 'GET',
@@ -11487,6 +11411,30 @@ class Api extends HttpClient {
             viewControllerDeleteView: (parentId, viewId, params = {}) => this.request({
                 path: `/api/v2/view/${parentId}/${viewId}`,
                 method: 'DELETE',
+                ...params,
+            }),
+            aiControllerAnalyzePage: (appId, data, params = {}) => this.request({
+                path: `/api/v2/ai/${appId}/analyze-page`,
+                method: 'POST',
+                body: data,
+                type: ContentType.Json,
+                format: 'json',
+                ...params,
+            }),
+            aiControllerGenerateData: (appId, data, params = {}) => this.request({
+                path: `/api/v2/ai/${appId}/generate-data`,
+                method: 'POST',
+                body: data,
+                type: ContentType.Json,
+                format: 'json',
+                ...params,
+            }),
+            aiControllerGenerateFlow: (appId, data, params = {}) => this.request({
+                path: `/api/v2/ai/${appId}/generate-flow`,
+                method: 'POST',
+                body: data,
+                type: ContentType.Json,
+                format: 'json',
                 ...params,
             }),
         };
@@ -11725,11 +11673,11 @@ exports.RunParametersSchema = zod_1.z
     depth: zod_1.z.coerce.number().default(3),
     duration: zod_1.z.coerce.number(),
     stopAfterFlows: zod_1.z.coerce.boolean().optional().default(false),
-    workQueueConfig: zod_1.z.string().optional().default('default'),
+    workQueueConfig: zod_1.z.string().optional().default("default"),
     formTestingConfig: zod_1.z.record(zod_1.z.unknown()).optional(),
     fastTestTables: zod_1.z.coerce.boolean().optional().default(false),
     extraHTTPHeaders: zod_1.z.record(zod_1.z.unknown()).optional().default({}),
-    skipComponents: zod_1.z.string().optional().default(''),
+    skipComponents: zod_1.z.string().optional().default(""),
     stopOnFlowError: zod_1.z.coerce.boolean().optional().default(false),
     enableModeling: zod_1.z.coerce.boolean().optional().default(true),
     useDatasetsForForms: zod_1.z.coerce.boolean().optional().default(false),
@@ -11739,6 +11687,7 @@ exports.RunParametersSchema = zod_1.z
     testableDomains: zod_1.z.array(zod_1.z.string()),
     assets: zod_1.z.record(zod_1.z.unknown()),
     extensions: zod_1.z.record(zod_1.z.unknown()),
+    logAccessibilitySuccesses: zod_1.z.coerce.boolean().optional().default(false),
     workQueue: zod_1.z.array(zod_1.z.unknown()),
     name: zod_1.z.string(),
     _id: zod_1.z.string(),
@@ -11787,8 +11736,16 @@ const toError = (err) => {
     else if (typeof err === 'string') {
         return new Error(err);
     }
+    else if (err === undefined) {
+        return new Error('');
+    }
     else {
-        return new Error(JSON.stringify(err));
+        const errorString = typeof err === 'object' && err !== null
+            ? JSON.stringify(err).length > 1024 * 1024
+                ? '[Large error object - truncated]'
+                : JSON.stringify(err)
+            : String(err);
+        return new Error(errorString);
     }
 };
 exports.toError = toError;
@@ -45640,7 +45597,7 @@ module.exports = /*#__PURE__*/JSON.parse('[[[0,44],"disallowed_STD3_valid"],[[45
 /***/ ((module) => {
 
 "use strict";
-module.exports = /*#__PURE__*/JSON.parse('{"name":"asta-action","description":"Test your web application with Asta","version":"0.0.9","license":"SEE LICENSE in LICENSE.md","author":"Business Performance Systems, LLC","packageManager":"yarn@4.4.0","main":"dist/index.js","types":"dist/index.d.ts","sideEffects":false,"engines":{"node":">=16.0.0","yarn":">=3.6.0"},"scripts":{"build":"webpack","typecheck":"tsc --noEmit","format":"prettier --write src","lint":"oxlint --import-plugin --config .oxlintrc.json src","codegen":"yarn swagger-typescript-api --path swagger.json --output src/codegen --name api.ts && yarn generate-run-parameters-schema","generate-run-parameters-schema":"tsx scripts/generate-run-parameters-schema.ts","test":"jest"},"dependencies":{"@actions/core":"^1.10.1","@actions/github":"^6.0.0","cross-fetch":"^4.0.0","deepmerge":"^4.3.1","js-yaml":"^4.1.0","source-map-support":"^0.5.21","tslib":"^2.6.3","zod":"^3.23.8"},"devDependencies":{"@swc/core":"^1.7.14","@swc/jest":"^0.2.36","@types/jest":"^29.5.12","@types/js-yaml":"^4.0.9","@types/node":"^20.16.1","jest":"^29.7.0","oxlint":"^0.8.0","prettier":"^3.3.3","swagger-typescript-api":"^13.0.21","ts-loader":"^9.5.1","tsx":"^4.19.1","typescript":"^5.5.4","webpack":"^5.94.0","webpack-cli":"^5.1.4"}}');
+module.exports = /*#__PURE__*/JSON.parse('{"name":"asta-action","description":"Test your web application with Asta","version":"0.0.10","license":"SEE LICENSE in LICENSE.md","author":"Business Performance Systems, LLC","packageManager":"yarn@4.4.0","main":"dist/index.js","types":"dist/index.d.ts","sideEffects":false,"engines":{"node":">=16.0.0","yarn":">=3.6.0"},"scripts":{"build":"webpack","typecheck":"tsc --noEmit","format":"prettier --write src","lint":"oxlint --import-plugin --config .oxlintrc.json src","codegen":"yarn swagger-typescript-api --path swagger.json --output src/codegen --name api.ts && yarn generate-run-parameters-schema","generate-run-parameters-schema":"tsx scripts/generate-run-parameters-schema.ts","test":"jest"},"dependencies":{"@actions/core":"^1.10.1","@actions/github":"^6.0.0","cross-fetch":"^4.0.0","deepmerge":"^4.3.1","js-yaml":"^4.1.0","source-map-support":"^0.5.21","tslib":"^2.6.3","zod":"^3.23.8"},"devDependencies":{"@swc/core":"^1.7.14","@swc/jest":"^0.2.36","@types/jest":"^29.5.12","@types/js-yaml":"^4.0.9","@types/node":"^20.16.1","jest":"^29.7.0","oxlint":"^0.8.0","prettier":"^3.3.3","swagger-typescript-api":"^13.0.21","ts-loader":"^9.5.1","tsx":"^4.19.1","typescript":"^5.5.4","webpack":"^5.94.0","webpack-cli":"^5.1.4"}}');
 
 /***/ })
 
@@ -45765,6 +45722,12 @@ async function main() {
     let runStatus;
     let lastRunLogNumber = 0;
     let numErrors = 0;
+    let errorsByImpact = {
+        critical: 0,
+        serious: 0,
+        moderate: 0,
+        minor: 0,
+    };
     let consecutiveErrors = 0;
     let loopCount = 0;
     const MAX_LOOP_ITERATIONS = 1000;
@@ -45798,8 +45761,14 @@ async function main() {
                     for (const log of logs) {
                         try {
                             onLog(log);
-                            if (isErrorLog(log))
+                            if (isErrorLog(log)) {
                                 numErrors++;
+                                const impact = log.impact;
+                                if (impact &&
+                                    errorsByImpact.hasOwnProperty(impact)) {
+                                    errorsByImpact[impact]++;
+                                }
+                            }
                         }
                         catch (logError) {
                             core.warning(`Error processing log entry: ${logError}`);
@@ -45855,12 +45824,19 @@ async function main() {
         core.debug(`Error details: ${error instanceof Error ? error.stack : 'No stack trace'}`);
         throw error;
     }
+    const errorSummary = `critical ${errorsByImpact.critical}, serious ${errorsByImpact.serious}, moderate ${errorsByImpact.moderate}, minor ${errorsByImpact.minor}`;
+    console.log(`Error counts by impact: ${errorSummary}`);
+    core.setOutput('errors-critical', errorsByImpact.critical);
+    core.setOutput('errors-serious', errorsByImpact.serious);
+    core.setOutput('errors-moderate', errorsByImpact.moderate);
+    core.setOutput('errors-minor', errorsByImpact.minor);
+    core.setOutput('errors-total', numErrors);
     if (numErrors > 0) {
         if (inputs.expectFailure) {
-            core.notice(`Test run failed with ${numErrors} errors, as expected`);
+            core.notice(`Test run failed with ${numErrors} errors (${errorSummary}), as expected`);
         }
         else {
-            core.setFailed(`Test run failed with ${numErrors} errors`);
+            core.setFailed(`Test run failed with ${numErrors} errors (${errorSummary})`);
         }
     }
     else {
@@ -45889,12 +45865,35 @@ View detailed logs here: ${runLogUrl.toString()}
 `.trim());
     return runId;
 }
+function safeStringify(obj, maxSize = 1024 * 1024) {
+    const fullString = JSON.stringify(obj);
+    if (fullString.length <= maxSize) {
+        return fullString;
+    }
+    if (obj && typeof obj === 'object' && 'data' in obj && 'state' in obj) {
+        const truncatedObj = {
+            ...obj,
+            data: '[Truncated - data too large]',
+            state: '[Truncated - state too large]',
+        };
+        return (JSON.stringify(truncatedObj) +
+            ` [Original size: ${fullString.length} bytes]`);
+    }
+    const truncated = fullString.substring(0, maxSize - 100);
+    return (truncated +
+        `... [Truncated at ${maxSize} bytes, original size: ${fullString.length} bytes]`);
+}
 function onLog(log) {
     const msg = log.msg || log['message'];
     if (!msg)
         return;
     if (isErrorLog(log)) {
-        core.error(msg ? String(msg) : JSON.stringify(log));
+        if (msg) {
+            core.error(String(msg));
+        }
+        else {
+            core.error(safeStringify(log));
+        }
     }
     else {
         console.log(`[${log.level} - ${log.type}] ${msg}`);
@@ -45916,7 +45915,7 @@ function getRunStatusValue(runStatus) {
         if (status) {
             return status;
         }
-        core.debug(`No status field found in runStatus object: ${JSON.stringify(runStatus)}`);
+        core.debug(`No status field found in runStatus object: ${safeStringify(runStatus)}`);
         return 'unknown';
     }
     return 'unknown';

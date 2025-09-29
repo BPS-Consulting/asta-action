@@ -35,7 +35,15 @@ export interface ImportDatasetDto {
 }
 
 export interface AssetsFilterDTO {
-    status?: 'active' | 'inactive' | 'invalid'
+    status?:
+        | 'active'
+        | 'inactive'
+        | 'invalid'
+        | 'deleted'
+        | {
+              $eq?: 'active' | 'inactive' | 'invalid' | 'deleted'
+              $ne?: 'active' | 'inactive' | 'invalid' | 'deleted'
+          }
     type?: 'accessibility-rule' | 'functional-rule' | 'resource-rule' | 'webform-rule' | 'link-rule'
     tag?: object
     search?: object
@@ -76,6 +84,7 @@ export interface RuleData {
     text: string
     scenarios: RuleScenario[]
     isExecutable?: boolean
+    impact?: 'critical' | 'serious' | 'moderate' | 'minor'
 }
 
 export interface Rule {
@@ -216,6 +225,23 @@ export interface DatasetWithPopulatedParentAndTags {
     _id: string
 }
 
+export interface FormFieldDataDto {
+    /** The type of the form field */
+    type: string
+    /** The name of the form field */
+    name: string
+    /** The required of the form field */
+    required: boolean
+    /** The label of the form field */
+    label: string
+}
+
+export interface GenerateDataDto {
+    formFields: FormFieldDataDto[]
+    /** Whether to generate invalid data */
+    generateInvalidData: boolean
+}
+
 export interface FlowParam {
     name: string
     type?: string
@@ -226,6 +252,7 @@ export interface FlowData {
     text: string
     parseableText?: string
     parameters: FlowParam[]
+    impact?: 'critical' | 'serious' | 'moderate' | 'minor'
 }
 
 export interface Flow {
@@ -330,6 +357,8 @@ export interface Extensions {
     resources: boolean
     performance: boolean
     functional: boolean
+    /** @default false */
+    llm?: boolean
 }
 
 export interface RunTemplateData {
@@ -370,6 +399,8 @@ export interface RunTemplateData {
     extensions: Extensions
     /** A set of work queue items for the test */
     workQueue: PopulatedWorkQueue[]
+    /** @default false */
+    logAccessibilitySuccesses?: boolean
 }
 
 export interface RunTemplate {
@@ -540,6 +571,8 @@ export interface RunStatusParameters {
     testableDomains: string[]
     assets: RunTemplateAssets
     extensions: Extensions
+    /** @default false */
+    logAccessibilitySuccesses?: boolean
     name: string
     workQueue: RunWorkQueueItem[]
     _id: string
@@ -594,46 +627,6 @@ export interface WorkQueueItem {
     activityId?: string
 }
 
-export interface StatusCounts {
-    /** @min 0 */
-    todo: number
-    /** @min 0 */
-    doing: number
-    /** @min 0 */
-    untested: number
-    /** @min 0 */
-    partial: number
-    /** @min 0 */
-    success: number
-    /** @min 0 */
-    failed: number
-}
-
-export interface StatisticsDTO {
-    /** The number of components in each state (e.g. passed, failed, todo) */
-    counts: StatusCounts
-}
-
-export interface ComponentStatisticsDTO {
-    Page?: StatisticsDTO
-    Item?: StatisticsDTO
-}
-
-export interface SummaryStatisticsDTO {
-    /**
-     * The id for the run these statistics belong to
-     * @example "1231-asdf-123d-asdf"
-     */
-    id: string
-    /**
-     * The id for the run these statistics belong to
-     * @example "1231-asdf-123d-asdf"
-     */
-    runId: string
-    /** The statistics for each type of test */
-    componentStatistics: ComponentStatisticsDTO
-}
-
 export interface RunDto {
     _id: string
     applicationId: string
@@ -644,7 +637,6 @@ export interface RunDto {
     parameters: RunTemplateData
     status: 'starting' | 'running' | 'paused' | 'stopping' | 'stopped'
     initialWorkQueue: WorkQueueItem[]
-    summaryStatistics: SummaryStatisticsDTO
     /** User who started the run */
     user: string
 }
@@ -668,39 +660,6 @@ export interface RemoveRunsResponseDTO {
     ok: boolean
     /** The ids of the removed runs */
     removedRuns: string[]
-}
-
-export interface RunLogDTO {
-    /** @example "" */
-    runId: string
-    /** @example "" */
-    runNumber: string
-    /** @example "" */
-    entries: string[]
-}
-
-export interface RunStatusDTO {
-    runId: string
-    templateName?: string
-    runNumber: number
-    applicationName: string
-    startingPageTitle: string
-    depth: number
-    startTime: string
-    endTime: string
-    currentPageTitle: string
-    /**
-     * URL of the current page the Agent is on
-     * @example "https://example.com/foo/bar"
-     */
-    currentPageUrl: string
-    currentComponentLabel: string
-    runningState: 'starting' | 'running' | 'paused' | 'stopping' | 'stopped'
-    currentScreenshotId?: string
-}
-
-export interface AppendRunLogRequestDTO {
-    entries: string[]
 }
 
 export interface StopDto {
@@ -892,6 +851,8 @@ export interface RunLogFilterDto {
     page?: object
     /** Only include results from a specific rule id in the log */
     ruleId?: object
+    /** Only include results from a specific impact in the log */
+    impact?: object
 }
 
 export interface TypeFilterDto {
@@ -899,14 +860,16 @@ export interface TypeFilterDto {
     type?: object
 }
 
-export interface LoggableAppStateDTO {
-    prevPage: object
-    action: object
-    page: object
-}
-
-export interface RunLogEntryDTO {
+export interface OptimizedLogEntryDto {
+    /** Log entry ID */
     id: number
+    /** Run number */
+    runNumber: number
+    /** Log entry timestamp */
+    timestamp: string
+    /** Log level */
+    level: 'Info' | 'Error' | 'Warning' | 'Debug'
+    /** Log type */
     type:
         | 'Agent'
         | 'Action'
@@ -918,17 +881,36 @@ export interface RunLogEntryDTO {
         | 'Flow'
         | 'Performance'
         | 'Download'
-    level: 'Info' | 'Error' | 'Warning' | 'Debug'
-    timestamp: string
-    state: LoggableAppStateDTO
+        | 'AI'
+    /** Log message */
     msg: string
-    data: object
-    error?: string
+    /** Element reference (HTML) */
+    elementRef?: string
+    /** Page URL where log was generated */
+    pageFound?: string
+    /** Impact level for accessibility issues */
+    impact?: string
+    /** Recommended fix description */
+    recommendedFix?: string
 }
 
-export interface LogWithCount {
-    data: RunLogEntryDTO[]
+export interface LogWithCountDto {
+    data: OptimizedLogEntryDto[]
+    /** Total count of matching entries */
     totalCount: number
+}
+
+export interface AppendRunLogRequestDTO {
+    entries: string[]
+}
+
+export interface RunLogDTO {
+    /** @example "" */
+    runId: string
+    /** @example "" */
+    runNumber: string
+    /** @example "" */
+    entries: string[]
 }
 
 export interface ClusterRunParameters {
@@ -967,6 +949,8 @@ export interface ClusterRunParameters {
     testableDomains: string[]
     assets: RunTemplateAssets
     extensions: Extensions
+    /** @default false */
+    logAccessibilitySuccesses?: boolean
     name: string
     workQueue: RunWorkQueueItem[]
     _id: string
@@ -1016,6 +1000,8 @@ export interface RunParameters {
     testableDomains: string[]
     assets: RunTemplateAssets
     extensions: Extensions
+    /** @default false */
+    logAccessibilitySuccesses?: boolean
     workQueue: RunWorkQueueItem[]
     name: string
     _id: string
@@ -1233,7 +1219,8 @@ export interface ModelItemData {
     __dimensions: Dimensions
     __position: Position
     classifications: string
-    jsonSnapshot: string
+    snapshot: string
+    screenshot: string
 }
 
 export interface ApplicationComponent {
@@ -1282,31 +1269,6 @@ export interface CreatePageModelDTO {
     page: object
     /** The run the page model was recorded in */
     runId: string
-}
-
-export interface PageModelDto {
-    variantId: string
-    /**
-     * The id for the corresponding application component in the variant's application model.
-     *
-     * @note may be missing on models for older runs
-     */
-    pageId: string
-    /**
-     * The run the page model was recorded in.
-     *
-     * @note may be missing on models for older runs
-     */
-    runId: string
-    pageTitle: string
-    pageUrl: string
-    screenshotId: string
-    /** Unique id for this model */
-    modelId: string
-    /** @format date-time */
-    createdAt: string
-    /** @format date-time */
-    updatedAt: string
 }
 
 export interface PermissionResponse {
@@ -1358,6 +1320,52 @@ export interface CreatePermissionDto {
 export interface UpdatePermissionRoleDto {
     /** The role of the user */
     role: number
+}
+
+export interface TransformedWorkspaceDtos {
+    data: WorkspaceDto[]
+    metadata: MetadataDTO
+}
+
+export interface CreateWorkspaceDto {
+    /**
+     * The name of the workspace
+     * @example "test's workspace"
+     */
+    name: string
+    /**
+     * The name of the workspace's plan
+     * @example "free"
+     */
+    plan?: 'free' | 'plus' | 'pro' | 'enterprise' | 'unlimited'
+}
+
+export interface UpdateWorkspacePlanDto {
+    /** @example "Free" */
+    plan: 'Free' | 'Plus' | 'Pro' | 'Enterprise' | 'Unlimited'
+}
+
+export interface DefaultResponseDto {
+    ok: boolean
+    msg: string
+}
+
+export interface TransformedDefaultResponseDto {
+    data: DefaultResponseDto
+    metadata: MetadataDTO
+}
+
+export interface UpdateWorkspaceDto {
+    /**
+     * The name of the workspace
+     * @example "test's workspace"
+     */
+    name?: string
+    /**
+     * The name of the workspace's plan
+     * @example "free"
+     */
+    plan?: 'free' | 'plus' | 'pro' | 'enterprise' | 'unlimited'
 }
 
 export interface UsageDto {
@@ -1422,6 +1430,7 @@ export interface AnalyticsFilterDTO {
         | 'Grid Item'
         | 'List'
         | 'List Item'
+        | 'Dialog'
         | 'Unclassified'
 }
 
@@ -1495,6 +1504,7 @@ export interface AnalyticsDTO {
         | 'Grid Item'
         | 'List'
         | 'List Item'
+        | 'Dialog'
         | 'Unclassified'
     runLogId?: string | object
     runLogNumber?: number
@@ -1680,17 +1690,6 @@ export interface UpdateApplicationDto {
     name: string
 }
 
-export interface IssueDto {
-    _id?: string
-    title: string
-    description: string
-    severity: string
-    status: string
-    logs: string[]
-    created_at?: string
-    updated_at?: string
-}
-
 export interface PatDTO {
     name: string
     /** @format date-time */
@@ -1810,52 +1809,6 @@ export interface CreateUserDto {
     customerId: string
 }
 
-export interface TransformedWorkspaceDtos {
-    data: WorkspaceDto[]
-    metadata: MetadataDTO
-}
-
-export interface CreateWorkspaceDto {
-    /**
-     * The name of the workspace
-     * @example "test's workspace"
-     */
-    name: string
-    /**
-     * The name of the workspace's plan
-     * @example "free"
-     */
-    plan?: 'free' | 'plus' | 'pro' | 'enterprise' | 'unlimited'
-}
-
-export interface UpdateWorkspacePlanDto {
-    /** @example "Free" */
-    plan: 'Free' | 'Plus' | 'Pro' | 'Enterprise' | 'Unlimited'
-}
-
-export interface DefaultResponseDto {
-    ok: boolean
-    msg: string
-}
-
-export interface TransformedDefaultResponseDto {
-    data: DefaultResponseDto
-    metadata: MetadataDTO
-}
-
-export interface UpdateWorkspaceDto {
-    /**
-     * The name of the workspace
-     * @example "test's workspace"
-     */
-    name?: string
-    /**
-     * The name of the workspace's plan
-     * @example "free"
-     */
-    plan?: 'free' | 'plus' | 'pro' | 'enterprise' | 'unlimited'
-}
-
 export interface TransformedInviteUserDTOS {
     data: InviteUserDTO[]
     metadata: MetadataDTO
@@ -1963,6 +1916,22 @@ export interface UpdateViewDTO {
     url?: string
     /** The configuration of the view */
     config?: ViewConfigDTO
+}
+
+export type Page = object
+
+export interface GenerateFlowDto {
+    /** The prompt to generate the flow */
+    prompt: string
+    /** The session id of a previous conversation with the flow generation agent */
+    sessionId: string
+}
+
+export interface GenerateFlowResponseDto {
+    /** The flow code */
+    flow: string
+    /** The session id of the conversation with the flow generation agent */
+    sessionId: string
 }
 
 export type QueryParamsType = Record<string | number, any>
@@ -2180,7 +2149,7 @@ export class HttpClient<SecurityDataType = unknown> {
 
 /**
  * @title ASTA Repository API
- * @version 0.23.0
+ * @version 0.27.1
  * @baseUrl http://localhost:4000
  * @contact
  *
@@ -2616,6 +2585,24 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
                 path: `/api/v2/assets/${appId}/dataset/application/get-by-name`,
                 method: 'GET',
                 query: query,
+                format: 'json',
+                ...params,
+            }),
+
+        /**
+         * No description
+         *
+         * @tags dataset
+         * @name DatasetControllerGenerateDefaultData
+         * @summary Generate default test data for form fields
+         * @request POST:/api/v2/assets/{appId}/dataset/generate-default-data
+         */
+        datasetControllerGenerateDefaultData: (appId: string, data: GenerateDataDto, params: RequestParams = {}) =>
+            this.request<FormData, any>({
+                path: `/api/v2/assets/${appId}/dataset/generate-default-data`,
+                method: 'POST',
+                body: data,
+                type: ContentType.Json,
                 format: 'json',
                 ...params,
             }),
@@ -3382,140 +3369,6 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
          * No description
          *
          * @tags run
-         * @name RunParametersControllerGetAll
-         * @request GET:/api/v2/run/parameters
-         */
-        runParametersControllerGetAll: (params: RequestParams = {}) =>
-            this.request<void, any>({
-                path: `/api/v2/run/parameters`,
-                method: 'GET',
-                ...params,
-            }),
-
-        /**
-         * No description
-         *
-         * @tags run
-         * @name RunParametersControllerCreate
-         * @request POST:/api/v2/run/parameters
-         */
-        runParametersControllerCreate: (params: RequestParams = {}) =>
-            this.request<void, any>({
-                path: `/api/v2/run/parameters`,
-                method: 'POST',
-                ...params,
-            }),
-
-        /**
-         * No description
-         *
-         * @tags run
-         * @name RunParametersControllerGet
-         * @request GET:/api/v2/run/parameters/{id}
-         */
-        runParametersControllerGet: (id: string, params: RequestParams = {}) =>
-            this.request<void, any>({
-                path: `/api/v2/run/parameters/${id}`,
-                method: 'GET',
-                ...params,
-            }),
-
-        /**
-         * No description
-         *
-         * @tags run
-         * @name RunParametersControllerUpdate
-         * @request PUT:/api/v2/run/parameters/{id}
-         */
-        runParametersControllerUpdate: (id: string, params: RequestParams = {}) =>
-            this.request<void, any>({
-                path: `/api/v2/run/parameters/${id}`,
-                method: 'PUT',
-                ...params,
-            }),
-
-        /**
-         * No description
-         *
-         * @tags run
-         * @name RunParametersControllerDelete
-         * @request POST:/api/v2/run/parameters/{id}/delete
-         */
-        runParametersControllerDelete: (id: string, params: RequestParams = {}) =>
-            this.request<void, any>({
-                path: `/api/v2/run/parameters/${id}/delete`,
-                method: 'POST',
-                ...params,
-            }),
-
-        /**
-         * No description
-         *
-         * @tags run
-         * @name RunsLogControllerGetRunLog
-         * @request GET:/api/v2/run/{runId}/log
-         */
-        runsLogControllerGetRunLog: (runId: string, params: RequestParams = {}) =>
-            this.request<RunLogDTO, RunLogDTO>({
-                path: `/api/v2/run/${runId}/log`,
-                method: 'GET',
-                format: 'json',
-                ...params,
-            }),
-
-        /**
-         * No description
-         *
-         * @tags run
-         * @name RunsLogControllerUpdateRunLog
-         * @request PUT:/api/v2/run/{runId}/log
-         */
-        runsLogControllerUpdateRunLog: (runId: string, data: RunLogDTO, params: RequestParams = {}) =>
-            this.request<RunLogDTO, any>({
-                path: `/api/v2/run/${runId}/log`,
-                method: 'PUT',
-                body: data,
-                type: ContentType.Json,
-                format: 'json',
-                ...params,
-            }),
-
-        /**
-         * No description
-         *
-         * @tags run
-         * @name RunsLogControllerGetLogs
-         * @request GET:/api/v2/run/log
-         */
-        runsLogControllerGetLogs: (params: RequestParams = {}) =>
-            this.request<RunStatusDTO, any>({
-                path: `/api/v2/run/log`,
-                method: 'GET',
-                format: 'json',
-                ...params,
-            }),
-
-        /**
-         * No description
-         *
-         * @tags run
-         * @name RunsLogControllerAppendRunLog
-         * @request POST:/api/v2/run/{runId}/log/append
-         */
-        runsLogControllerAppendRunLog: (runId: string, data: AppendRunLogRequestDTO, params: RequestParams = {}) =>
-            this.request<RunLogDTO, any>({
-                path: `/api/v2/run/${runId}/log/append`,
-                method: 'POST',
-                body: data,
-                type: ContentType.Json,
-                format: 'json',
-                ...params,
-            }),
-
-        /**
-         * No description
-         *
-         * @tags run
          * @name RunsStatusControllerGetStatus
          * @request GET:/api/v2/run/{runId}/status/{appId}
          */
@@ -3579,26 +3432,12 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         /**
          * No description
          *
-         * @tags run
-         * @name StartOptionsControllerGetStartOptions
-         * @request GET:/api/v2/run/options
-         */
-        startOptionsControllerGetStartOptions: (params: RequestParams = {}) =>
-            this.request<void, any>({
-                path: `/api/v2/run/options`,
-                method: 'GET',
-                ...params,
-            }),
-
-        /**
-         * No description
-         *
          * @tags runs
          * @name RunsLogControllerV2GetRun
          * @request GET:/api/v2/runs/{id}/run/{runNumber}
          */
         runsLogControllerV2GetRun: (id: string, runNumber: string, params: RequestParams = {}) =>
-            this.request<Run, any>({
+            this.request<Run, Run>({
                 path: `/api/v2/runs/${id}/run/${runNumber}`,
                 method: 'GET',
                 format: 'json',
@@ -3631,10 +3470,42 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
             },
             params: RequestParams = {}
         ) =>
-            this.request<LogWithCount, any>({
+            this.request<LogWithCountDto, any>({
                 path: `/api/v2/runs/${id}/log/${runNumber}`,
                 method: 'GET',
                 query: query,
+                format: 'json',
+                ...params,
+            }),
+
+        /**
+         * No description
+         *
+         * @tags runs
+         * @name RunsLogControllerV2GetLogEntry
+         * @summary Get a specific log entry
+         * @request GET:/api/v2/runs/{id}/log/{runNumber}/entry/{entryId}
+         */
+        runsLogControllerV2GetLogEntry: (id: string, runNumber: string, entryId: string, params: RequestParams = {}) =>
+            this.request<void, any>({
+                path: `/api/v2/runs/${id}/log/${runNumber}/entry/${entryId}`,
+                method: 'GET',
+                ...params,
+            }),
+
+        /**
+         * No description
+         *
+         * @tags runs
+         * @name RunsLogControllerV2AppendRunLog
+         * @request POST:/api/v2/runs/{runId}/log/append
+         */
+        runsLogControllerV2AppendRunLog: (runId: string, data: AppendRunLogRequestDTO, params: RequestParams = {}) =>
+            this.request<RunLogDTO, any>({
+                path: `/api/v2/runs/${runId}/log/append`,
+                method: 'POST',
+                body: data,
+                type: ContentType.Json,
                 format: 'json',
                 ...params,
             }),
@@ -3889,7 +3760,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
             },
             params: RequestParams = {}
         ) =>
-            this.request<PageModelDto[], any>({
+            this.request<ApplicationComponent[], any>({
                 path: `/api/v2/variants/${appId}/model/pages`,
                 method: 'GET',
                 query: query,
@@ -3911,7 +3782,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
             id: string,
             params: RequestParams = {}
         ) =>
-            this.request<string, void>({
+            this.request<string | ApplicationComponent, void>({
                 path: `/api/v2/variants/${appId}/model/pages/${modelIdKind}/${id}/model`,
                 method: 'GET',
                 format: 'json',
@@ -4050,6 +3921,127 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         /**
          * No description
          *
+         * @tags workspace
+         * @name WorkspaceControllerGetWorkspaces
+         * @request GET:/api/v2/workspace
+         */
+        workspaceControllerGetWorkspaces: (
+            query?: {
+                /**
+                 * @min 1
+                 * @default 50
+                 */
+                limit?: number
+                /** @min 0 */
+                offset?: number
+                /** Filter by workspace plan */
+                plan?: {
+                    $eq?: 'Free' | 'Plus' | 'Pro' | 'Enterprise' | 'Unlimited'
+                    $ne?: 'Free' | 'Plus' | 'Pro' | 'Enterprise' | 'Unlimited'
+                }
+                /** Filter by workspace status */
+                status?: {
+                    $eq?: 'active' | 'inactive' | 'expired'
+                    $ne?: 'active' | 'inactive' | 'expired'
+                }
+            },
+            params: RequestParams = {}
+        ) =>
+            this.request<TransformedWorkspaceDtos, any>({
+                path: `/api/v2/workspace`,
+                method: 'GET',
+                query: query,
+                format: 'json',
+                ...params,
+            }),
+
+        /**
+         * No description
+         *
+         * @tags workspace
+         * @name WorkspaceControllerCreateWorkspace
+         * @request POST:/api/v2/workspace
+         */
+        workspaceControllerCreateWorkspace: (data: CreateWorkspaceDto, params: RequestParams = {}) =>
+            this.request<TransformedWorkspaceDto, any>({
+                path: `/api/v2/workspace`,
+                method: 'POST',
+                body: data,
+                type: ContentType.Json,
+                format: 'json',
+                ...params,
+            }),
+
+        /**
+         * No description
+         *
+         * @tags workspace
+         * @name WorkspaceControllerGetWorkspace
+         * @request GET:/api/v2/workspace/{id}
+         */
+        workspaceControllerGetWorkspace: (id: string, params: RequestParams = {}) =>
+            this.request<TransformedWorkspaceDto, any>({
+                path: `/api/v2/workspace/${id}`,
+                method: 'GET',
+                format: 'json',
+                ...params,
+            }),
+
+        /**
+         * No description
+         *
+         * @tags workspace
+         * @name WorkspaceControllerUpdateWorkspace
+         * @request PUT:/api/v2/workspace/{id}
+         */
+        workspaceControllerUpdateWorkspace: (id: string, data: UpdateWorkspaceDto, params: RequestParams = {}) =>
+            this.request<void, any>({
+                path: `/api/v2/workspace/${id}`,
+                method: 'PUT',
+                body: data,
+                type: ContentType.Json,
+                ...params,
+            }),
+
+        /**
+         * @description Delete a workspace. Deprecated, use DELETE /entities/:entityId
+         *
+         * @tags workspace
+         * @name WorkspaceControllerDeleteWorkspace
+         * @request DELETE:/api/v2/workspace/{id}
+         * @deprecated
+         */
+        workspaceControllerDeleteWorkspace: (id: string, params: RequestParams = {}) =>
+            this.request<void, any>({
+                path: `/api/v2/workspace/${id}`,
+                method: 'DELETE',
+                ...params,
+            }),
+
+        /**
+         * No description
+         *
+         * @tags workspace
+         * @name WorkspaceControllerUpdateWorkspacePlan
+         * @request POST:/api/v2/workspace/{wsId}/update-workspace-plan
+         */
+        workspaceControllerUpdateWorkspacePlan: (
+            wsId: string,
+            data: UpdateWorkspacePlanDto,
+            params: RequestParams = {}
+        ) =>
+            this.request<TransformedDefaultResponseDto, any>({
+                path: `/api/v2/workspace/${wsId}/update-workspace-plan`,
+                method: 'POST',
+                body: data,
+                type: ContentType.Json,
+                format: 'json',
+                ...params,
+            }),
+
+        /**
+         * No description
+         *
          * @tags usage
          * @name UsageControllerGetWorkspaceUsage
          * @request GET:/api/v2/usage/{id}
@@ -4093,6 +4085,62 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
                 body: data,
                 type: ContentType.Json,
                 format: 'json',
+                ...params,
+            }),
+
+        /**
+         * No description
+         *
+         * @tags Screenshots
+         * @name ScreenshotControllerCreateScreenshotEntity
+         * @request POST:/api/v2/screenshots
+         */
+        screenshotControllerCreateScreenshotEntity: (params: RequestParams = {}) =>
+            this.request<void, any>({
+                path: `/api/v2/screenshots`,
+                method: 'POST',
+                ...params,
+            }),
+
+        /**
+         * No description
+         *
+         * @tags Screenshots
+         * @name ScreenshotControllerAddPublicScreenshot
+         * @request POST:/api/v2/screenshots/public/{id}
+         */
+        screenshotControllerAddPublicScreenshot: (id: string, params: RequestParams = {}) =>
+            this.request<void, any>({
+                path: `/api/v2/screenshots/public/${id}`,
+                method: 'POST',
+                ...params,
+            }),
+
+        /**
+         * No description
+         *
+         * @tags Screenshots
+         * @name ScreenshotControllerUploadScreenshot
+         * @request POST:/api/v2/screenshots/{screenshotId}
+         */
+        screenshotControllerUploadScreenshot: (screenshotId: string, params: RequestParams = {}) =>
+            this.request<void, any>({
+                path: `/api/v2/screenshots/${screenshotId}`,
+                method: 'POST',
+                ...params,
+            }),
+
+        /**
+         * No description
+         *
+         * @tags Screenshots
+         * @name ScreenshotControllerGetScreenshot
+         * @request GET:/api/v2/screenshots/{screenshotId}
+         */
+        screenshotControllerGetScreenshot: (screenshotId: string, params: RequestParams = {}) =>
+            this.request<void, any>({
+                path: `/api/v2/screenshots/${screenshotId}`,
+                method: 'GET',
                 ...params,
             }),
 
@@ -4155,6 +4203,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
                     | 'Grid Item'
                     | 'List'
                     | 'List Item'
+                    | 'Dialog'
                     | 'Unclassified'
                 /** The fields to group by */
                 groupBy: string[]
@@ -4236,6 +4285,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
                     | 'Grid Item'
                     | 'List'
                     | 'List Item'
+                    | 'Dialog'
                     | 'Unclassified'
                 /** The fields to group by */
                 groupBy: string[]
@@ -4317,6 +4367,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
                     | 'Grid Item'
                     | 'List'
                     | 'List Item'
+                    | 'Dialog'
                     | 'Unclassified'
                 /** The fields to group by */
                 groupBy: string[]
@@ -4744,164 +4795,6 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
             }),
 
         /**
-         * No description
-         *
-         * @tags issues
-         * @name IssueControllerCreate
-         * @request POST:/api/v2/issues
-         */
-        issueControllerCreate: (params: RequestParams = {}) =>
-            this.request<void, any>({
-                path: `/api/v2/issues`,
-                method: 'POST',
-                ...params,
-            }),
-
-        /**
-         * No description
-         *
-         * @tags issues
-         * @name IssueControllerGetAll
-         * @request GET:/api/v2/issues
-         */
-        issueControllerGetAll: (params: RequestParams = {}) =>
-            this.request<void, any>({
-                path: `/api/v2/issues`,
-                method: 'GET',
-                ...params,
-            }),
-
-        /**
-         * No description
-         *
-         * @tags issues
-         * @name IssueControllerUpdateOne
-         * @request PUT:/api/v2/issues
-         */
-        issueControllerUpdateOne: (data: IssueDto, params: RequestParams = {}) =>
-            this.request<void, any>({
-                path: `/api/v2/issues`,
-                method: 'PUT',
-                body: data,
-                type: ContentType.Json,
-                ...params,
-            }),
-
-        /**
-         * No description
-         *
-         * @tags issues
-         * @name IssueControllerGet
-         * @request GET:/api/v2/issues/{id}
-         */
-        issueControllerGet: (id: string, params: RequestParams = {}) =>
-            this.request<void, any>({
-                path: `/api/v2/issues/${id}`,
-                method: 'GET',
-                ...params,
-            }),
-
-        /**
-         * No description
-         *
-         * @tags issues
-         * @name IssueControllerDelete
-         * @request DELETE:/api/v2/issues/{id}
-         */
-        issueControllerDelete: (id: string, params: RequestParams = {}) =>
-            this.request<void, any>({
-                path: `/api/v2/issues/${id}`,
-                method: 'DELETE',
-                ...params,
-            }),
-
-        /**
-         * No description
-         *
-         * @tags issues
-         * @name IssueControllerUpdate
-         * @request PUT:/api/v2/issues/{id}
-         */
-        issueControllerUpdate: (id: string, data: IssueDto, params: RequestParams = {}) =>
-            this.request<void, any>({
-                path: `/api/v2/issues/${id}`,
-                method: 'PUT',
-                body: data,
-                type: ContentType.Json,
-                ...params,
-            }),
-
-        /**
-         * No description
-         *
-         * @tags issues
-         * @name IssueControllerGetLogs
-         * @request GET:/api/v2/issues/{id}/logs/{appId}
-         */
-        issueControllerGetLogs: (id: string, appId: string, params: RequestParams = {}) =>
-            this.request<void, any>({
-                path: `/api/v2/issues/${id}/logs/${appId}`,
-                method: 'GET',
-                ...params,
-            }),
-
-        /**
-         * No description
-         *
-         * @tags Screenshots
-         * @name ScreenshotControllerCreateScreenshotEntity
-         * @request POST:/api/v2/screenshots
-         */
-        screenshotControllerCreateScreenshotEntity: (params: RequestParams = {}) =>
-            this.request<void, any>({
-                path: `/api/v2/screenshots`,
-                method: 'POST',
-                ...params,
-            }),
-
-        /**
-         * No description
-         *
-         * @tags Screenshots
-         * @name ScreenshotControllerAddPublicScreenshot
-         * @request POST:/api/v2/screenshots/public/{id}
-         */
-        screenshotControllerAddPublicScreenshot: (id: string, params: RequestParams = {}) =>
-            this.request<void, any>({
-                path: `/api/v2/screenshots/public/${id}`,
-                method: 'POST',
-                ...params,
-            }),
-
-        /**
-         * No description
-         *
-         * @tags Screenshots
-         * @name ScreenshotControllerUploadScreenshot
-         * @request POST:/api/v2/screenshots/{screenshotId}
-         */
-        screenshotControllerUploadScreenshot: (screenshotId: string, params: RequestParams = {}) =>
-            this.request<void, any>({
-                path: `/api/v2/screenshots/${screenshotId}`,
-                method: 'POST',
-                ...params,
-            }),
-
-        /**
-         * No description
-         *
-         * @tags Screenshots
-         * @name ScreenshotControllerGetScreenshot
-         * @request GET:/api/v2/screenshots/{screenshotId}
-         */
-        screenshotControllerGetScreenshot: (screenshotId: string, params: RequestParams = {}) =>
-            this.request<void, any>({
-                path: `/api/v2/screenshots/${screenshotId}`,
-                method: 'GET',
-                ...params,
-            }),
-
-        /**
          * @description Creates a new Personal Access Token (PAT) for the user making this request.
          *
          * @tags users
@@ -5093,127 +4986,6 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
             this.request<UserDto, any>({
                 path: `/api/v2/users/deactivateUser/${id}`,
                 method: 'POST',
-                format: 'json',
-                ...params,
-            }),
-
-        /**
-         * No description
-         *
-         * @tags workspace
-         * @name WorkspaceControllerGetWorkspaces
-         * @request GET:/api/v2/workspace
-         */
-        workspaceControllerGetWorkspaces: (
-            query?: {
-                /**
-                 * @min 1
-                 * @default 50
-                 */
-                limit?: number
-                /** @min 0 */
-                offset?: number
-                /** Filter by workspace plan */
-                plan?: {
-                    $eq?: 'Free' | 'Plus' | 'Pro' | 'Enterprise' | 'Unlimited'
-                    $ne?: 'Free' | 'Plus' | 'Pro' | 'Enterprise' | 'Unlimited'
-                }
-                /** Filter by workspace status */
-                status?: {
-                    $eq?: 'active' | 'inactive' | 'expired'
-                    $ne?: 'active' | 'inactive' | 'expired'
-                }
-            },
-            params: RequestParams = {}
-        ) =>
-            this.request<TransformedWorkspaceDtos, any>({
-                path: `/api/v2/workspace`,
-                method: 'GET',
-                query: query,
-                format: 'json',
-                ...params,
-            }),
-
-        /**
-         * No description
-         *
-         * @tags workspace
-         * @name WorkspaceControllerCreateWorkspace
-         * @request POST:/api/v2/workspace
-         */
-        workspaceControllerCreateWorkspace: (data: CreateWorkspaceDto, params: RequestParams = {}) =>
-            this.request<TransformedWorkspaceDto, any>({
-                path: `/api/v2/workspace`,
-                method: 'POST',
-                body: data,
-                type: ContentType.Json,
-                format: 'json',
-                ...params,
-            }),
-
-        /**
-         * No description
-         *
-         * @tags workspace
-         * @name WorkspaceControllerGetWorkspace
-         * @request GET:/api/v2/workspace/{id}
-         */
-        workspaceControllerGetWorkspace: (id: string, params: RequestParams = {}) =>
-            this.request<TransformedWorkspaceDto, any>({
-                path: `/api/v2/workspace/${id}`,
-                method: 'GET',
-                format: 'json',
-                ...params,
-            }),
-
-        /**
-         * No description
-         *
-         * @tags workspace
-         * @name WorkspaceControllerUpdateWorkspace
-         * @request PUT:/api/v2/workspace/{id}
-         */
-        workspaceControllerUpdateWorkspace: (id: string, data: UpdateWorkspaceDto, params: RequestParams = {}) =>
-            this.request<void, any>({
-                path: `/api/v2/workspace/${id}`,
-                method: 'PUT',
-                body: data,
-                type: ContentType.Json,
-                ...params,
-            }),
-
-        /**
-         * @description Delete a workspace. Deprecated, use DELETE /entities/:entityId
-         *
-         * @tags workspace
-         * @name WorkspaceControllerDeleteWorkspace
-         * @request DELETE:/api/v2/workspace/{id}
-         * @deprecated
-         */
-        workspaceControllerDeleteWorkspace: (id: string, params: RequestParams = {}) =>
-            this.request<void, any>({
-                path: `/api/v2/workspace/${id}`,
-                method: 'DELETE',
-                ...params,
-            }),
-
-        /**
-         * No description
-         *
-         * @tags workspace
-         * @name WorkspaceControllerUpdateWorkspacePlan
-         * @request POST:/api/v2/workspace/{wsId}/update-workspace-plan
-         */
-        workspaceControllerUpdateWorkspacePlan: (
-            wsId: string,
-            data: UpdateWorkspacePlanDto,
-            params: RequestParams = {}
-        ) =>
-            this.request<TransformedDefaultResponseDto, any>({
-                path: `/api/v2/workspace/${wsId}/update-workspace-plan`,
-                method: 'POST',
-                body: data,
-                type: ContentType.Json,
                 format: 'json',
                 ...params,
             }),
@@ -5417,6 +5189,57 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
             this.request<void, any>({
                 path: `/api/v2/view/${parentId}/${viewId}`,
                 method: 'DELETE',
+                ...params,
+            }),
+
+        /**
+         * No description
+         *
+         * @tags ai
+         * @name AiControllerAnalyzePage
+         * @request POST:/api/v2/ai/{appId}/analyze-page
+         */
+        aiControllerAnalyzePage: (appId: string, data: Page, params: RequestParams = {}) =>
+            this.request<string, any>({
+                path: `/api/v2/ai/${appId}/analyze-page`,
+                method: 'POST',
+                body: data,
+                type: ContentType.Json,
+                format: 'json',
+                ...params,
+            }),
+
+        /**
+         * No description
+         *
+         * @tags ai
+         * @name AiControllerGenerateData
+         * @request POST:/api/v2/ai/{appId}/generate-data
+         */
+        aiControllerGenerateData: (appId: string, data: GenerateDataDto, params: RequestParams = {}) =>
+            this.request<FormData, any>({
+                path: `/api/v2/ai/${appId}/generate-data`,
+                method: 'POST',
+                body: data,
+                type: ContentType.Json,
+                format: 'json',
+                ...params,
+            }),
+
+        /**
+         * No description
+         *
+         * @tags ai
+         * @name AiControllerGenerateFlow
+         * @request POST:/api/v2/ai/{appId}/generate-flow
+         */
+        aiControllerGenerateFlow: (appId: string, data: GenerateFlowDto, params: RequestParams = {}) =>
+            this.request<GenerateFlowResponseDto, any>({
+                path: `/api/v2/ai/${appId}/generate-flow`,
+                method: 'POST',
+                body: data,
+                type: ContentType.Json,
+                format: 'json',
                 ...params,
             }),
     }
