@@ -1,0 +1,43 @@
+{
+    "name": "Default Run Template",
+    "depth": 5,
+    "stopAfterFlows": false,
+    "workQueueConfig": "default",
+    "formTestingConfig": {
+        "validData": false,
+        "invalidData": false,
+        "fieldLevelTest": false,
+        "formSubmission": false
+    },
+    "fastTestTables": false,
+    "extraHTTPHeaders": {},
+    "skipComponents": "",
+    "stopOnFlowError": false,
+    "enableModeling": true,
+    "useDatasetsForForms": true,
+    "fastTestLinks": false,
+    "pageLoadTimeout": 3000,
+    "actionRetryAttempts": 1,
+    "workQueue": [],
+    "logAccessibilitySuccesses": false,
+    "notify": false,
+    "notificationEmail": "",
+    "notificationSubject": "",
+    "notificationBody": "",
+    "duration": 10,
+    "path": "/",
+    "assets": {
+        "datasets": {},
+        "rules": [],
+        "data": [],
+        "activities": []
+    },
+    "extensions": {
+        "llm": false,
+        "accessibility": false,
+        "brokenLinks": true,
+        "resources": true,
+        "performance": false,
+        "functional": true
+    }
+}

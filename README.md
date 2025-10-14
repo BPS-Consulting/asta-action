@@ -350,13 +350,72 @@ You can use the error count outputs to create conditional logic in your workflow
 
 ## Running from Console/CLI
 
-### Prerequisites
+### Quick Start (Automated)
+
+The easiest way to run the action locally is using the provided `run-local.sh` script:
+
+```bash
+# Clone the repository
+git clone <repository-url>
+cd asta-action
+
+# Make the script executable (if not already)
+chmod +x run-local.sh
+
+# Run in interactive mode (prompts for inputs)
+./run-local.sh
+
+# Or provide all parameters via command line
+./run-local.sh --pat "your-token" --variant "variant-id" --template "template-id"
+
+# Or use a custom parameters file
+./run-local.sh --pat "your-token" --variant "variant-id" --custom example-params.json
+```
+
+#### Using Environment Variables
+
+Create a `.env.local` file from the example:
+
+```bash
+# Copy the example file
+cp env.example .env.local
+
+# Edit with your values
+nano .env.local
+```
+
+Then run without parameters:
+
+```bash
+./run-local.sh
+```
+
+#### Script Options
+
+```
+Usage: ./run-local.sh [OPTIONS]
+
+OPTIONS:
+    -p, --pat <token>           Personal Access Token (required)
+    -v, --variant <id>          Variant ID to test (required)
+    -t, --template <id>         Run template ID (optional)
+    -c, --custom <file>         Path to custom parameters file (optional)
+    -r, --repository <url>      ASTA repository URL (default: https://sqabot.ai)
+    -f, --expect-failure        Expect the test to fail
+    --skip-build                Skip the build step
+    --skip-install              Skip dependency installation check
+    -h, --help                  Show help message
+```
+
+### Manual Setup (Advanced)
+
+#### Prerequisites
 
 1. **Node.js**: Version 16 or higher
 2. **Dependencies**: Install with `yarn install`
 3. **Environment Setup**: Configure required environment variables
 
-### Development Setup
+#### Development Setup
 
 ```bash
 # Clone the repository
@@ -373,7 +432,7 @@ yarn build
 yarn test
 ```
 
-### Environment Configuration
+#### Environment Configuration
 
 Set up the required environment variables:
 
@@ -394,21 +453,21 @@ export INPUT_REPOSITORYURL="https://your-custom-asta-instance.com"
 export INPUT_EXPECTFAILURE="false"
 ```
 
-### Running the Action
+#### Running the Action
 
 ```bash
 # Run the built action
 node dist/index.js
 ```
 
-### Alternative: Direct Node.js Execution
+#### Alternative: Direct Node.js Execution
 
 ```bash
 # Build and run TypeScript directly
 yarn build && node dist/index.js
 ```
 
-### Console Example with Custom Parameters
+#### Console Example with Custom Parameters
 
 ```bash
 #!/bin/bash
