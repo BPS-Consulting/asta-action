@@ -187,12 +187,15 @@ async function main() {
     const errorSummary = `critical ${errorsByImpact.critical}, serious ${errorsByImpact.serious}, moderate ${errorsByImpact.moderate}, minor ${errorsByImpact.minor}`
     console.log(`Error counts by impact: ${errorSummary}`)
 
-    // Set outputs for error counts by impact
-    core.setOutput('errors-critical', errorsByImpact.critical)
-    core.setOutput('errors-serious', errorsByImpact.serious)
-    core.setOutput('errors-moderate', errorsByImpact.moderate)
-    core.setOutput('errors-minor', errorsByImpact.minor)
-    core.setOutput('errors-total', numErrors)
+    // Set outputs for error counts by impact as a single JSON object
+    const errorsOutput = {
+        total: numErrors,
+        critical: errorsByImpact.critical,
+        serious: errorsByImpact.serious,
+        moderate: errorsByImpact.moderate,
+        minor: errorsByImpact.minor,
+    }
+    core.setOutput('errors', JSON.stringify(errorsOutput))
 
     if (numErrors > 0) {
         if (inputs.expectFailure) {

@@ -28,6 +28,8 @@ inputs:
 outputs:
     run-id:
         description: The unique ID of the ASTA test run
+    errors:
+        description: JSON object containing error counts by impact level (total, critical, serious, moderate, minor)
 
 runs:
     using: 'node20'

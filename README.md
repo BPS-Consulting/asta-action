@@ -48,14 +48,10 @@ jobs:
 
 ## Outputs
 
-| Output            | Description                                  |
-| ----------------- | -------------------------------------------- |
-| `run-id`          | The unique ID of the ASTA test run           |
-| `errors-total`    | Total number of errors found during the test |
-| `errors-critical` | Number of critical impact errors             |
-| `errors-serious`  | Number of serious impact errors              |
-| `errors-moderate` | Number of moderate impact errors             |
-| `errors-minor`    | Number of minor impact errors                |
+| Output   | Description                                                                                                                 |
+| -------- | --------------------------------------------------------------------------------------------------------------------------- |
+| `run-id` | The unique ID of the ASTA test run                                                                                          |
+| `errors` | JSON object containing error counts by impact level: `{"total": 5, "critical": 1, "serious": 2, "moderate": 1, "minor": 1}` |
 
 ## Configuration Options
 
@@ -163,19 +159,15 @@ jobs:
               with:
                   script: |
                       const runId = '${{ steps.asta-tests.outputs.run-id }}';
-                      const totalErrors = '${{ steps.asta-tests.outputs.errors-total }}';
-                      const critical = '${{ steps.asta-tests.outputs.errors-critical }}';
-                      const serious = '${{ steps.asta-tests.outputs.errors-serious }}';
-                      const moderate = '${{ steps.asta-tests.outputs.errors-moderate }}';
-                      const minor = '${{ steps.asta-tests.outputs.errors-minor }}';
+                      const errors = JSON.parse('${{ steps.asta-tests.outputs.errors }}');
 
                       let body = `🤖 ASTA test run completed: ${runId}\n\n`;
-                      if (totalErrors > 0) {
-                        body += `❌ **${totalErrors} errors found:**\n`;
-                        if (critical > 0) body += `- 🔴 Critical: ${critical}\n`;
-                        if (serious > 0) body += `- 🟠 Serious: ${serious}\n`;
-                        if (moderate > 0) body += `- 🟡 Moderate: ${moderate}\n`;
-                        if (minor > 0) body += `- 🔵 Minor: ${minor}\n`;
+                      if (errors.total > 0) {
+                        body += `❌ **${errors.total} errors found:**\n`;
+                        if (errors.critical > 0) body += `- 🔴 Critical: ${errors.critical}\n`;
+                        if (errors.serious > 0) body += `- 🟠 Serious: ${errors.serious}\n`;
+                        if (errors.moderate > 0) body += `- 🟡 Moderate: ${errors.moderate}\n`;
+                        if (errors.minor > 0) body += `- 🔵 Minor: ${errors.minor}\n`;
                       } else {
                         body += `✅ No errors found!`;
                       }
@@ -281,23 +273,23 @@ You can use the error count outputs to create conditional logic in your workflow
       parameters: ${{ vars.ASTA_TEMPLATE_ID }}
 
 - name: Check Critical Errors
-  if: steps.asta-tests.outputs.errors-critical > 0
+  if: fromJson(steps.asta-tests.outputs.errors).critical > 0
   run: |
-      echo "❌ Found ${{ steps.asta-tests.outputs.errors-critical }} critical errors!"
+      echo "❌ Found ${{ fromJson(steps.asta-tests.outputs.errors).critical }} critical errors!"
       echo "This requires immediate attention before deployment."
       exit 1
 
 - name: Report Error Summary
   run: |
       echo "📊 Test Results Summary:"
-      echo "Total Errors: ${{ steps.asta-tests.outputs.errors-total }}"
-      echo "Critical: ${{ steps.asta-tests.outputs.errors-critical }}"
-      echo "Serious: ${{ steps.asta-tests.outputs.errors-serious }}"
-      echo "Moderate: ${{ steps.asta-tests.outputs.errors-moderate }}"
-      echo "Minor: ${{ steps.asta-tests.outputs.errors-minor }}"
+      echo "Total Errors: ${{ fromJson(steps.asta-tests.outputs.errors).total }}"
+      echo "Critical: ${{ fromJson(steps.asta-tests.outputs.errors).critical }}"
+      echo "Serious: ${{ fromJson(steps.asta-tests.outputs.errors).serious }}"
+      echo "Moderate: ${{ fromJson(steps.asta-tests.outputs.errors).moderate }}"
+      echo "Minor: ${{ fromJson(steps.asta-tests.outputs.errors).minor }}"
 
 - name: Create Quality Gate
-  if: steps.asta-tests.outputs.errors-critical > 0 || steps.asta-tests.outputs.errors-serious > 10
+  if: fromJson(steps.asta-tests.outputs.errors).critical > 0 || fromJson(steps.asta-tests.outputs.errors).serious > 10
   run: |
       echo "Quality gate failed: Too many high-impact errors"
       exit 1
@@ -326,19 +318,19 @@ You can use the error count outputs to create conditional logic in your workflow
                 "fields": [
                   {
                     "type": "mrkdwn",
-                    "text": "*Total Errors:* ${{ steps.asta-tests.outputs.errors-total }}"
+                    "text": "*Total Errors:* ${{ fromJson(steps.asta-tests.outputs.errors).total }}"
                   },
                   {
                     "type": "mrkdwn", 
-                    "text": "*Critical:* ${{ steps.asta-tests.outputs.errors-critical }}"
+                    "text": "*Critical:* ${{ fromJson(steps.asta-tests.outputs.errors).critical }}"
                   },
                   {
                     "type": "mrkdwn",
-                    "text": "*Serious:* ${{ steps.asta-tests.outputs.errors-serious }}"
+                    "text": "*Serious:* ${{ fromJson(steps.asta-tests.outputs.errors).serious }}"
                   },
                   {
                     "type": "mrkdwn",
-                    "text": "*Moderate:* ${{ steps.asta-tests.outputs.errors-moderate }}"
+                    "text": "*Moderate:* ${{ fromJson(steps.asta-tests.outputs.errors).moderate }}"
                   }
                 ]
               }

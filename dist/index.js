@@ -45826,11 +45826,14 @@ async function main() {
     }
     const errorSummary = `critical ${errorsByImpact.critical}, serious ${errorsByImpact.serious}, moderate ${errorsByImpact.moderate}, minor ${errorsByImpact.minor}`;
     console.log(`Error counts by impact: ${errorSummary}`);
-    core.setOutput('errors-critical', errorsByImpact.critical);
-    core.setOutput('errors-serious', errorsByImpact.serious);
-    core.setOutput('errors-moderate', errorsByImpact.moderate);
-    core.setOutput('errors-minor', errorsByImpact.minor);
-    core.setOutput('errors-total', numErrors);
+    const errorsOutput = {
+        total: numErrors,
+        critical: errorsByImpact.critical,
+        serious: errorsByImpact.serious,
+        moderate: errorsByImpact.moderate,
+        minor: errorsByImpact.minor,
+    };
+    core.setOutput('errors', JSON.stringify(errorsOutput));
     if (numErrors > 0) {
         if (inputs.expectFailure) {
             core.notice(`Test run failed with ${numErrors} errors (${errorSummary}), as expected`);
