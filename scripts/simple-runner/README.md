@@ -1,6 +1,6 @@
 # User Utilities
 
-This directory contains utilities for running ASTA tests via API calls. These scripts are designed for use in both local development and CI/CD deployment pipelines. Both PowerShell and Bash versions are provided to accommodate different environments.
+This directory contains utilities for running ASTA tests via API calls. These scripts are designed for use in both local development and CI/CD deployment pipelines. Both PowerShell and Bash versions are provided to accommodate different environments.  You do not need any other files from this repository to use these scripts.
 
 ## Files
 

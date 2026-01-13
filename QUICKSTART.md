@@ -2,6 +2,8 @@
 
 This guide helps you quickly get started with running the ASTA action locally for testing and development.
 
+**Note**: For an even simpler way to run ASTA tests from the command line, see the scripts in the `scripts/simple-runner` folder.
+
 ## 🚀 Super Quick Start (3 Steps)
 
 ### Step 1: Clone and Setup
