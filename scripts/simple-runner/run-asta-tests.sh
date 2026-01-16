@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # ----------------------------------------------------------------------------
 # Description: Starts an ASTA test run via API call. For use in a deployment pipeline.
-# Usage: ./run-asta-tests-jq.sh <RUN_TEMPLATE_ID_OR_NAME> [WAIT_FOR_COMPLETION_MINUTES] [ERROR_THRESHOLDS_STRING]
+# Usage: ./run-asta-tests.sh <RUN_TEMPLATE_ID_OR_NAME> [WAIT_FOR_COMPLETION_MINUTES] [ERROR_THRESHOLDS_STRING]
 # Dependencies:
 #   - bash, curl, jq (auto-installed if missing)
 #   - The following environment variables must be set:
@@ -67,7 +67,7 @@ fi
 
 # -----------------------------
 # Config
-ASTA_API_URL="https://sqabot.ai/api/v2"
+ASTA_API_URL="${ASTA_API_URL:-https://sqabot.ai/api/v2}"
 AUTH_HEADER="Authorization: Bearer $ASTA_USER_PAT"
 CONTENT_HEADER="Content-Type: application/json"
 
@@ -134,8 +134,8 @@ for level in critical serious moderate minor total; do
 	error_counts[$level]=$(echo "$status_response" | jq -r ".errors.$level // 0")
 done
 
-log_debug "Error counts: ${error_counts[*]} (critical, serious, moderate, minor, total)"
-log_debug "Error thresholds: ${ERROR_THRESHOLDS[*]} (critical, serious, moderate, minor, total)"
+log_debug "Error counts: ${error_counts[critical]}, ${error_counts[serious]}, ${error_counts[moderate]}, ${error_counts[minor]}, ${error_counts[total]} (critical, serious, moderate, minor, total)"
+log_debug "Error thresholds: ${ERROR_THRESHOLDS[critical]}, ${ERROR_THRESHOLDS[serious]}, ${ERROR_THRESHOLDS[moderate]}, ${ERROR_THRESHOLDS[minor]}, ${ERROR_THRESHOLDS[total]} (critical, serious, moderate, minor, total)"
 
 # Compare against thresholds
 for level in critical serious moderate minor total; do
