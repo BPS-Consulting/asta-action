@@ -6,6 +6,8 @@ A GitHub Action for running automated web application tests using the ASTA (Auto
 
 This action allows you to integrate ASTA web application testing into your CI/CD pipeline. It can start test runs, monitor their progress, and report results directly in your GitHub workflows.
 
+**Note**: This action is full featured and flexible.  If you just want a script to run ASTA tests from the command line, see the scripts in the `scripts/simple-runner` folder.
+
 ## Features
 
 -   🚀 Start automated test runs on your web applications
